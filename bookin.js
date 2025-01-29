@@ -179,7 +179,6 @@ houseCallRadio.addEventListener('change', () => {
         const cell = form.cell.value;
         const service = form.service.value;
         const color = form.color.value;  // Added color selection data
-        const price = form.price.value;  // Assuming 'price' is part of the form
         const date = form.date.value;
         const serviceType = form.serviceType.value;  // Added serviceType in the notification
     
@@ -190,7 +189,6 @@ houseCallRadio.addEventListener('change', () => {
         formData.append('cell', cell);
         formData.append('service', service);
         formData.append('color', color);
-        formData.append('price', price);
         formData.append('date', date);
         formData.append('serviceType', serviceType);
     
@@ -206,13 +204,21 @@ houseCallRadio.addEventListener('change', () => {
                 cell,
                 service,
                 color,
-                price: parseFloat(price.replace(/[^\d.]/g, '')), // Remove "R" and convert to number
                 date,
                 serviceType
             }),
         })
-        .then((response) => response.json())
+        .then((response) => {
+            // Check if the response is ok (status code 200-299)
+            if (!response.ok) {
+                throw new Error('Server responded with error: ' + response.statusText);
+            }
+            return response.json(); // Parse the JSON response if the status is OK
+        })
         .then((data) => {
+            // Log the response data to the console for debugging
+            console.log(data);
+        
             if (data.message === 'Booking saved successfully!') {
                 alert('Thank you for booking! We will review your payment and contact you shortly.');
             } else {
@@ -223,7 +229,8 @@ houseCallRadio.addEventListener('change', () => {
             console.error("Fetch error:", error); // Log the error to the browser console
             alert('Error sending booking data to the server.');
         });
-    
+        
+        
         // Close form
         closeBookingForm();
     });
