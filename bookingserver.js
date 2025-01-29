@@ -1,5 +1,5 @@
 // 1. Import the dotenv package to load the environment variables
-require('dotenv').config();
+require('dotenv').config({ path: './booking.env' }); 
 
 // 2. Access the environment variables
 const emailUser = process.env.EMAIL_USER;
@@ -22,7 +22,11 @@ const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const winston = require('winston');
 
-const app = express();
+// Initialize Express app
+const app = express(); // This must come first
+
+// Middleware setup
+app.use(express.json());  // To parse JSON request bodies
 
 // CORS Middleware
 const corsOptions = {
@@ -48,8 +52,8 @@ const pool = new Pool({
 pool.connect()
   .then(() => console.log("✅ Connected to PostgreSQL"))
   .catch(err => {
-    console.error("❌ PostgreSQL Connection Error:", err);
-    process.exit(1); // Exit if DB fails to connect
+    console.error("❌ PostgreSQL Connection Error:", err); // Log the error if connection fails
+    process.exit(1); // Exit the application if DB fails to connect
   });
 
 // Configure Winston Logger
@@ -92,17 +96,18 @@ transporter.verify((error, success) => {
 // Handle Booking Submission
 app.post('/submit-booking', async (req, res) => {
   try {
-    // Gather form data
-    const { name, email, cell, service, color, price, date, serviceType } = req.body;
-    const paymentProof = null;  // No payment proof is uploaded
+    console.log("Received booking data:", req.body);
 
-    // Insert into DB
-    const query = `INSERT INTO bookings (name, email, cell, service, color, price, date, serviceType, paymentProof) 
-                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *;`;
-    const values = [name, email, cell, service, color, price, date, serviceType, paymentProof];
+    const { name, email, cell, service, color, date, serviceType } = req.body;
+
+    // Modified query, no 'paymentProof' and only the relevant fields
+    const query = `INSERT INTO bookings (name, email, cell, service, color, date, serviceType) 
+                   VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`;
+
+    const values = [name, email, cell, service, color, date, serviceType];
     const result = await pool.query(query, values);
 
-    // Send email
+    // Send email notification for the booking
     const mailOptions = {
       from: emailUser,
       to: 'louisphiri95@gmail.com',
@@ -112,12 +117,15 @@ app.post('/submit-booking', async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
+    // Send success response to the client
     res.json({ message: "✅ Booking saved successfully and email sent!", booking: result.rows[0] });
   } catch (error) {
-    logger.error(`❌ Error saving booking: ${error.message}`);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(`❌ Error saving booking: ${error.message}`);
+    res.status(500).json({ error: `Internal Server Error: ${error.message}` });
   }
 });
+
+
 
 // Start the Server
 const port = process.env.PORT || 3000;
