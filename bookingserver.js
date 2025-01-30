@@ -13,6 +13,14 @@ if (!emailUser || !emailPass) {
 
 console.log(`📧 Email: ${emailUser}`);
 console.log(`🔑 Password: ${emailPass ? '✔️ Loaded' : '❌ Not Loaded'}`);
+const fs = require('fs');
+const uploadDir = 'uploads';
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log(`📂 Created uploads directory: ${uploadDir}`);
+}
+
 
 // Import required packages
 const express = require('express');
@@ -21,6 +29,9 @@ const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const winston = require('winston');
+const multer = require('multer');
+
+
 
 // Initialize Express app
 const app = express(); // This must come first
@@ -93,33 +104,29 @@ transporter.verify((error, success) => {
   }
 });
 
-// Test email function
-// const sendTestEmail = async () => {
-//   const mailOptions = {
-//     from: emailUser,
-//     to: 'carterprince95@gmail.com',  // Use a different email for testing
-//     subject: 'Test Email',
-//     text: 'This is a test email to verify SMTP functionality.'
-//   };
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // Ensure the "uploads" folder exists
+  },
+  filename: function (req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname);
+  }
+});
 
-//   try {
-//     const info = await transporter.sendMail(mailOptions);
-//     console.log('Test email sent:', info.response);
-//   } catch (error) {
-//     console.error('Error sending test email:', error);
-//   }
-// };
+const upload = multer({ storage: storage });
 
-// Call the test email function to verify email sending
-// sendTestEmail();
-
-// Handle Booking Submission
-// Handle Booking Submission
-app.post('/submit-booking', async (req, res) => {
+app.post('/submit-booking', upload.single('paymentProof'), async (req, res) =>  {
   try {
     console.log("Received booking data:", req.body);
 
-    const { name, email, cell, service, color, date, serviceType } = req.body;
+    const { name, email, cell, service, color, date, price, serviceType } = req.body;
+
+     // Check if the file is uploaded
+     if (!req.file) {
+      return res.status(400).json({ status: 'error', message: '❌ No payment proof uploaded.' });
+    }
+
+    const paymentProof = req.file; // This will be the uploaded file
 
     // Email notification for the booking
     const mailOptions = {
@@ -133,8 +140,16 @@ app.post('/submit-booking', async (req, res) => {
       - Service: ${service}
       - Color: ${color}
       - Date: ${date}
-      - Service Type: ${serviceType}`
+      - Price: ${price}
+      - Service Type: ${serviceType}`,
+      attachments: [
+        {
+          filename: paymentProof.originalname,  // The original file name
+          path: paymentProof.path  // The path to the uploaded file
+        }
+      ]
     };
+
 
     // Send email
     console.log('Sending email...');
@@ -150,7 +165,6 @@ app.post('/submit-booking', async (req, res) => {
     res.status(500).json({ status: 'error', message: `Internal Server Error: ${error.message}` });
   }
 });
-
 
 // Start the Server
 const port = process.env.PORT || 3000;
