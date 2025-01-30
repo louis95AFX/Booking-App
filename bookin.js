@@ -178,11 +178,18 @@ houseCallRadio.addEventListener('change', () => {
         const email = form.email.value;
         const cell = form.cell.value;
         const service = form.service.value;
-        const color = form.color.value;  // Added color selection data
+        const color = form.color.value;
         const date = form.date.value;
-        const serviceType = form.serviceType.value;  // Added serviceType in the notification
+        const price = form.price.value;
+        const serviceType = form.serviceType.value;
+        const paymentProof = document.getElementById('paymentProof').files[0]; 
     
-        // Prepare the FormData object
+        if (!paymentProof) {
+            alert("Proof of payment is required!");
+            return;
+        }
+    
+        // Prepare FormData for file upload
         const formData = new FormData();
         formData.append('name', name);
         formData.append('email', email);
@@ -190,28 +197,47 @@ houseCallRadio.addEventListener('change', () => {
         formData.append('service', service);
         formData.append('color', color);
         formData.append('date', date);
+        formData.append('price', price);
         formData.append('serviceType', serviceType);
+        formData.append('paymentProof', paymentProof); // Attach the file
     
-        // Send the request to the backend server (make sure the URL points to your backend)
+        // Send request to the backend (do NOT set Content-Type manually)
         fetch('http://localhost:3000/submit-booking', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name,
-                email,
-                cell,
-                service,
-                color,
-                date,
-                serviceType
-            }),
+            body: formData, // Sending FormData (files included)
         })
-       
-        closeBookingForm();
-        
+        .then(response => response.json()) // Parse JSON response
+        .then(data => {
+            if (data.status === 'success') {
+                showAlert("Booking Successfully sent, we will get back to you shortly.");
+    
+                setTimeout(() => {
+                    closeBookingForm();
+                }, 3000);
+            } else {
+                console.error('Server Error:', data.message);
+                alert("There was an issue with your booking.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("There was an issue with your booking.");
+        });
     });
+    
+    // Alert function
+    function showAlert(message) {
+        const alertBox = document.getElementById('alert-box');
+        const alertMessage = document.getElementById('alert-message');
+        
+        alertMessage.innerText = message;
+        alertBox.classList.add('show');
+        
+        setTimeout(() => {
+            alertBox.classList.remove('show');
+        }, 3000);
+    }
+    
     
     
 }
