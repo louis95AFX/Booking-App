@@ -115,20 +115,40 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.post('/submit-booking', upload.single('paymentProof'), async (req, res) =>  {
+app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
   try {
     console.log("Received booking data:", req.body);
 
-    const { name, email, cell, service, color, date, price, serviceType } = req.body;
+    const { name, email, cell, service, color, date, time, price, serviceType } = req.body;
 
-     // Check if the file is uploaded
-     if (!req.file) {
+    // ✅ Define the query and values BEFORE executing it
+    const query = `
+      INSERT INTO bookings (name, email, cell, date, time)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *;  -- Return inserted row
+    `;
+
+    const values = [name, email, cell, date, time];
+
+    // ✅ Use pool.query instead of db.query
+    pool.query(query, values, (err, result) => {
+      if (err) {
+        console.error("❌ Database error:", err);
+        return res.status(500).json({ status: "error", message: "Database error" });
+      }
+      console.log("✅ Booking added to database:", result.rows[0]);
+      
+      // Proceed with sending email after successful DB insert
+    });
+
+    // ✅ Check if the file is uploaded
+    if (!req.file) {
       return res.status(400).json({ status: 'error', message: '❌ No payment proof uploaded.' });
     }
 
     const paymentProof = req.file; // This will be the uploaded file
 
-    // Email notification for the booking
+    // ✅ Email notification for the booking
     const mailOptions = {
       from: emailUser,
       to: 'carterprince95@gmail.com',  // Change to recipient email
@@ -140,6 +160,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) =>  
       - Service: ${service}
       - Color: ${color}
       - Date: ${date}
+      - Time: ${time}
       - Price: ${price}
       - Service Type: ${serviceType}`,
       attachments: [
@@ -150,21 +171,22 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) =>  
       ]
     };
 
-
-    // Send email
+    // ✅ Send email
     console.log('Sending email...');
     const info = await transporter.sendMail(mailOptions);
     console.log('✅ Email sent successfully:', info.response);
 
-    // Respond to the client with a success message and status code 200
+    // ✅ Respond to the client with a success message
     res.status(200).json({ status: 'success', message: "✅ Booking email sent successfully!" });
+
   } catch (error) {
     console.error(`❌ Error sending email: ${error.message}`);
     
-    // Respond to the client with an error message and status code 500
+    // ✅ Respond to the client with an error message
     res.status(500).json({ status: 'error', message: `Internal Server Error: ${error.message}` });
   }
 });
+
 
 // Start the Server
 const port = process.env.PORT || 3000;
