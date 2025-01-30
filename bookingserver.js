@@ -246,17 +246,54 @@ app.post('/approve-booking', async (req, res) => {
   }
 });
 
-app.post('/decline-booking', async (req, res) => { // Use app instead of pp
-  const { bookingId } = req.body;
+app.post('/shift-booking-dates', async (req, res) => {
+  const { bookingId, newDate, newTime } = req.body;
+
+  // Ensure the bookingId, newDate, and newTime are provided
+  if (!bookingId || !newDate || !newTime) {
+    return res.status(400).send({ message: 'Booking ID, new date, and new time are required.' });
+  }
+
   try {
-      // Update the booking status to canceled
-      await pool.query('UPDATE bookings SET status = $1 WHERE id = $2', ['canceled', bookingId]);
-      res.status(200).send({ message: 'Booking canceled' });
+    // Convert the newDate and newTime to a valid Date object (optional)
+    const updatedDateTime = new Date(`${newDate}T${newTime}:00`);
+
+    if (isNaN(updatedDateTime)) {
+      return res.status(400).send({ message: 'Invalid date or time format.' });
+    }
+
+    // Update the booking date and time in the database
+    const result = await pool.query(
+      'UPDATE bookings SET date = $1, time = $2 WHERE id = $3',
+      [updatedDateTime.toISOString().split('T')[0], updatedDateTime.toISOString().split('T')[1], bookingId]
+    );
+
+    // Check if the booking was found and updated
+    if (result.rowCount === 0) {
+      return res.status(404).send({ message: 'Booking not found.' });
+    }
+
+    res.status(200).send({ message: 'Booking dates updated successfully' });
   } catch (err) {
-      console.error('Error updating booking:', err);
-      res.status(500).send({ message: 'Failed to cancel booking' });
+    console.error('Error updating booking dates:', err);
+    res.status(500).send({ message: 'Failed to update booking dates' });
   }
 });
+app.post('/shift-booking-dates', async (req, res) => {
+  const { bookingId, newDate, newTime } = req.body;
+
+  try {
+      // Update the booking date and time in the database
+      await pool.query('UPDATE bookings SET date = $1, time = $2 WHERE id = $3', [newDate, newTime, bookingId]);
+
+      res.status(200).send({ message: 'Booking dates updated successfully' });
+  } catch (err) {
+      console.error('Error updating booking dates:', err);
+      res.status(500).send({ message: 'Failed to update booking dates' });
+  }
+});
+
+
 
 // Start the Server
 const port = process.env.PORT || 3000;
