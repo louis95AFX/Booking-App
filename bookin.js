@@ -184,6 +184,7 @@ houseCallRadio.addEventListener('change', () => {
         const service = form.service.value;
         const color = form.color.value;
         const date = form.date.value;
+        const time = form.time.value;  // Get the selected time
         const price = form.price.value;
         const serviceType = form.serviceType.value;
         const paymentProof = document.getElementById('paymentProof').files[0];
@@ -203,6 +204,7 @@ houseCallRadio.addEventListener('change', () => {
         formData.append('service', service);
         formData.append('color', color);
         formData.append('date', date);
+        formData.append('time', time);  // Append the time value
         formData.append('price', price);
         formData.append('serviceType', serviceType);
         formData.append('paymentProof', paymentProof); // Attach the file
