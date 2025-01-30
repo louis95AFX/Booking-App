@@ -208,31 +208,9 @@ houseCallRadio.addEventListener('change', () => {
                 serviceType
             }),
         })
-        .then((response) => {
-            // Check if the response is ok (status code 200-299)
-            if (!response.ok) {
-                throw new Error('Server responded with error: ' + response.statusText);
-            }
-            return response.json(); // Parse the JSON response if the status is OK
-        })
-        .then((data) => {
-            // Log the response data to the console for debugging
-            console.log(data);
-        
-            if (data.message === 'Booking saved successfully!') {
-                alert('Thank you for booking! We will review your payment and contact you shortly.');
-            } else {
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch((error) => {
-            console.error("Fetch error:", error); // Log the error to the browser console
-            alert('Error sending booking data to the server.');
-        });
-        
-        
-        // Close form
+       
         closeBookingForm();
+        
     });
     
     
