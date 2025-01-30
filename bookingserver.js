@@ -121,6 +121,15 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
 
     const { name, email, cell, service, color, date, time, price, serviceType } = req.body;
 
+
+    // Check if an approved booking exists for this date and time
+    const checkQuery = `SELECT * FROM bookings WHERE date = $1 AND time = $2 AND approved = TRUE`;
+    const { rows } = await pool.query(checkQuery, [date, time]);
+
+    if (rows.length > 0) {
+      return res.status(400).json({ status: 'error', message: '❌ This slot is already booked!' });
+    }
+
     // ✅ Define the query and values BEFORE executing it
     const query = `
       INSERT INTO bookings (name, email, cell, date, time)
@@ -187,6 +196,67 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
   }
 });
 
+// Get all bookings for the admin to view
+app.get('/get-bookings', async (req, res) => {
+  try {
+    // Get the status query parameter (if provided)
+    const { status } = req.query;
+
+    // Build the query based on the status filter
+    let query = 'SELECT id, name, email, cell, date, time, created_at, approved FROM bookings';
+    let queryParams = [];
+
+    if (status) {
+      // Add the WHERE clause to filter by status
+      if (status === 'confirmed') {
+        query += ' WHERE approved = true';
+      } else if (status === 'pending') {
+        query += ' WHERE approved = false';
+      } else if (status === 'canceled') {
+        // Assuming there's a 'canceled' column to filter canceled bookings, e.g. `status = 'canceled'`
+        query += ' WHERE canceled = true'; // Or replace with the actual field for canceled status
+      }
+    }
+
+    query += ' ORDER BY date DESC, time DESC';
+
+    // Execute the query with potential parameters
+    const { rows } = await pool.query(query, queryParams);
+
+    // Send the filtered bookings data as a JSON response
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error("❌ Error fetching bookings:", error);
+    res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+  }
+});
+
+
+// Endpoint to approve a booking
+app.post('/approve-booking', async (req, res) => {
+  const { bookingId } = req.body;  // Get booking ID from the request body
+
+  try {
+      // Update the booking status to approved
+      await pool.query('UPDATE bookings SET approved = TRUE WHERE id = $1', [bookingId]);
+      res.status(200).send({ message: 'Booking approved' });
+  } catch (err) {
+      console.error('Error updating booking:', err);
+      res.status(500).send({ message: 'Failed to approve booking' });
+  }
+});
+
+app.post('/decline-booking', async (req, res) => { // Use app instead of pp
+  const { bookingId } = req.body;
+  try {
+      // Update the booking status to canceled
+      await pool.query('UPDATE bookings SET status = $1 WHERE id = $2', ['canceled', bookingId]);
+      res.status(200).send({ message: 'Booking canceled' });
+  } catch (err) {
+      console.error('Error updating booking:', err);
+      res.status(500).send({ message: 'Failed to cancel booking' });
+  }
+});
 
 // Start the Server
 const port = process.env.PORT || 3000;
