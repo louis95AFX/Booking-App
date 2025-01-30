@@ -93,6 +93,27 @@ transporter.verify((error, success) => {
   }
 });
 
+// Test email function
+// const sendTestEmail = async () => {
+//   const mailOptions = {
+//     from: emailUser,
+//     to: 'carterprince95@gmail.com',  // Use a different email for testing
+//     subject: 'Test Email',
+//     text: 'This is a test email to verify SMTP functionality.'
+//   };
+
+//   try {
+//     const info = await transporter.sendMail(mailOptions);
+//     console.log('Test email sent:', info.response);
+//   } catch (error) {
+//     console.error('Error sending test email:', error);
+//   }
+// };
+
+// Call the test email function to verify email sending
+// sendTestEmail();
+
+// Handle Booking Submission
 // Handle Booking Submission
 app.post('/submit-booking', async (req, res) => {
   try {
@@ -100,31 +121,35 @@ app.post('/submit-booking', async (req, res) => {
 
     const { name, email, cell, service, color, date, serviceType } = req.body;
 
-    // Modified query, no 'paymentProof' and only the relevant fields
-    const query = `INSERT INTO bookings (name, email, cell, service, color, date, serviceType) 
-                   VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`;
-
-    const values = [name, email, cell, service, color, date, serviceType];
-    const result = await pool.query(query, values);
-
-    // Send email notification for the booking
+    // Email notification for the booking
     const mailOptions = {
       from: emailUser,
-      to: 'louisphiri95@gmail.com',
+      to: 'carterprince95@gmail.com',  // Change to recipient email
       subject: '📅 New Booking Request',
-      text: `New Booking Request from ${name} (${email})\nService: ${service}\nDate: ${date}`
+      text: `New Booking Request:
+      - Name: ${name}
+      - Email: ${email}
+      - Cell: ${cell}
+      - Service: ${service}
+      - Color: ${color}
+      - Date: ${date}
+      - Service Type: ${serviceType}`
     };
 
-    await transporter.sendMail(mailOptions);
+    // Send email
+    console.log('Sending email...');
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Email sent successfully:', info.response);
 
-    // Send success response to the client
-    res.json({ message: "✅ Booking saved successfully and email sent!", booking: result.rows[0] });
+    // Respond to the client with a success message and status code 200
+    res.status(200).json({ status: 'success', message: "✅ Booking email sent successfully!" });
   } catch (error) {
-    console.error(`❌ Error saving booking: ${error.message}`);
-    res.status(500).json({ error: `Internal Server Error: ${error.message}` });
+    console.error(`❌ Error sending email: ${error.message}`);
+    
+    // Respond to the client with an error message and status code 500
+    res.status(500).json({ status: 'error', message: `Internal Server Error: ${error.message}` });
   }
 });
-
 
 
 // Start the Server
