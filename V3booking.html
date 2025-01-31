@@ -10,6 +10,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
     <style>
         /* Custom Styling for Form */
         .modal-content {
@@ -126,6 +131,88 @@
     border-width: 0.25rem;
 }
 
+#alert-box {
+    position: fixed; /* Ensure it's positioned relative to the viewport */
+    top: 20px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f8d7da; /* Light red background for error alerts */
+    color: #721c24; /* Dark red text */
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1999; /* Higher than Bootstrap modal (default is 1040) */
+    display: none; /* Initially hidden */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+.subscribe-btn {
+    background-color: #007bff; /* Set default button color */
+    color: white; /* Ensure text is visible */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.subscribe-btn:hover {
+    background-color: #0056b3; /* Slightly darker shade on hover */
+}
+/* Apply the Pacifico font */
+#customHeading {
+    margin-right: 55px;
+    font-family: 'Pacifico', cursive; /* Artistic font */
+    font-size: 48px;
+    color: white; /* Set text color to white */
+}
+
+div#carousel { 
+        perspective: 1200px; 
+        background: white; 
+        padding-top: 10%; 
+        font-size: 0; 
+        margin-bottom: 3rem; 
+        overflow: hidden; 
+    }
+
+    figure#spinner { 
+        transform-style: preserve-3d; 
+        height: 300px; 
+        transform-origin: 50% 50% -500px; 
+        transition: 1s; 
+    }
+
+    figure#spinner img {
+    width: 300px; /* Set a fixed width */
+    height: 300px; /* Set a fixed height */
+    object-fit: cover; /* Ensures the image covers the space without distortion */
+    position: absolute;
+    left: 30%;
+    transform-origin: 50% 50% -500px;
+    outline: 1px solid transparent;
+}
+    figure#spinner img:nth-child(1) { transform: rotateY(0deg); }
+    figure#spinner img:nth-child(2) { transform: rotateY(-45deg); }
+    figure#spinner img:nth-child(3) { transform: rotateY(-90deg); }
+    figure#spinner img:nth-child(4) { transform: rotateY(-135deg); }
+    figure#spinner img:nth-child(5) { transform: rotateY(-180deg); }
+    figure#spinner img:nth-child(6) { transform: rotateY(-225deg); }
+    figure#spinner img:nth-child(7) { transform: rotateY(-270deg); }
+    figure#spinner img:nth-child(8) { transform: rotateY(-315deg); }
+
+    div#carousel ~ span { 
+        color: #fff; 
+        margin: 5%; 
+        display: inline-block; 
+        text-decoration: none; 
+        font-size: 2rem; 
+        transition: 0.6s color; 
+        position: relative; 
+        margin-top: -6rem; 
+        border-bottom: none; 
+        line-height: 0;
+    }
+
+    div#carousel ~ span:hover { color: #888; cursor: pointer; }
+    
 
     </style>
 </head>
@@ -133,7 +220,7 @@
     <div data-aos="fade-up" data-aos-duration="1000">
     <!-- Header -->
     <header>
-        <h1>Braider's Booking Service</h1>
+        <h1 id="customHeading">Touched By Jess</h1>
         <nav>
             <a href="#services">Services</a>
             <a href="#gallery">Gallery</a>
@@ -145,11 +232,10 @@
         </nav>
     </header>
 
-<!-- Custom Animated Alert -->
-<div id="alert-box" class="alert-box">
-    <span id="alert-message">Booking Sent Successfully!</span>
-</div>
-
+    <div id="alert-box" class="alert" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+        <span id="alert-message"></span>
+    </div>
+    
     <!-- Main Content -->
     <div class="container">
         <!-- Services Section -->
@@ -162,12 +248,12 @@
                 <li>Twists</li>
                 <li>Crochet Styles</li>
             </ul>
-            <div class="cta">
-                <button onclick="openBookingForm()">Book Now</button>
+            <div class="button-container">
+                <button type="button" class="custom-btn" data-bs-toggle="modal" data-bs-target="#appointmentModal">
+                    BOOK NOW
+                </button>
             </div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal">
-                Open Appointment Form
-            </button>
+            
         </section>
 
 <!-- =========== -->
@@ -175,10 +261,12 @@
         <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="appointmentModalLabel">Appointment Form</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-header text-center" style="background-color: #ff69b4; color: white;">
+                        <h5 class="modal-title w-100" id="appointmentModalLabel">Appointment Form</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
                     </div>
+                    
+                    
                     <div class="modal-body">
                         <form id="bookingForm">
                             <div class="mb-3">
@@ -278,27 +366,56 @@
                                 <label for="houseCall" class="radio-label">House Call</label>
                             </div>
                             <div class="btn-container">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary" style="background-color: #ff69b4">Submit</button>
                             </div>
                         </form>
-                        
-                        
                     </div>
                 </div>
             </div>
         </div>
+   
+    <!-- Modal for Success Message -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Booking Status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="successModalMessage">
+                <!-- Success message will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
+</div>
+
     <!-- ==================== -->
 
-        <!-- Gallery Section -->
-        <section id="gallery" class="section">
-            <h2>Gallery</h2>
-            <div class="gallery">
-                <img src="brade1.jpg" alt="Booking Image">
-                <img src="averie-woodard-4nulm-JUYFo-unsplash.jpg" alt="Braiding Style 2">
-                <img src="gustavo-spindula-K2D7muBun1A-unsplash.jpg" alt="Braiding Style 3">
-            </div>
-        </section>
+       <!-- Carousel Section -->
+<section id="gallery" class="section">
+    <h2>Gallery</h2>
+    <div id="carousel">
+        <figure id="spinner">
+            <img src="averie-woodard-4nulm-JUYFo-unsplash.jpg" alt="Image 1">
+            <img src="brade1.jpg" alt="Image 2">
+            <img src="averie-woodard-4nulm-JUYFo-unsplash.jpg" alt="Image 3">
+            <img src="gustavo-spindula-K2D7muBun1A-unsplash.jpg" alt="Image 4">
+            <img src="pexels-adefemi-adedoyin-517656025-30421101.jpg" alt="Image 5">
+            <img src="brade1.jpg" alt="Image 6">
+            <img src="averie-woodard-4nulm-JUYFo-unsplash.jpg" alt="Image 7">
+            <img src="gustavo-spindula-K2D7muBun1A-unsplash.jpg" alt="Image 8">
+        </figure>
+    </div>
+
+    <!-- Carousel Navigation -->
+    <span style="float:left" class="ss-icon" onclick="galleryspin('-')">&lt;</span>
+    <span style="float:right" class="ss-icon" onclick="galleryspin('+')">&gt;</span>
+</section>
 
         <!-- Reviews Section -->
         <section id="reviews" class="section">
@@ -313,7 +430,7 @@
             <p>Email: braider@example.com</p>
             <p>Phone: +123 456 7890</p>
         </section>
-
+        </div>
     </div>
  <!-- Footer Section -->
  <footer class="bg-dark text-white py-2 mt-5">
@@ -322,7 +439,7 @@
         <p class="mb-2" style="font-size: 0.8rem;">Get the latest updates and news directly in your inbox.</p>
         <form action="/subscribe" method="POST" class="d-flex justify-content-center mb-2">
             <input type="email" name="email" class="form-control w-50 me-2" placeholder="Enter your email" required>
-            <button type="submit" class="btn btn-pink">Subscribe</button>
+            <button class="subscribe-btn" style="background-color: #ff69b4" >Subscribe</button>
         </form>
 
         <!-- Social Media Icons -->
@@ -343,12 +460,12 @@
     </div>
 </footer>
  <!-- Loading Spinner, placed right before the closing body tag -->
-<!-- Spinner -->
-<div id="spinner" class="spinner-container" style="display: none;">
-    <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-</div>
+ <div id="loading-spinner" style="display: none;">
+    <div class="spinner"></div> <!-- Your spinner element -->
+  </div>
+  <div id="loading-text" style="display: none;">
+    Sending Booking...
+  </div>
 
 <!-- Link to Bootstrap JS and Popper (For Bootstrap functionality like tooltips, dropdowns, etc.) -->
 
