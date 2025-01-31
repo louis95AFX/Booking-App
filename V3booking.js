@@ -1,8 +1,10 @@
 const form = document.getElementById('bookingForm');
 document.getElementById('bookingForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Prevent form from submitting the default way
-    // Show loading spinner, overlay, and "Sending Booking..." text
-    document.getElementById('spinner').style.display = 'flex'; // Show spinner
+   
+   // Show loading spinner, overlay, and "Sending Booking..." text
+   document.getElementById('loading-spinner').style.display = 'flex'; 
+   document.getElementById('loading-text').style.display = 'block'; 
     const form = e.target;
 
     // Validate that form fields exist before accessing their values
@@ -48,14 +50,17 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
     .then(response => response.json())
     .then(data => {
         setTimeout(function () {
-        alert("Form Submitted!");
         document.getElementById('spinner').style.display = 'none'; // Hide spinner after submission
     }, 3000); // Replace with your actual API or form submission delay
         // Show appropriate message based on response
         if (data.status === 'success') {
             alert("Booking successfully sent!");
+            closeBookingForm();
         } else {
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('loading-text').style.display = 'none'; // Hide loading text
             alert("There was an issue with your booking.");
+            closeBookingForm();
         }
     })
     .catch(error => {
@@ -67,18 +72,6 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
     });
 });
 
-// Alert function to show feedback messages
-function showAlert(message) {
-    const alertBox = document.getElementById('alert-box');
-    const alertMessage = document.getElementById('alert-message');
-
-    alertMessage.innerText = message;
-    alertBox.classList.add('show');
-
-    setTimeout(() => {
-        alertBox.classList.remove('show');
-    }, 3000);
-}
 
 function closeBookingForm() {
     window.location.href = 'booking.html'; // Redirect to the home page
@@ -125,3 +118,28 @@ $jq(document).ready(function () {
         $jq('#price').text('R' + price);
     });
 });
+
+// JavaScript for Carousel Rotation
+
+var angle = 0;
+
+// Function to manually rotate the images inside the carousel
+function galleryspin(sign) { 
+    var spinner = document.querySelector("#spinner");
+    if (sign === '+') { 
+        angle = angle + 45; 
+    } else { 
+        angle = angle - 45; 
+    }
+    spinner.style.transform = "rotateY(" + angle + "deg)";
+}
+
+// Function to automatically rotate the images inside the carousel
+function autoRotate() {
+    angle += 45; // Rotate 45 degrees at a time
+    var spinner = document.querySelector("#spinner");
+    spinner.style.transform = "rotateY(" + angle + "deg)";
+}
+
+// Set an interval for automatic rotation (e.g., every 3 seconds)
+var autoRotateInterval = setInterval(autoRotate, 3000);  // Adjust the interval time as needed
