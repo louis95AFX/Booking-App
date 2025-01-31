@@ -247,12 +247,12 @@ app.get('/get-bookings', async (req, res) => {
 
 
 // Function to send approval email
-function sendApprovalEmail(email, bookingId) {
+function sendApprovalEmail(email, bookingId, name) {
   const mailOptions = {
     from: 'your-email@gmail.com',
     to: email,
     subject: 'Booking Approved',
-    text: `Dear User,\n\nYour booking with ID: ${bookingId} has been successfully approved. We look forward to seeing you at your scheduled time.\n\nThank you for choosing us!`
+    text: `Dear ${name},\n\nYour booking with Touched By Jess has been approved, your booking ID is: ${bookingId}. We look forward to seeing you at your scheduled time.\n\nThank you for choosing us!`
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -299,18 +299,18 @@ app.post('/approve-booking', async (req, res) => {
       [currentDate, availableDate, bookingId]
     );
 
-    // Fetch user email for notification
-    const emailResult = await pool.query('SELECT email FROM bookings WHERE id = $1', [bookingId]);
-    const email = emailResult.rows[0]?.email;
+    // Fetch user email and name for notification
+    const userResult = await pool.query('SELECT email, name FROM bookings WHERE id = $1', [bookingId]);
+    const { email, name } = userResult.rows[0] || {};
 
-    // Ensure the email exists before sending
-    if (!email) {
-      console.error('No email found for booking ID:', bookingId);
-      return res.status(400).send({ message: 'No email found for the booking.' });
+    // Ensure email and name exist before sending email
+    if (!email || !name) {
+      console.error('No email or name found for booking ID:', bookingId);
+      return res.status(400).send({ message: 'No email or name found for the booking.' });
     }
 
     // Send email to the user who has been approved for the booking
-    sendApprovalEmail(email, bookingId);  // Send email to the approved user
+    sendApprovalEmail(email, bookingId, name);  // Send email to the approved user
 
     // Respond with a success message
     res.status(200).send({ message: 'Booking approved and new available time set.' });
@@ -320,7 +320,6 @@ app.post('/approve-booking', async (req, res) => {
     res.status(500).send({ message: 'Failed to approve booking.' });
   }
 });
-
 
 
 
