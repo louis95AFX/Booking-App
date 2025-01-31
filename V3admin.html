@@ -38,6 +38,18 @@
                 <option value="pending">Pending</option>
             </select>
         </div>
+         <!-- Loading Spinner -->
+         <!-- Loading Overlay -->
+        <div id="loading-overlay" style="display: none; 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background-color: rgba(0, 0, 0, 0.5); z-index: 1000;">
+        <div id="loading-spinner" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <!-- Add a simple spinner (you can replace with your own spinner here) -->
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
 
         <!-- Booking Table -->
         <table class="table table-striped" id="bookingTable">
@@ -120,6 +132,7 @@
         // Function to update the booking status
         async function updateBookingStatus(bookingId, status) {
             try {
+                document.getElementById('loading-spinner').style.display = 'block'; // Show spinner
                 const response = await fetch(`http://localhost:3000/update-booking-status`, {
                     method: 'POST',
                     headers: {
@@ -137,12 +150,15 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Error updating booking status');
-            }
+            } finally {
+            document.getElementById('loading-spinner').style.display = 'none'; // Hide spinner
         }
+    }
     
         // Fetch booking data from the server with status filter
         async function fetchBookings() {
             try {
+                document.getElementById('loading-spinner').style.display = 'block'; // Show spinner
                 const statusFilter = document.getElementById('statusFilter').value; // Get selected filter value
                 const response = await fetch(`http://localhost:3000/get-bookings?status=${statusFilter}`);
                 
@@ -181,12 +197,15 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Error fetching bookings');
-            }
+            } finally {
+            document.getElementById('loading-spinner').style.display = 'none'; // Hide spinner
+        }
         }
     
         // Function to approve a booking
         async function approveBooking(bookingId) {
             try {
+                document.getElementById('loading-spinner').style.display = 'block'; // Show spinner
                 const response = await fetch('http://localhost:3000/approve-booking', {
                     method: 'POST',
                     headers: {
@@ -204,7 +223,9 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Error approving booking');
-            }
+            } finally {
+            document.getElementById('loading-spinner').style.display = 'none'; // Hide spinner
+        }
         }
     
         let bookingToShift = null; // Variable to hold the booking ID that needs to be shifted
