@@ -143,3 +143,6 @@ function autoRotate() {
 
 // Set an interval for automatic rotation (e.g., every 3 seconds)
 var autoRotateInterval = setInterval(autoRotate, 3000);  // Adjust the interval time as needed
+
+// ===================================
+
