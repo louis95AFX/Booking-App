@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Braider Booking Website</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="favicon.ico.png" type="image/x-icon">  
+    <link rel="stylesheet" href="booking.css"> <!-- External CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css">
+    <style>
+        /* Custom Styling for Form */
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+
+        .btn-primary {
+            border-radius: 25px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-close {
+            background-color: transparent;
+            border: none;
+        }
+
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .modal-body {
+            background-color: #f9f9f9;
+        }
+
+        .form-control-file {
+            border-radius: 8px;
+        }
+
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .radio-label {
+            margin-left: 5px;
+        }
+
+        /* Styling for time picker dropdown */
+        .time-picker-dropdown {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .time-picker-dropdown select {
+            width: 48%;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* Custom styles for the buttons */
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        /* Price styling */
+        .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: green;
+        }
+
+        /* More curvy submit button */
+.btn-primary {
+    width: 100%;
+    border-radius: 30px; /* Increased curvature */
+    padding: 12px;
+    font-size: 1rem;
+}
+
+        /* Small Open Appointment Button */
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.875rem;
+            border-radius: 25px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .spinner-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Make sure the spinner appears on top */
+}
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.25rem;
+}
+
+
+    </style>
+</head>
+<body>
+    <div data-aos="fade-up" data-aos-duration="1000">
+    <!-- Header -->
+    <header>
+        <h1>Braider's Booking Service</h1>
+        <nav>
+            <a href="#services">Services</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#reviews">Reviews</a>
+            <a href="#contact">Contact</a>
+            <a href="admin.html" class="admin-link">
+                <i class="fas fa-user-shield" style="font-size: 1.5rem; color: #333;"></i>
+            </a>
+        </nav>
+    </header>
+
+<!-- Custom Animated Alert -->
+<div id="alert-box" class="alert-box">
+    <span id="alert-message">Booking Sent Successfully!</span>
+</div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Services Section -->
+        <section id="services" class="section">
+            <h2>Our Services</h2>
+            <p>We offer professional braiding services tailored to your style and preferences. Book your appointment today!</p>
+            <ul>
+                <li>Box Braids</li>
+                <li>Cornrows</li>
+                <li>Twists</li>
+                <li>Crochet Styles</li>
+            </ul>
+            <div class="cta">
+                <button onclick="openBookingForm()">Book Now</button>
+            </div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal">
+                Open Appointment Form
+            </button>
+        </section>
+
+<!-- =========== -->
+        <!-- Modal -->
+        <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="appointmentModalLabel">Appointment Form</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="bookingForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Cellphone Number</label>
+                                <input type="tel" class="form-control" id="cell" name="cell" placeholder="Enter your cellphone number">
+                            </div>
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Select Date</label>
+                                <input type="text" class="form-control datepicker" id="date" name="date" placeholder="Choose a date">
+                            </div>
+                            <div class="mb-3">
+                                <label for="time" class="form-label">Select Time</label>
+                                <div class="time-picker-dropdown">
+                                    <select id="hour" name="hour" class="form-control">
+                                        <option value="00">00</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                    </select>
+                                    <select id="minute" name="minute" class="form-control">
+                                        <option value="00">00</option>
+                                        <option value="15">15</option>
+                                        <option value="30">30</option>
+                                        <option value="45">45</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="hairstyle" class="form-label">Hairstyle</label>
+                                <select class="form-control" id="service" name="service">
+                                    <option value="boxBraids">Box Braids</option>
+                                    <option value="cornrows">Cornrows</option>
+                                    <option value="twistBraids">Twist Braids</option>
+                                    <option value="fauxLocs">Faux Locs</option>
+                                    <option value="knotlessBraids">Knotless Braids</option>
+                                    <option value="senegaleseTwists">Senegalese Twists</option>
+                                    <option value="dreadlocks">Dreadlocks</option>
+                                </select>
+                                
+                            </div>
+                            <div class="mb-3">
+                                <label for="color" class="form-label">Select Color</label>
+                                <select class="form-control" id="color" name="color">
+                                    <option value="black">Black</option>
+                                    <option value="brown">Brown</option>
+                                    <option value="blonde">Blonde</option>
+                                    <option value="red">Red</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="pink">Pink</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="white">White</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Price</label>
+                                <div id="price" class="price">R500</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="fileUpload" class="form-label">Upload File</label>
+                                <input type="file" class="form-control" id="fileUpload" name="paymentProof">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Select Appointment Type</label><br>
+                                <input type="radio" id="walkIn" name="appointmentType" value="walkIn" checked>
+                                <label for="walkIn" class="radio-label">Walk-in</label><br>
+                                <input type="radio" id="houseCall" name="appointmentType" value="houseCall">
+                                <label for="houseCall" class="radio-label">House Call</label>
+                            </div>
+                            <div class="btn-container">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ==================== -->
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="section">
+            <h2>Gallery</h2>
+            <div class="gallery">
+                <img src="brade1.jpg" alt="Booking Image">
+                <img src="averie-woodard-4nulm-JUYFo-unsplash.jpg" alt="Braiding Style 2">
+                <img src="gustavo-spindula-K2D7muBun1A-unsplash.jpg" alt="Braiding Style 3">
+            </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section id="reviews" class="section">
+            <h2>Client Reviews</h2>
+            <p>"Absolutely amazing service! I love my new look." - Jane Doe</p>
+            <p>"Highly professional and friendly. Will book again!" - Mary Smith</p>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h2>Contact Us</h2>
+            <p>Email: braider@example.com</p>
+            <p>Phone: +123 456 7890</p>
+        </section>
+
+    </div>
+ <!-- Footer Section -->
+ <footer class="bg-dark text-white py-2 mt-5">
+    <div class="container text-center">
+        <h3 class="mb-2" style="font-size: 1.2rem;">Subscribe to Our Newsletter</h3>
+        <p class="mb-2" style="font-size: 0.8rem;">Get the latest updates and news directly in your inbox.</p>
+        <form action="/subscribe" method="POST" class="d-flex justify-content-center mb-2">
+            <input type="email" name="email" class="form-control w-50 me-2" placeholder="Enter your email" required>
+            <button type="submit" class="btn btn-pink">Subscribe</button>
+        </form>
+
+        <!-- Social Media Icons -->
+        <div class="social-icons mb-2">
+            <a href="https://facebook.com" target="_blank" class="fab fa-facebook" style="font-size: 1.2rem;"></a>
+            <a href="https://twitter.com" target="_blank" class="fab fa-twitter" style="font-size: 1.2rem;"></a>
+            <a href="https://instagram.com" target="_blank" class="fab fa-instagram" style="font-size: 1.2rem;"></a>
+        </div>
+
+        <!-- Useful Footer Links -->
+        <div class="footer-links">
+            <ul class="list-unstyled">
+                <li><a href="/privacy-policy" style="font-size: 0.8rem;">Privacy Policy</a></li>
+                <li><a href="/terms-of-service" style="font-size: 0.8rem;">Terms of Service</a></li>
+                <li><a href="/contact" style="font-size: 0.8rem;">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+ <!-- Loading Spinner, placed right before the closing body tag -->
+<!-- Spinner -->
+<div id="spinner" class="spinner-container" style="display: none;">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<!-- Link to Bootstrap JS and Popper (For Bootstrap functionality like tooltips, dropdowns, etc.) -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script src="booking.js"></script> <!-- External JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+    </div>
+</body>
+</html>
