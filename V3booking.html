@@ -210,10 +210,9 @@ div#carousel {
         border-bottom: none; 
         line-height: 0;
     }
-
     div#carousel ~ span:hover { color: #888; cursor: pointer; }
-    
 
+    
     </style>
 </head>
 <body>
@@ -240,21 +239,30 @@ div#carousel {
     <div class="container">
         <!-- Services Section -->
         <section id="services" class="section">
-            <h2>Our Services</h2>
-            <p>We offer professional braiding services tailored to your style and preferences. Book your appointment today!</p>
-            <ul>
-                <li>Box Braids</li>
-                <li>Cornrows</li>
-                <li>Twists</li>
-                <li>Crochet Styles</li>
-            </ul>
-            <div class="button-container">
-                <button type="button" class="custom-btn" data-bs-toggle="modal" data-bs-target="#appointmentModal">
-                    BOOK NOW
-                </button>
+            <div class="gallery">
+                <ul class="cards">
+                    <li>0</li>
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                </ul>
+                <div class="actions">
+                    <button class="prev">Prev</button>
+                    <button class="next">Next</button>
+                </div>
             </div>
             
-        </section>
+            <div class="button-container">
+              <button type="button" class="custom-btn" data-bs-toggle="modal" data-bs-target="#appointmentModal">
+                BOOK NOW
+              </button>
+            </div>
+          </section>
+          
 
 <!-- =========== -->
         <!-- Modal -->
