@@ -246,8 +246,24 @@ app.get('/get-bookings', async (req, res) => {
 
 
 
+// Function to send approval email
+function sendApprovalEmail(email, bookingId) {
+  const mailOptions = {
+    from: 'your-email@gmail.com',
+    to: email,
+    subject: 'Booking Approved',
+    text: `Dear User,\n\nYour booking with ID: ${bookingId} has been successfully approved. We look forward to seeing you at your scheduled time.\n\nThank you for choosing us!`
+  };
 
-// Endpoint to approve a booking and adjust the time
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+}
+
 app.post('/approve-booking', async (req, res) => {
   const { bookingId, currentBookingTime, newAvailableTime } = req.body;
   console.log(`Received bookingId: ${bookingId}, currentBookingTime: ${currentBookingTime}, newAvailableTime: ${newAvailableTime}`);
@@ -268,10 +284,10 @@ app.post('/approve-booking', async (req, res) => {
     console.log(`Checking availability between: ${currentDate} and ${availableDate}`);
 
     // Check if there are any approved bookings that conflict with the new available time
-    const result = await pool.query('SELECT * FROM bookings WHERE approved = TRUE AND next_available_time BETWEEN $1 AND $2', [
-      currentDate, // Start time of the booking (current booking time)
-      availableDate // End time of the booking (new available time)
-    ]);
+    const result = await pool.query(
+      'SELECT * FROM bookings WHERE approved = TRUE AND next_available_time BETWEEN $1 AND $2',
+      [currentDate, availableDate]
+    );
 
     if (result.rows.length > 0) {
       return res.status(400).send({ message: 'This time window overlaps with another approved booking.' });
@@ -282,6 +298,19 @@ app.post('/approve-booking', async (req, res) => {
       'UPDATE bookings SET approved = TRUE, booking_time = $1, next_available_time = $2 WHERE id = $3',
       [currentDate, availableDate, bookingId]
     );
+
+    // Fetch user email for notification
+    const emailResult = await pool.query('SELECT email FROM bookings WHERE id = $1', [bookingId]);
+    const email = emailResult.rows[0]?.email;
+
+    // Ensure the email exists before sending
+    if (!email) {
+      console.error('No email found for booking ID:', bookingId);
+      return res.status(400).send({ message: 'No email found for the booking.' });
+    }
+
+    // Send email to the user who has been approved for the booking
+    sendApprovalEmail(email, bookingId);  // Send email to the approved user
 
     // Respond with a success message
     res.status(200).send({ message: 'Booking approved and new available time set.' });
