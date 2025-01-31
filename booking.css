@@ -8,7 +8,7 @@ body {
 }
 
 header {
-    background-color: #ffb6c1;
+    background-color: #ff69b4;
     padding: 20px;
     text-align: center;
 }
@@ -49,23 +49,35 @@ nav a {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.cta {
-    text-align: center;
-    margin: 20px 0;
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh; /* Centers it vertically */
 }
 
-.cta button {
-    padding: 10px 20px;
+.custom-btn {
+    padding: 12px 24px; /* Slightly larger */
     font-size: 18px;
-    background-color: #ff69b4;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ff69b4, #ff1493);
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.15);
 }
 
-.cta button:hover {
-    background-color: #ff1493;
+.custom-btn:hover {
+    background: linear-gradient(135deg, #ff1493, #ff69b4);
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.custom-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 footer {
@@ -75,64 +87,187 @@ footer {
     padding: 10px;
 }
 
-/* Form Styling */
-#bookingForm {
-    background-color: #fff;
+.newsletter-subscription {
+    background-color: rgba(0, 0, 0, 0.7); /* Transparent black */
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    max-width: 100%;
-}
-
-#bookingForm h2 {
-    margin-bottom: 20px;
     text-align: center;
-    color: #ff69b4;
+    margin-top: 30px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .newsletter-subscription h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  
+  .newsletter-subscription p {
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+  
+  .newsletter-subscription form {
+    display: inline-block;
+  }
+  
+  .newsletter-subscription input[type="email"] {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+  }
+  
+  .newsletter-subscription button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .newsletter-subscription button:hover {
+    background-color: #0056b3;
+  }
+  
+   /* Custom pink button */
+   .btn-pink {
+    background-color: #ff69b4; /* Pink color */
+    border-color: #ff69b4;
+  }
+
+  .btn-pink:hover {
+    background-color: #ff1493; /* Darker pink on hover */
+    border-color: #ff1493;
+  }
+  footer {
+    background-color: rgba(0, 0, 0, 0.7); /* Transparent black */
+  }
+  .social-icons a {
+    color: #fff;
+    font-size: 1.5rem;
+    margin: 0 10px;
+  }
+  .social-icons a:hover {
+    color: #ff69b4; /* Pink color on hover */
+  }
+  .footer-links a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .footer-links a:hover {
+    color: #ff69b4; /* Pink color on hover */
+  }
+
+   /* Custom Loading Spinner Styles */
+   @keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
-#bookingForm label {
+#loading-spinner {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1999;
+    width: 60px;
+    height: 60px;
+    border: 8px solid #f3f3f3; 
+    border-top: 8px solid #ff69b4; 
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+    margin-right: 20px;
+}
+
+#loading-text {
+    display: none;
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1999;
+    font-size: 1.2rem;
+    color: #ff69b4; 
     font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
 }
 
-#bookingForm input, #bookingForm select {
+/* ================================================= */
+
+
+
+
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+
+/* Form Elements */
+label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+input[type="date"],
+input[type="time"] {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
+    margin: 8px 0;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 4px;
     font-size: 16px;
+    background-color: #f9f9f9;
     box-sizing: border-box;
 }
 
-#bookingForm input[type="date"] {
-    padding-left: 10px;
-}
-
-#bookingForm button {
-    width: 48%;
-    padding: 10px;
-    background-color: #ff69b4;
-    color: #fff;
+button.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #28a745; /* Green color */
+    color: white;
+    font-size: 18px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.submit-btn:hover {
+    background-color: #218838;
+}
+
+.alert {
+    display: none;
+    background-color: #f44336; /* Red */
+    color: white;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.alert.show {
+    display: block;
+}
+
+#noResultsMessage {
+    margin-top: 20px;
+    text-align: center;
     font-size: 16px;
-    margin-top: 10px;
-    display: inline-block;
+}
+/* ============================================= */
+
+body {
+  margin: 0;
+
+  background: linear-gradient(to bottom, #333333  25%, white 38%);
 }
 
-#bookingForm button:hover {
-    background-color: #ff1493;
-}
-
-#bookingForm button[type="button"] {
-    background-color: #ddd;
-    color: #333;
-}
-
-#bookingForm button[type="button"]:hover {
-    background-color: #ccc;
-}
