@@ -277,5 +277,51 @@ function autoRotate() {
 
 // Set an interval for automatic rotation (e.g., every 3 seconds)
 var autoRotateInterval = setInterval(autoRotate, 3000);  // Adjust the interval time as needed
+ // Get modal and button elements
+ var modal = document.getElementById('adminModal');
+ var btn = document.getElementById('adminAccessBtn');
+ var span = document.getElementsByClassName('close')[0];
+
+ // Open the modal when the "Access Admin" button is clicked
+ btn.onclick = function() {
+     modal.style.display = 'block';
+ }
+
+ // Close the modal when the "X" button is clicked
+ span.onclick = function() {
+     modal.style.display = 'none';
+ }
+
+ // Close the modal if the user clicks outside of it
+ window.onclick = function(event) {
+     if (event.target == modal) {
+         modal.style.display = 'none';
+     }
+ }
+
+ // Handle the login form submission
+ fetch('http://localhost:3000/admin')
+    .then(response => response.json())
+    .then(data => {
+        var adminUsername = data.adminUsername;
+        var adminPassword = data.adminPassword;
+
+        // Use the values for validation
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Validate credentials
+            if (username === adminUsername && password === adminPassword) {
+                window.location.href = "admin.html";
+            } else {
+                alert("Invalid username or password!");
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching admin credentials:', error));
+
 
 // ======7BGN8SW8LBQBMG3MAC7MZ9EC 
