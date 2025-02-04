@@ -73,6 +73,140 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
 });
 
 
+// Booking Form Submit Listener (your existing code)
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();  // Prevent form from submitting the default way
+    // Your existing booking form submission logic
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("newsletter-form");
+
+    if (!form) {
+        console.error("❌ Form element not found!");
+        return;
+    }
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const emailInput = document.getElementById("email");
+
+        if (!emailInput) {
+            console.error("❌ Email input field not found!");
+            return;
+        }
+
+        console.log("Email input element:", emailInput);
+        console.log("Email value before trimming:", emailInput.value);
+
+        const email = emailInput.value.trim(); // Remove whitespace
+
+        console.log("Email value after trimming:", email);
+
+        if (!email) {
+            // alert("❌ Please enter a valid email.");
+            alert("❌ News letters currently not available");
+            return;
+        }
+
+        try {
+            const response = await fetch("/subscribe-newsletter", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+
+            if (response.ok) {
+                emailInput.value = ""; // Clear input field
+                console.log("✅ Email cleared successfully.");
+            }
+
+        } catch (error) {
+            console.error("❌ Error submitting form:", error);
+            alert("Something went wrong. Please try again.");
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const reviews = [
+        { name: "Jane Doe", text: "Absolutely amazing service! I love my new look.", rating: 5 },
+        { name: "Mary Smith", text: "Highly professional and friendly. Will book again!", rating: 5 },
+        { name: "John Williams", text: "Great experience! Highly recommend.", rating: 4 }
+    ];
+
+    const reviewContainer = document.getElementById("review-container");
+
+    function generateStars(rating) {
+        return "⭐".repeat(rating);
+    }
+
+    reviews.forEach(review => {
+        const reviewCard = document.createElement("div");
+        reviewCard.classList.add("review-card");
+
+        reviewCard.innerHTML = `
+            <p class="review-text">"${review.text}"</p>
+            <div class="review-author">
+                <strong>${review.name}</strong> ${generateStars(review.rating)}
+            </div>
+        `;
+
+        reviewContainer.appendChild(reviewCard);
+    });
+});
+
+// Ensure the form is only handled once
+document.getElementById('contact-form').addEventListener("submit", async function(event) {
+    event.preventDefault(); // Prevent the form from submitting the traditional way
+
+    const form = event.target; // Get the form that was submitted
+
+    const name = form.name.value;
+    const email = form.email.value;
+    const message = form.message.value;
+
+    console.log("Name:", name, "Email:", email, "Message:", message); // Check if values are populated
+
+    if (!name || !email || !message) {
+        alert("All fields are required.");
+        return;
+    }
+
+    const formData = {
+        name: name,
+        email: email,
+        message: message,
+    };
+
+    try {
+         const response = await fetch("http://localhost:3000/contact", { // Update with the actual endpoint URL
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(data.message); // Show success message
+            form.reset(); // Reset the form after submission
+        } else {
+            alert(data.message); // Show error message
+        }
+    } catch (error) {
+        console.error('❌ Error submitting form:', error);
+        alert('Something went wrong. Please try again later.');
+    }
+});
+
+
 function closeBookingForm() {
     window.location.href = 'booking.html'; // Redirect to the home page
 }
@@ -144,5 +278,4 @@ function autoRotate() {
 // Set an interval for automatic rotation (e.g., every 3 seconds)
 var autoRotateInterval = setInterval(autoRotate, 3000);  // Adjust the interval time as needed
 
-// ===================================
-
+// ======7BGN8SW8LBQBMG3MAC7MZ9EC 
