@@ -325,6 +325,78 @@ app.post('/shift-booking-dates', async (req, res) => {
   }
 });
 
+app.post('/subscribe-newsletter', async (req, res) => {
+  try {
+      const { email } = req.body;
+
+      if (!email) {
+          return res.status(400).json({ status: "error", message: "❌ Email is required" });
+      }
+
+      const checkQuery = `SELECT * FROM newsletters WHERE email = $1`;
+      const { rows } = await pool.query(checkQuery, [email]);
+
+      if (rows.length > 0) {
+          return res.status(400).json({ status: "error", message: "⚠️ Email is already subscribed" });
+      }
+
+      const insertQuery = `INSERT INTO newsletters (email) VALUES ($1) RETURNING *`;
+      const result = await pool.query(insertQuery, [email]);
+
+      console.log("✅ New Newsletter Subscription:", result.rows[0]);
+
+      // Send confirmation email
+      const mailOptions = {
+          from: "carterprince95@gmail.com",
+          to: email,
+          subject: "✅ Newsletter Subscription Successful",
+          text: "Thank you for subscribing to our newsletter! You will receive updates soon."
+      };
+
+      await transporter.sendMail(mailOptions);
+      console.log("📧 Confirmation email sent to:", email);
+
+      return res.status(200).json({ status: "success", message: "✅ Successfully subscribed!" });
+
+  } catch (error) {
+      console.error(`❌ Error subscribing to newsletter: ${error.message}`);
+      return res.status(500).json({ status: "error", message: "Internal Server Error" });
+  }
+});
+
+// POST endpoint to receive the form data and send an email
+app.post('/contact', async (req, res) => {
+  const { name, email, message } = req.body;
+
+  // Validate input
+  if (!name || !email || !message) {
+    return res.status(400).json({ status: 'error', message: 'All fields are required.' });
+  }
+
+  const mailOptions = {
+    from: email, // Sender's email
+    to: 'carterprince95@gmail.com', // Your email address where you want to receive messages
+    subject: 'New Contact Form Submission',
+    text: `
+      You have received a new message from ${name}:
+
+      Email: ${email}
+      Message: ${message}
+    `,
+  };
+
+  try {
+    // Send the email
+    await transporter.sendMail(mailOptions);
+    console.log('📧 Email sent successfully:', mailOptions);
+
+    // Respond back to the client
+    res.status(200).json({ status: 'success', message: 'Your message has been sent successfully!' });
+  } catch (error) {
+    console.error('❌ Error sending email:', error);
+    res.status(500).json({ status: 'error', message: 'Internal server error. Please try again later.' });
+  }
+});
 
 
 // Start the Server
