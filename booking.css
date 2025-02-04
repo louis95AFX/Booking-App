@@ -757,3 +757,93 @@ div#carousel ~ span:hover { color: #888; cursor: pointer; }
   color: #007BFF;
   font-weight: bold;
 }
+/* =============================================== */
+
+ /* Modal styles */
+ .modalv4 {
+  display: none; 
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding-top: 60px;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.7); /* Transparent black background */
+  transition: opacity 0.3s ease;
+
+
+}
+
+.modal-contentv4 {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 400px;
+  animation: modalIn 0.3s ease-in-out;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Modal title */
+h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Form input fields */
+.form-input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+.form-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #FF69B4; /* Pink background for the submit button */
+  color: white;
+  cursor: pointer;
+  width: 100%;
+}
+
+.form-btn:hover {
+  background-color: #FF1493; /* Darker pink when hovered */
+}
+
+/* Animation for modal */
+@keyframes modalIn {
+  from {
+      opacity: 0;
+      transform: translateY(-50px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
