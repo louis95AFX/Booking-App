@@ -26,11 +26,26 @@
             <a href="#gallery">Gallery</a>
             <a href="#reviews">Reviews</a>
             <a href="#contact">Contact</a>
-            <a href="admin.html" class="admin-link">
+            <a href="#" class="admin-link" id="adminAccessBtn">
                 <i class="fas fa-user-shield" style="font-size: 1.5rem; color: #333;"></i>
             </a>
+             
         </nav>
     </header>
+
+    <!-- The Modal -->
+    <div id="adminModal" class="modalv4">
+        <div class="modal-contentv4">
+            <span class="close">&times;</span>
+            <h2>Admin Login</h2>
+            <form id="loginForm">
+                <input type="text" id="username" class="form-input" placeholder="Username" required>
+                <input type="password" id="password" class="form-input" placeholder="Password" required>
+                <button type="submit" class="form-btn">Login</button>
+            </form>
+        </div>
+    </div>
+    
 
     <div id="alert-box" class="alert" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
         <span id="alert-message"></span>
@@ -266,12 +281,12 @@
             <div class="contact-info">
                 <div class="contact-item">
                     <i class="fas fa-envelope"></i>
-                    <p>Email: <a href="mailto:braider@example.com">braider@example.com</a></p>
+                    <p>Email: <a href="thandiwejessica30@icloud.com">thandiwejessica30@icloud.com</a></p>
                 </div>
                 
                 <div class="contact-item">
                     <i class="fas fa-phone-alt"></i>
-                    <p>Phone: <a href="tel:+1234567890">+123 456 7890</a></p>
+                    <p>Phone: <a href="tel:+1234567890">+27 68 121 9213</a></p>
                 </div>
             </div>
             
@@ -301,16 +316,15 @@
         </form>
         <!-- Social Media Icons -->
         <div class="social-icons mb-2">
-            <a href="https://www.tiktok.com" target="_blank" class="fab fa-tiktok" style="font-size: 1.2rem;"></a>
-            <a href="https://instagram.com" target="_blank" class="fab fa-instagram" style="font-size: 1.2rem;"></a>
+            <a href="https://www.tiktok.com/@touched_by_jess?lang=en" target="_blank" class="fab fa-tiktok" style="font-size: 1.2rem;"></a>
+            <a href="https://www.instagram.com/touched_by_jess/" target="_blank" class="fab fa-instagram" style="font-size: 1.2rem;"></a>
         </div>
 
         <!-- Useful Footer Links -->
         <div class="footer-links">
             <ul class="list-unstyled">
-                <li><a href="/privacy-policy" style="font-size: 0.8rem;">Privacy Policy</a></li>
-                <li><a href="/terms-of-service" style="font-size: 0.8rem;">Terms of Service</a></li>
-                <li><a href="/contact" style="font-size: 0.8rem;">Contact Us</a></li>
+                <li><a href="privacy.html" style="font-size: 0.8rem;">Privacy Policy</a></li>
+                <li><a href="terms-of-service.html" style="font-size: 0.8rem;">Terms of Service</a></li>
             </ul>
         </div>
     </div>
