@@ -115,12 +115,20 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+const twilio = require('twilio');
+
+// Load credentials 
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const twilioWhatsAppNumber = process.env.TWILIO_WHATSAPP_NUMBER;
+
+const twilioClient = new twilio(accountSid, authToken);
+
 app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
   try {
     console.log("Received booking data:", req.body);
 
     const { name, email, cell, service, color, date, time, price, serviceType } = req.body;
-
 
     // Check if an approved booking exists for this date and time
     const checkQuery = `SELECT * FROM bookings WHERE date = $1 AND time = $2 AND approved = TRUE`;
@@ -130,37 +138,27 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       return res.status(400).json({ status: 'error', message: '❌ This slot is already booked!' });
     }
 
-    // ✅ Define the query and values BEFORE executing it
+    // Insert booking into the database
     const query = `
       INSERT INTO bookings (name, email, cell, date, time)
       VALUES ($1, $2, $3, $4, $5)
-      RETURNING *;  -- Return inserted row
+      RETURNING *;
     `;
-
     const values = [name, email, cell, date, time];
 
-    // ✅ Use pool.query instead of db.query
-    pool.query(query, values, (err, result) => {
-      if (err) {
-        console.error("❌ Database error:", err);
-        return res.status(500).json({ status: "error", message: "Database error" });
-      }
-      console.log("✅ Booking added to database:", result.rows[0]);
-      
-      // Proceed with sending email after successful DB insert
-    });
+    const result = await pool.query(query, values);
+    console.log("✅ Booking added to database:", result.rows[0]);
 
-    // ✅ Check if the file is uploaded
+    // Check if payment proof is uploaded
     if (!req.file) {
       return res.status(400).json({ status: 'error', message: '❌ No payment proof uploaded.' });
     }
+    const paymentProof = req.file;
 
-    const paymentProof = req.file; // This will be the uploaded file
-
-    // ✅ Email notification for the booking
+    // Send email notification to admin
     const mailOptions = {
       from: emailUser,
-      to: 'carterprince95@gmail.com',  // Change to recipient email
+      to: 'carterprince95@gmail.com', // Change to recipient email
       subject: '📅 New Booking Request',
       text: `New Booking Request:
       - Name: ${name}
@@ -174,24 +172,58 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       - Service Type: ${serviceType}`,
       attachments: [
         {
-          filename: paymentProof.originalname,  // The original file name
-          path: paymentProof.path  // The path to the uploaded file
+          filename: paymentProof.originalname,
+          path: paymentProof.path
         }
       ]
     };
 
-    // ✅ Send email
     console.log('Sending email...');
     const info = await transporter.sendMail(mailOptions);
     console.log('✅ Email sent successfully:', info.response);
 
-    // ✅ Respond to the client with a success message
-    res.status(200).json({ status: 'success', message: "✅ Booking email sent successfully!" });
+    // Send WhatsApp message to user
+    const whatsappMessage = `Hello ${name},\n\nYour booking for ${service} on ${date} at ${time} has been received. ✅\n\nWe'll notify you once it's approved. Thank you!`;
+    
+    const formatPhoneNumber = (cell) => {
+      // Remove spaces and dashes
+      let cleanNumber = cell.replace(/\s|-/g, '');
+    
+      // If number already starts with '+', assume it's correct
+      if (cleanNumber.startsWith('+')) {
+        return cleanNumber;
+      }
+    
+      // If number starts with '0', assume it's local and replace with +27 (default for SA)
+      if (cleanNumber.startsWith('0')) {
+        return '+27' + cleanNumber.substring(1);
+      }
+    
+      // If the number is invalid, return null (so we can handle it)
+      return null;
+    };
+    
+    const userPhoneNumber = formatPhoneNumber(cell);
+    
+    if (!userPhoneNumber) {
+      console.error('❌ Invalid phone number:', cell);
+      return res.status(400).json({ status: 'error', message: 'Invalid phone number format. Please use an international format.' });
+    }
+    
+    twilioClient.messages.create({
+      from: twilioWhatsAppNumber,
+      to: `whatsapp:${userPhoneNumber}`, 
+      body: whatsappMessage
+    }).then(message => {
+      console.log('✅ WhatsApp message sent:', message.sid);
+    }).catch(error => {
+      console.error('❌ Error sending WhatsApp message:', error.message);
+    });
+    
+    res.status(200).json({ status: 'success', message: "✅ Booking confirmed. Email & WhatsApp notification sent!" });
 
   } catch (error) {
-    console.error(`❌ Error sending email: ${error.message}`);
-    
-    // ✅ Respond to the client with an error message
+    console.error(`❌ Error processing booking: ${error.message}`);
     res.status(500).json({ status: 'error', message: `Internal Server Error: ${error.message}` });
   }
 });
