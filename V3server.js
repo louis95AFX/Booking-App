@@ -158,7 +158,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     // Send email notification to admin
     const mailOptions = {
       from: emailUser,
-      to: 'carterprince95@gmail.com', // Change to recipient email
+      to: '	thandiwejessica30@icloud.com', // Change to recipient email
       subject: '📅 New Booking Request',
       text: `New Booking Request:
       - Name: ${name}
@@ -347,7 +347,7 @@ app.post('/subscribe-newsletter', async (req, res) => {
 
       // Send confirmation email
       const mailOptions = {
-          from: "carterprince95@gmail.com",
+          from: "thandiwejessica30@icloud.com",
           to: email,
           subject: "✅ Newsletter Subscription Successful",
           text: "Thank you for subscribing to our newsletter! You will receive updates soon."
@@ -375,7 +375,7 @@ app.post('/contact', async (req, res) => {
 
   const mailOptions = {
     from: email, // Sender's email
-    to: 'carterprince95@gmail.com', // Your email address where you want to receive messages
+    to: '	thandiwejessica30@icloud.com', // Your email address where you want to receive messages
     subject: 'New Contact Form Submission',
     text: `
       You have received a new message from ${name}:
@@ -398,6 +398,19 @@ app.post('/contact', async (req, res) => {
   }
 });
 
+
+// Access the environment variables
+const adminUsername = process.env.ADMIN_USERNAME;
+const adminPassword = process.env.ADMIN_PASSWORD;
+
+// Send these variables to the front-end, either via API or embedded in HTML
+// Example: Serve the values in HTML or a response
+app.get('/admin', (req, res) => {
+    res.json({
+        adminUsername: adminUsername,
+        adminPassword: adminPassword
+    });
+});
 
 // Start the Server
 const port = process.env.PORT || 3000;
