@@ -6,19 +6,21 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
    document.getElementById('loading-spinner').style.display = 'flex'; 
    document.getElementById('loading-text').style.display = 'block'; 
     const form = e.target;
+    
 
     // Validate that form fields exist before accessing their values
     const name = form.name ? form.name.value : '';
     const email = form.email ? form.email.value : '';
     const cell = form.cell ? form.cell.value : '';
     const service = form.service ? form.service.value : '';
+    const size = form.size ? form.size.value : '';
     const color = form.color ? form.color.value : '';
     const date = form.date ? form.date.value : '';
     const hour = form.hour ? form.hour.value : '';
     const minute = form.minute ? form.minute.value : '';
     const time = `${hour}:${minute}`;
-    const price = form.price ? form.price.value : '';
-    const serviceType = form.serviceType ? form.serviceType.value : '';
+    const price = document.getElementById('price') ? document.getElementById('price').innerText : '';
+    const appointmentType = form.appointmentType ? form.appointmentType.value : '';
     const paymentProof = document.getElementById('fileUpload') ? document.getElementById('fileUpload').files[0] : null;
 
     // Check if payment proof exists
@@ -35,11 +37,12 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
     formData.append('email', email);
     formData.append('cell', cell);
     formData.append('service', service);
+    formData.append('size', size);
     formData.append('color', color);
     formData.append('date', date);
     formData.append('time', time);
     formData.append('price', price);
-    formData.append('serviceType', serviceType);
+    formData.append('appointmentType', appointmentType);
     formData.append('paymentProof', paymentProof);
 
     // Send the form data using Fetch API
@@ -221,36 +224,46 @@ $jq(document).ready(function () {
     });
 
     // Update Price dynamically based on selected hairstyle
-    $jq('#service').change(function() {
-        var price = 500; // Default price
-
-        switch($jq(this).val()) {
-            case 'boxBraids':
-                price = 500;
-                break;
-            case 'cornrows':
-                price = 400;
-                break;
-            case 'twistBraids':
-                price = 650;
-                break;
-            case 'fauxLocs':
-                price = 700;
-                break;
-            case 'knotlessBraids':
-                price = 800;
-                break;
-            case 'senegaleseTwists':
-                price = 650;
-                break;
-            case 'dreadlocks':
-                price = 700;
-                break;
+    $jq(document).ready(function() {
+        function updatePrice() {
+            var basePrices = {
+                'boxBraids': 500,
+                'cornrows': 400,
+                'twistBraids': 650,
+                'fauxLocs': 700,
+                'knotlessBraids': 800,
+                'senegaleseTwists': 650,
+                'dreadlocks': 700
+            };
+    
+            var sizePrices = {
+                'boxBraids': { 'small': 100, 'smedium': 150, 'medium': 200, 'large': 300, 'jumbo': 400 },
+                'cornrows': { 'small': 80, 'smedium': 150, 'medium': 160, 'large': 240, 'jumbo': 400 },
+                'twistBraids': { 'small': 90, 'smedium': 150, 'medium': 180, 'large': 270, 'jumbo': 400 },
+                'fauxLocs': { 'small': 70, 'smedium': 130, 'medium': 140, 'large': 210, 'jumbo': 400 }, // Added 'smedium'
+                'knotlessBraids': { 'small': 120, 'smedium': 150, 'medium': 220, 'large': 320, 'jumbo': 400 },
+                'senegaleseTwists': { 'small': 110, 'smedium': 150, 'medium': 210, 'large': 310, 'jumbo': 400 },
+                'dreadlocks': { 'small': 95, 'smedium': 150, 'medium': 190, 'large': 285, 'jumbo': 400 }
+            };
+    
+            var selectedHairstyle = $jq('#service').val();
+            var selectedSize = $jq('#size').val();
+    
+            var basePrice = basePrices[selectedHairstyle] || 500;
+            var sizePrice = (sizePrices[selectedHairstyle] && sizePrices[selectedHairstyle][selectedSize]) || 0;
+    
+            // Update the displayed price
+            var totalPrice = basePrice + sizePrice;
+            $jq('#price').text('R' + totalPrice);
         }
-
-        // Dynamically update the price displayed
-        $jq('#price').text('R' + price);
+    
+        // Trigger price update when hairstyle or size changes
+        $jq('#service, #size').change(updatePrice);
+    
+        // Initialize price on page load
+        updatePrice();
     });
+    
 });
 
 // JavaScript for Carousel Rotation
@@ -298,6 +311,13 @@ var autoRotateInterval = setInterval(autoRotate, 3000);  // Adjust the interval 
          modal.style.display = 'none';
      }
  }
+ function showLoaderAd() {
+    document.getElementById("loading-overlay").style.display = "block";
+}
+
+function hideLoaderAd() {
+    document.getElementById("loading-overlay").style.display = "none";
+}
 
  // Handle the login form submission
  fetch('http://localhost:3000/admin')
@@ -309,12 +329,16 @@ var autoRotateInterval = setInterval(autoRotate, 3000);  // Adjust the interval 
         // Use the values for validation
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            showLoaderAd();
+        document.getElementById('loading-spinner').style.display = 'block'; // Show spinner
 
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
 
             // Validate credentials
             if (username === adminUsername && password === adminPassword) {
+                hideLoaderAd();
+        document.getElementById('loading-spinner').style.display = 'none'; // Hide spinner
                 window.location.href = "admin.html";
             } else {
                 alert("Invalid username or password!");
@@ -323,5 +347,21 @@ var autoRotateInterval = setInterval(autoRotate, 3000);  // Adjust the interval 
     })
     .catch(error => console.error('Error fetching admin credentials:', error));
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const houseCallRadio = document.getElementById("houseCall");
+        const walkInRadio = document.getElementById("walkIn");
+        const houseCallWarning = document.getElementById("houseCallWarning");
+
+        if (houseCallRadio && walkInRadio && houseCallWarning) { // Ensure elements exist
+            houseCallRadio.addEventListener("change", function () {
+                houseCallWarning.style.display = "block";
+                // alert("Additional charges will apply for Uber transportation to your home.");
+            });
+
+            walkInRadio.addEventListener("change", function () {
+                houseCallWarning.style.display = "none";
+            });
+        }
+    });
 
 // ======7BGN8SW8LBQBMG3MAC7MZ9EC 
