@@ -45,7 +45,10 @@
             </form>
         </div>
     </div>
-    
+    <div id="loading-overlay">
+        <div id="loading-spinner">
+        </div>
+    </div>
 
     <div id="alert-box" class="alert" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
         <span id="alert-message"></span>
@@ -138,8 +141,6 @@
                                 <label for="time" class="form-label">Select Time</label>
                                 <div class="time-picker-dropdown">
                                     <select id="hour" name="hour" class="form-control" aria-placeholder="hrs">
-                                        <option value="06">06</option>
-                                        <option value="07">07</option>
                                         <option value="08">08</option>
                                         <option value="09">09</option>
                                         <option value="10">10</option>
@@ -165,7 +166,6 @@
                                         <option value="45">45</option>
                                         <option value="50">50</option>
                                         <option value="55">55</option>
-                                        <option value="60">60</option>
                                     </select>
                                 </div>
                             </div>
@@ -180,8 +180,19 @@
                                     <option value="senegaleseTwists">Senegalese Twists</option>
                                     <option value="dreadlocks">Dreadlocks</option>
                                 </select>
-                                
                             </div>
+                            <!-- New Size Selection -->
+                            <div class="mb-3">
+                                <label for="size" class="form-label">Select Size</label>
+                                <select class="form-control" id="size" name="size">
+                                    <option value="small">Small</option>
+                                    <option value="smedium">Smedium</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="large">Large</option>
+                                    <option value="jumbo">Jumbo</option>
+                                </select>
+                            </div>
+                            
                             <div class="mb-3">
                                 <label for="color" class="form-label">Select Color</label>
                                 <select class="form-control" id="color" name="color">
@@ -199,7 +210,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Price</label>
-                                <div id="price" class="price">R500</div>
+                                <div id="price" class="price"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="fileUpload" class="form-label">Upload File</label>
@@ -211,6 +222,9 @@
                                 <label for="walkIn" class="radio-label">Walk-in</label><br>
                                 <input type="radio" id="houseCall" name="appointmentType" value="houseCall">
                                 <label for="houseCall" class="radio-label">House Call</label>
+                                <div id="houseCallWarning" style="color: red; font-size: 14px; display: none; margin-top: 5px;">
+                                    ⚠️ Additional charges will apply for Uber transportation to your home.
+                                </div>
                             </div>
                             <div class="btn-container">
                                 <button type="submit" class="btn btn-primary" style="background-color: #ff69b4">Submit</button>
@@ -334,7 +348,7 @@
   <div id="loading-text" style="display: none;">
     Sending Booking...
   </div>
-    
+
 
 <!-- Link to Bootstrap JS and Popper (For Bootstrap functionality like tooltips, dropdowns, etc.) -->
 
