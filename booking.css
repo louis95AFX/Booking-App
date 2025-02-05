@@ -853,3 +853,26 @@ h2 {
       transform: translateY(0);
   }
 }
+/* ========================================== */
+   /* Floating WhatsApp Icon Styles */
+   .whatsapp-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    border-radius: 50%;
+    background-color: #25d366; /* WhatsApp green */
+    padding: 8px; /* Reduced padding */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.whatsapp-icon:hover {
+    transform: scale(1.1); /* Slight zoom effect on hover */
+}
+
+.whatsapp-icon img {
+    display: block;
+    width: 40px; /* Reduced size */
+    height: 40px; /* Reduced size */
+}
