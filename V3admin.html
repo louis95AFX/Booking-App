@@ -46,6 +46,95 @@
     height: 50px;
 }
 
+       /* Modal styles */
+       .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+    padding-top: 60px;
+}
+
+/* Modal content */
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Responsive width */
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Close button */
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Heading */
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+/* Form labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Form inputs */
+input[type="date"], 
+input[type="time"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+input[type="date"]:focus, 
+input[type="time"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* Submit button */
+.submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
 </style>
 <body>
     <!-- Admin Header -->
@@ -71,7 +160,7 @@
 
     <!-- Main Content -->
     <div class="container mt-5">
-        <h2 class="mb-4">User Bookings</h2>
+        <h2 class="mb-4">Your Bookings</h2>
         <!-- Custom Alert -->
 <div id="customAlert" class="alert" style="display: none;">
     <span id="alertMessage"></span>
@@ -114,39 +203,37 @@
         </table>
         
         <!-- Pagination (if needed) -->
-        <nav aria-label="Booking Navigation">
-            <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <ul id="items-list"></ul>
+
+<nav aria-label="Booking Navigation">
+    <ul class="pagination" id="pagination">
+        <li class="page-item">
+            <a class="page-link" href="#" id="prev">&laquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="#" id="next">&raquo;</a>
+        </li>
+    </ul>
+</nav>
         
-        <!-- Modal to Shift Dates -->
-<div id="shiftDateModal" class="modal">
+ <!-- Modal to Shift Dates -->
+ <div id="shiftDateModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
         <h2>Shift Booking Dates</h2>
         
         <form id="shiftDateForm">
             <label for="newDate">New Date:</label>
-            <input type="date" id="newDate" required>
+            <input type="date" id="newDate" required min="" />
+            
             <label for="newTime">New Time:</label>
-            <input type="time" id="newTime" required>
+            <input type="time" id="newTime" required min="07:00" max="18:00">
+            
             <button type="submit" class="submit-btn">Save</button>
         </form>
     </div>
 </div>
+
 <div id="loading-overlay">
     <div id="loading-spinner">
     </div>
@@ -215,55 +302,97 @@ setTimeout(hideLoader, 3000);
     }
 }
 
-    
+
         // Fetch booking data from the server with status filter
-        async function fetchBookings() {
-            try {
-                showLoader();
-                document.getElementById('loading-spinner').style.display = 'block'; // Show spinner
-                const statusFilter = document.getElementById('statusFilter').value; // Get selected filter value
-                const response = await fetch(`http://localhost:3000/get-bookings?status=${statusFilter}`);
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data');
-                }
-    
-                const data = await response.json();
-    
-                if (Array.isArray(data)) {
-                    const bookingsTableBody = document.querySelector('#bookingTable tbody');
-                    bookingsTableBody.innerHTML = '';  // Clear any previous rows
-    
-                    // Loop through bookings and add them to the table
-                    data.forEach(booking => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${booking.id}</td>
-                            <td>${booking.name}</td>
-                            <td>${booking.email}</td>
-                            <td>${booking.cell}</td>
-                            <td>${formatDate(booking.date)} ${booking.time}</td>
-                            <td>${formatDate(booking.created_at)}</td>
-                            <td>${booking.approved ? 'Confirmed' : 'Pending'}</td>
-                             <td>
-                                <button class="btn btn-success btn-sm" onclick="approveBooking(${booking.id}, '${booking.time}')">Approve</button>
-                                <button class="btn btn-warning btn-sm" onclick="showShiftDateModal(${booking.id})">Shift Dates</button>
-                            </td>
-                        `;
-                        bookingsTableBody.appendChild(row);
-                    });
-                } else {
-                    console.error('Invalid data format', data);
-                    alert('Error fetching bookings: Invalid data format');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error fetching bookings');
-            } finally {
-                hideLoader();
-            document.getElementById('loading-spinner').style.display = 'none'; // Hide spinner
-        }
-        }
+        let bookingsData = [];
+let currentPage = 1;
+const itemsPerPage = 15;
+
+async function fetchBookings() {
+    try {
+        showLoader();
+        document.getElementById('loading-spinner').style.display = 'block';
+
+        const statusFilter = document.getElementById('statusFilter').value;
+        const response = await fetch(`http://localhost:3000/get-bookings?status=${statusFilter}`);
+
+        if (!response.ok) throw new Error('Failed to fetch data');
+
+        bookingsData = await response.json(); // Store all fetched data
+        currentPage = 1; // Reset to first page
+        renderTable(); // Render first page
+        renderPagination(); // Create pagination controls
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching bookings');
+    } finally {
+        hideLoader();
+        document.getElementById('loading-spinner').style.display = 'none';
+    }
+}
+
+function renderTable() {
+    const bookingsTableBody = document.querySelector('#bookingTable tbody');
+    bookingsTableBody.innerHTML = '';
+
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedData = bookingsData.slice(start, end);
+
+    paginatedData.forEach(booking => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${booking.id}</td>
+            <td>${booking.name}</td>
+            <td>${booking.email}</td>
+            <td>${booking.cell}</td>
+            <td>${formatDate(booking.date)} ${booking.time}</td>
+            <td>${formatDate(booking.created_at)}</td>
+            <td>${booking.approved ? 'Confirmed' : 'Pending'}</td>
+            <td>
+                <button class="btn btn-success btn-sm" onclick="approveBooking(${booking.id}, '${booking.time}')">Approve</button>
+                <button class="btn btn-warning btn-sm" onclick="showShiftDateModal(${booking.id})">Shift Dates</button>
+            </td>
+        `;
+        bookingsTableBody.appendChild(row);
+    });
+}
+
+function renderPagination() {
+    const totalPages = Math.ceil(bookingsData.length / itemsPerPage);
+    const paginationContainer = document.querySelector('.pagination');
+    paginationContainer.innerHTML = '';
+
+    // Previous button
+    paginationContainer.innerHTML += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">&laquo;</a>
+    </li>`;
+
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        paginationContainer.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+            <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+        </li>`;
+    }
+
+    // Next button
+    paginationContainer.innerHTML += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">&raquo;</a>
+    </li>`;
+}
+
+function changePage(page) {
+    const totalPages = Math.ceil(bookingsData.length / itemsPerPage);
+    if (page < 1 || page > totalPages) return;
+
+    currentPage = page;
+    renderTable();
+    renderPagination();
+}
+
+// Call fetchBookings() on page load
+fetchBookings();
+
     
         // Function to approve a booking
         async function approveBooking(bookingId, currentBookingTime) {
@@ -274,26 +403,11 @@ setTimeout(hideLoader, 3000);
             return;  // Exit the function if the time is not provided
         }
 
-        // Prompt admin to enter the new available time for the next booking after the current one
-        const newAvailableTime = prompt(`Adjust available time for new bookings after Booking ID ${bookingId} (current time: ${currentBookingTime}). Please enter the new available time (e.g., 16:00):`);
-
-        if (!newAvailableTime) {
-            alert('Booking approval canceled. No new available time was selected.');
-            return;  // Exit the function if no new available time is provided
-        }
-
-        // Check if the new time format is valid (HH:mm format)
-        const timeRegex = /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/;
-        if (!timeRegex.test(newAvailableTime)) {
-            alert('Invalid time format. Please enter time in HH:mm format.');
-            return;
-        }
-
         // Show loading spinner while processing
         showLoader();
         document.getElementById('loading-spinner').style.display = 'block';
 
-        // Send the booking ID and the new available time to the backend
+        // Send the booking ID and the current available time (using currentBookingTime)
         const response = await fetch('http://localhost:3000/approve-booking', {
             method: 'POST',
             headers: {
@@ -302,7 +416,6 @@ setTimeout(hideLoader, 3000);
             body: JSON.stringify({
                 bookingId,
                 currentBookingTime,  // Send current time for the booking
-                newAvailableTime,    // Send new available time to be updated in the backend
             }),
         });
 
@@ -310,7 +423,7 @@ setTimeout(hideLoader, 3000);
             throw new Error('Failed to approve booking');
         }
 
-        alert(`Booking successfully approved and next available time updated to ${newAvailableTime}!`);
+        alert(`Booking successfully approved!`);
 
         // Fetch updated bookings to refresh the table
         fetchBookings();
@@ -324,6 +437,7 @@ setTimeout(hideLoader, 3000);
         document.getElementById('loading-spinner').style.display = 'none';
     }
 }
+
         let bookingToShift = null; // Variable to hold the booking ID that needs to be shifted
 
 // Show the modal to shift dates
@@ -398,11 +512,29 @@ function showAlert(message, type = 'success') {
         }, 500); // Wait for fade-out to finish
     }, 3000); // 3 seconds for the alert to be visible
 }
+
 // Function to shift booking dates
 async function shiftBooking() {
     const newDate = document.getElementById('newDate').value;
     const newTime = document.getElementById('newTime').value;
 
+    // Set the min date to today's date dynamically
+    document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
+  // Ensure time is between 07:00 and 18:00
+  const selectedTime = new Date(`${newDate}T${newTime}`);
+    const currentTime = new Date();
+
+    // Check if the selected time is before 7 AM or after 6 PM
+    const minTime = new Date(`${newDate}T07:00`);
+    const maxTime = new Date(`${newDate}T18:00`);
+
+    // Check if the date is in the past
+    if (newDate && selectedTime < currentTime) {
+        alert("The selected date and time cannot be in the past.");
+        return;
+    }
+
+    // Validate both date and time are provided
     if (!newDate || !newTime) {
         alert("Please provide both a new date and time.");
         return;
@@ -429,6 +561,8 @@ async function shiftBooking() {
         alert('Error shifting booking dates');
     }
 }
+
+
 // Function to update the status of a booking in the table
 function updateBookingStatusInTable(bookingId, newStatus) {
     const rows = document.querySelectorAll('#bookingTable tbody tr');
