@@ -23,6 +23,7 @@ if (!fs.existsSync(uploadDir)) {
 
 
 // Import required packages
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
@@ -128,7 +129,9 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
   try {
     console.log("Received booking data:", req.body);
 
-    const { name, email, cell, service, color, date, time, price, serviceType } = req.body;
+    const { name, email, cell, service, size, color, date, time, price, appointmentType } = req.body;
+
+
 
     // Check if an approved booking exists for this date and time
     const checkQuery = `SELECT * FROM bookings WHERE date = $1 AND time = $2 AND approved = TRUE`;
@@ -158,18 +161,20 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     // Send email notification to admin
     const mailOptions = {
       from: emailUser,
-      to: '	thandiwejessica30@icloud.com', // Change to recipient email
+      to: '	carterprince95@gmail.com', // Change to recipient email
       subject: '📅 New Booking Request',
       text: `New Booking Request:
       - Name: ${name}
       - Email: ${email}
       - Cell: ${cell}
       - Service: ${service}
+      - Size: ${size}
       - Color: ${color}
       - Date: ${date}
       - Time: ${time}
       - Price: ${price}
-      - Service Type: ${serviceType}`,
+      - Appointment Type: ${appointmentType}`,
+      
       attachments: [
         {
           filename: paymentProof.originalname,
@@ -375,7 +380,7 @@ app.post('/contact', async (req, res) => {
 
   const mailOptions = {
     from: email, // Sender's email
-    to: '	thandiwejessica30@icloud.com', // Your email address where you want to receive messages
+    to: 'carterprince95@gmail.com', // Your email address where you want to receive messages
     subject: 'New Contact Form Submission',
     text: `
       You have received a new message from ${name}:
@@ -410,6 +415,14 @@ app.get('/admin', (req, res) => {
         adminUsername: adminUsername,
         adminPassword: adminPassword
     });
+});
+
+// Serve static files from the correct directory
+app.use(express.static(path.join(__dirname)));
+
+// Route to serve booking.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'booking.html'));
 });
 
 // Start the Server
