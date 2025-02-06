@@ -12,7 +12,7 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
     const name = form.name ? form.name.value : '';
     const email = form.email ? form.email.value : '';
     const cell = form.cell ? form.cell.value : '';
-    const service = form.service ? form.service.value : '';
+    const hairstyle = form.hairstyle ? form.hairstyle.value : '';
     const size = form.size ? form.size.value : '';
     const color = form.color ? form.color.value : '';
     const date = form.date ? form.date.value : '';
@@ -36,7 +36,7 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
     formData.append('name', name);
     formData.append('email', email);
     formData.append('cell', cell);
-    formData.append('service', service);
+    formData.append('hairstyle', hairstyle);
     formData.append('size', size);
     formData.append('color', color);
     formData.append('date', date);
@@ -82,36 +82,32 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
     // Your existing booking form submission logic
 });
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("newsletter-form");
-
-    if (!form) {
-        console.error("❌ Form element not found!");
-        return;
-    }
-
-    form.addEventListener("submit", async function (event) {
-        event.preventDefault(); // Prevent default form submission
-
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        
+        console.log("Form submitted!"); // Log here to confirm it's triggered
+        
         const emailInput = document.getElementById("email");
+        const popupOverlay = document.getElementById('popup-overlay');
+        const popupText = document.getElementById('popup-text');
 
-        if (!emailInput) {
-            console.error("❌ Email input field not found!");
+        console.log("Email:", emailInput.value); // Check email value
+
+        if (!emailInput || !popupOverlay || !popupText) {
+            console.error("❌ Elements not found!");
             return;
         }
 
-        console.log("Email input element:", emailInput);
-        console.log("Email value before trimming:", emailInput.value);
-
-        const email = emailInput.value.trim(); // Remove whitespace
-
-        console.log("Email value after trimming:", email);
-
+        const email = emailInput.value.trim();
         if (!email) {
-            // alert("❌ Please enter a valid email.");
-            alert("❌ News letters currently not available");
+            alert("❌ Please enter a valid email.");
             return;
         }
+
+        console.log("Showing pop-up...");
+        popupOverlay.style.display = 'flex'; // Show pop-up
 
         try {
             const response = await fetch("/subscribe-newsletter", {
@@ -124,16 +120,19 @@ document.addEventListener("DOMContentLoaded", function () {
             alert(result.message);
 
             if (response.ok) {
-                emailInput.value = ""; // Clear input field
-                console.log("✅ Email cleared successfully.");
+                emailInput.value = ""; // Clear input
             }
 
         } catch (error) {
-            console.error("❌ Error submitting form:", error);
-            alert("Something went wrong. Please try again.");
+            console.error("❌ Error:", error);
+            alert("Something went wrong.");
+        } finally {
+            console.log("Hiding pop-up...");
+            popupOverlay.style.display = 'none'; // Hide pop-up
         }
     });
 });
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const reviews = [
@@ -226,43 +225,80 @@ $jq(document).ready(function () {
     // Update Price dynamically based on selected hairstyle
     $jq(document).ready(function() {
         function updatePrice() {
+            // Base prices for each hairstyle
             var basePrices = {
-                'boxBraids': 500,
-                'cornrows': 400,
-                'twistBraids': 650,
-                'fauxLocs': 700,
-                'knotlessBraids': 800,
-                'senegaleseTwists': 650,
-                'dreadlocks': 700
+                'islandtwist': 0,
+                'distressedlocs': 0,
+                'invisiblelocs': 0,
+                'butterflylocs': 0,
+                'knotlessBraids': 0,
+                'knotlessBraidswithbeads': 0,
+                'senegaleseTwists': 0,
+                'dreadlocks': 0
             };
     
+            // Size prices for each hairstyle
             var sizePrices = {
-                'boxBraids': { 'small': 100, 'smedium': 150, 'medium': 200, 'large': 300, 'jumbo': 400 },
-                'cornrows': { 'small': 80, 'smedium': 150, 'medium': 160, 'large': 240, 'jumbo': 400 },
-                'twistBraids': { 'small': 90, 'smedium': 150, 'medium': 180, 'large': 270, 'jumbo': 400 },
-                'fauxLocs': { 'small': 70, 'smedium': 130, 'medium': 140, 'large': 210, 'jumbo': 400 }, // Added 'smedium'
-                'knotlessBraids': { 'small': 120, 'smedium': 150, 'medium': 220, 'large': 320, 'jumbo': 400 },
-                'senegaleseTwists': { 'small': 110, 'smedium': 150, 'medium': 210, 'large': 310, 'jumbo': 400 },
-                'dreadlocks': { 'small': 95, 'smedium': 150, 'medium': 190, 'large': 285, 'jumbo': 400 }
+                'islandtwist': { 'small': 800, 'medium': 700, 'large': 600, 'jumbo': 500 },
+                'distressedlocs': { 'shoulder': 800, 'midback': 900, 'waist': 1100, 'butt': 1200, 'knee': 1400 },
+                'invisiblelocs': { 'bob': 600, 'shoulder': 650, 'midback': 750, 'waist': 800 },
+                'butterflylocs': { 'shoulder': 70, 'midback': 130, 'waist': 140, 'butt': 210, 'knee': 400 },
+                'knotlessBraids': { 'small': 800, 'smedium': 750, 'medium': 700, 'large': 650, 'jumbo': 600 },
+                'knotlessBraidswithbeads': { 'small': 750, 'smedium': 700, 'medium': 650, 'large': 600, 'jumbo': 550 },
+                'normalbraids': { 'small': 600, 'medium': 500, 'large': 400, 'jumbo': 300 },
+                'Goddessbraids': { 'small': 95, 'smedium': 150, 'medium': 190, 'large': 285, 'jumbo': 400 }
             };
     
-            var selectedHairstyle = $jq('#service').val();
+            // Size options for each hairstyle
+            var sizeOptions = {
+                'islandtwist': ['small', 'medium', 'large', 'jumbo'],
+                'distressedlocs': ['shoulder', 'midback', 'waist', 'butt', 'knee'],
+                'invisiblelocs': ['bob', 'shoulder', 'midback', 'waist'],
+                'butterflylocs': ['shoulder', 'midback', 'waist', 'butt', 'knee'],
+                'knotlessBraids': ['small', 'smedium', 'medium', 'large', 'jumbo'],
+                'knotlessBraidswithbeads': ['small', 'smedium', 'medium', 'large', 'jumbo'],
+                'normalbraids': ['small', 'medium', 'large', 'jumbo'],
+                'Goddessbraids': ['small', 'smedium', 'medium', 'large', 'jumbo']
+            };
+    
+            var selectedHairstyle = $jq('#hairstyle').val();
             var selectedSize = $jq('#size').val();
     
-            var basePrice = basePrices[selectedHairstyle] || 500;
+            var basePrice = basePrices[selectedHairstyle] || 0;
             var sizePrice = (sizePrices[selectedHairstyle] && sizePrices[selectedHairstyle][selectedSize]) || 0;
     
             // Update the displayed price
             var totalPrice = basePrice + sizePrice;
             $jq('#price').text('R' + totalPrice);
+    
+            // Dynamically update the size options based on the selected hairstyle
+            var sizeSelect = $jq('#size');
+            sizeSelect.empty(); // Clear the existing options
+    
+            // Add new options based on the selected hairstyle
+            var availableSizes = sizeOptions[selectedHairstyle] || [];
+            availableSizes.forEach(function(size) {
+                sizeSelect.append('<option value="' + size + '">' + size.charAt(0).toUpperCase() + size.slice(1) + '</option>');
+            });
+    
+            // Ensure the selected size is still available and set it
+            if (availableSizes.indexOf(selectedSize) !== -1) {
+                sizeSelect.val(selectedSize);
+            } else {
+                sizeSelect.val(availableSizes[0]); // Default to the first available size if the selected one is not found
+            }
+    
+            // Trigger price update when a new size is selected
+            sizeSelect.change(updatePrice);
         }
     
-        // Trigger price update when hairstyle or size changes
-        $jq('#service, #size').change(updatePrice);
+        // Trigger price update when hairstyle is selected
+        $jq('#hairstyle').change(updatePrice);
     
-        // Initialize price on page load
+        // Initialize price and size options on page load
         updatePrice();
     });
+    
     
 });
 
