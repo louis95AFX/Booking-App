@@ -173,14 +173,16 @@
                             <div class="mb-3">
                                 <label for="hairstyle" class="form-label">Hairstyle</label>
                                 <select class="form-control" id="hairstyle" name="hairstyle">
-                                    <option value="islandtwist">Islan twist</option>
+                                    <option value="islandtwist">Island twist</option>
                                     <option value="distressedlocs">Distressed locs</option>
                                     <option value="invisiblelocs">Invisible locs</option>
                                     <option value="butterflylocs">Butterfly locs</option>
                                     <option value="knotlessBraids">Knotless Braids</option>
                                     <option value="knotlessBraidswithbeads">Knotless Braids (With beads)</option>
-                                    <option value="normalbraids">Normal Braids</option>
+                                    <option value="normalBraids">Normal Braids</option>
                                     <option value="Goddessbraids">Goddess Braids</option>
+                                    <option value="knotlessBraidsHairpieceNotIncluded">Knotless Braids (Hairpiece not included)</option>
+                                    <option value="GoddessbraidsHairpieceNotIncluded">Goddess Braids (Hairpiece not included)</option>
                                 </select>
                             </div>
                             <!-- New Size Selection -->
@@ -194,7 +196,55 @@
                                     <option value="jumbo">Jumbo</option>
                                 </select>
                             </div>
+
                             
+                            <!-- Extra Curls Checkbox for Island Twist -->
+                            <div class="mb-3" id="extraCurlsContainer" style="display: none;">
+                                <label for="extraCurls" class="form-label">Add Extra Curls (R100)</label>
+                                <input type="checkbox" id="extraCurls" name="extraCurls">
+                            </div>
+                            <!-- Extra options for Distressed Locs -->
+                            <div id="extraOptionsDistressed" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="goddessExtra"> <label for="goddessExtra">Goddess (R200)</label><br>
+                                <input type="checkbox" id="highlightExtra"> <label for="highlightExtra">Highlight (R150)</label><br>
+                            </div>
+
+                            <!-- Extra options for Knotless Braids -->
+                            <div id="extraOptionsKnotless" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="extraLengthKnotless"> <label for="extraLengthKnotless">Extra Length (R50)</label><br>
+                            </div>
+
+                            <!-- Extra options for Invisible Locs -->
+                            <div id="extraOptionsInvisible" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="goddessExtraInvisible"> <label for="goddessExtraInvisible">Goddess (R100)</label><br>
+                                <input type="checkbox" id="highlightPeekabooExtra"> <label for="highlightPeekabooExtra">Highlight/Peekaboo (R120)</label><br>
+                            </div>
+                            
+                            <!-- Extra options for Butterfly Locs -->
+                            <div id="extraOptionsButterfly" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="goddessExtraButterfly"> <label for="goddessExtraButterfly">Goddess (R200)</label><br>
+                                <input type="checkbox" id="highlightExtraButterfly"> <label for="highlightExtraButterfly">Highlight (R150)</label><br>
+                            </div>
+                            <!-- Extra options for Knotless Braids with Beads -->
+                            <div id="extraOptionsKnotlessBeads" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="extraBeads"> <label for="extraBeads">Extra Beads (R50)</label><br>
+                            </div>
+                           <!-- Extra options for Normal Braids -->
+                            <div id="extraOptionsNormal" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="extraLengthNormal"> <label for="extraLengthNormal">Extra Length (R50)</label><br>
+                            </div>
+
+                            <div id="extraOptionsHairpieceNotIncluded" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="extraLengthHairpieceNotIncluded"> <label for="extraLengthHairpieceNotIncluded">Extra Length (R50)</label><br>
+                            </div>
+
                             <div class="mb-3">
                                 <label for="color" class="form-label">Select Color</label>
                                 <select class="form-control" id="color" name="color">
