@@ -1,13 +1,13 @@
 const form = document.getElementById('bookingForm');
 document.getElementById('bookingForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Prevent form from submitting the default way
-   
-   // Show loading spinner, overlay, and "Sending Booking..." text
-   document.getElementById('loading-spinner').style.display = 'flex'; 
-   document.getElementById('loading-text').style.display = 'block'; 
+
+    // Show loading spinner, overlay, and "Sending Booking..." text
+    document.getElementById('loading-spinner').style.display = 'flex'; 
+    document.getElementById('loading-text').style.display = 'block'; 
+
     const form = e.target;
     
-
     // Validate that form fields exist before accessing their values
     const name = form.name ? form.name.value : '';
     const email = form.email ? form.email.value : '';
@@ -22,6 +22,62 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
     const price = document.getElementById('price') ? document.getElementById('price').innerText : '';
     const appointmentType = form.appointmentType ? form.appointmentType.value : '';
     const paymentProof = document.getElementById('fileUpload') ? document.getElementById('fileUpload').files[0] : null;
+    
+    // Handle optional extras (check which checkboxes are selected)
+    const extras = [];
+
+    // Add selected extras based on checked checkboxes
+    if (document.getElementById('extraCurls') && document.getElementById('extraCurls').checked) {
+        extras.push('Extra Curls (R100)');
+    }
+
+    if (document.getElementById('goddessExtra') && document.getElementById('goddessExtra').checked) {
+        extras.push('Goddess (R200)');
+    }
+
+    if (document.getElementById('highlightExtra') && document.getElementById('highlightExtra').checked) {
+        extras.push('Highlight (R150)');
+    }
+
+    if (document.getElementById('extraLengthKnotless') && document.getElementById('extraLengthKnotless').checked) {
+        extras.push('Extra Length Knotless (R50)');
+    }
+
+    if (document.getElementById('goddessExtraInvisible') && document.getElementById('goddessExtraInvisible').checked) {
+        extras.push('Goddess Invisible (R100)');
+    }
+
+    if (document.getElementById('highlightPeekabooExtra') && document.getElementById('highlightPeekabooExtra').checked) {
+        extras.push('Highlight/Peekaboo Invisible (R120)');
+    }
+
+    if (document.getElementById('goddessExtraButterfly') && document.getElementById('goddessExtraButterfly').checked) {
+        extras.push('Goddess Butterfly (R200)');
+    }
+
+    if (document.getElementById('highlightExtraButterfly') && document.getElementById('highlightExtraButterfly').checked) {
+        extras.push('Highlight Butterfly (R150)');
+    }
+
+    if (document.getElementById('extraBeads') && document.getElementById('extraBeads').checked) {
+        extras.push('Extra Beads (R50)');
+    }
+
+    if (document.getElementById('extraLengthNormal') && document.getElementById('extraLengthNormal').checked) {
+        extras.push('Extra Length Normal (R50)');
+    }
+
+    if (document.getElementById('extraLengthHairpieceNotIncluded') && document.getElementById('extraLengthHairpieceNotIncluded').checked) {
+        extras.push('Extra Length Hairpiece Not Included (R50)');
+    }
+
+    // Check if required fields are empty
+    if (!name || !email || !cell || !hairstyle || !size || !color || !date || !hour || !minute || !paymentProof) {
+        alert("Please fill in all required fields!");
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('loading-text').style.display = 'none'; // Hide loading text
+        return;
+    }
 
     // Check if payment proof exists
     if (!paymentProof) {
@@ -45,6 +101,11 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
     formData.append('appointmentType', appointmentType);
     formData.append('paymentProof', paymentProof);
 
+    // Add extras to formData if selected
+    if (extras.length > 0) {
+        formData.append('extras', extras.join(', ')); // Send as a comma-separated list
+    }
+
     // Send the form data using Fetch API
     fetch('http://localhost:3000/submit-booking', {
         method: 'POST',
@@ -53,8 +114,9 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
     .then(response => response.json())
     .then(data => {
         setTimeout(function () {
-        document.getElementById('spinner').style.display = 'none'; // Hide spinner after submission
-    }, 3000); // Replace with your actual API or form submission delay
+            document.getElementById('spinner').style.display = 'none'; // Hide spinner after submission
+        }, 3000); // Replace with your actual API or form submission delay
+
         // Show appropriate message based on response
         if (data.status === 'success') {
             alert("Booking successfully sent!");
