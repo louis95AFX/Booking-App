@@ -131,13 +131,45 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
 
     const { name, email, cell, hairstyle, size, color, date, time, price, appointmentType } = req.body;
 
+    // Log received values
+    console.log("Booking Details:", { name, email, cell, hairstyle, size, color, date, time, price, appointmentType });
 
+    // Extract the extras from the body, or set them to null if they are not present
+    const extraCurls = req.body.extraCurls || null;
+    const goddessExtra = req.body.goddessExtra || null;
+    const highlightExtra = req.body.highlightExtra || null;
+    const extraLengthKnotless = req.body.extraLengthKnotless || null;
+    const goddessExtraInvisible = req.body.goddessExtraInvisible || null;
+    const highlightPeekabooExtra = req.body.highlightPeekabooExtra || null;
+    const goddessExtraButterfly = req.body.goddessExtraButterfly || null;
+    const highlightExtraButterfly = req.body.highlightExtraButterfly || null;
+    const extraBeads = req.body.extraBeads || null;
+    const extraLengthNormal = req.body.extraLengthNormal || null;
+    const extraLengthHairpieceNotIncluded = req.body.extraLengthHairpieceNotIncluded || null;
+
+    // Log extracted extras
+    console.log("Extras selected:", {
+      extraCurls,
+      goddessExtra,
+      highlightExtra,
+      extraLengthKnotless,
+      goddessExtraInvisible,
+      highlightPeekabooExtra,
+      goddessExtraButterfly,
+      highlightExtraButterfly,
+      extraBeads,
+      extraLengthNormal,
+      extraLengthHairpieceNotIncluded
+    });
 
     // Check if an approved booking exists for this date and time
     const checkQuery = `SELECT * FROM bookings WHERE date = $1 AND time = $2 AND approved = TRUE`;
     const { rows } = await pool.query(checkQuery, [date, time]);
 
+    console.log("Checking existing bookings:", { date, time, rows });
+
     if (rows.length > 0) {
+      console.log(`❌ This slot is already booked!`);
       return res.status(400).json({ status: 'error', message: '❌ This slot is already booked!' });
     }
 
@@ -149,19 +181,41 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     `;
     const values = [name, email, cell, date, time];
 
+    console.log("Inserting booking into the database:", { name, email, cell, date, time });
     const result = await pool.query(query, values);
     console.log("✅ Booking added to database:", result.rows[0]);
 
     // Check if payment proof is uploaded
     if (!req.file) {
+      console.error("❌ No payment proof uploaded.");
       return res.status(400).json({ status: 'error', message: '❌ No payment proof uploaded.' });
     }
+    const extras = req.body.extras ? req.body.extras.split(', ') : [];
+    console.log('Parsed Extras:', extras);
+
     const paymentProof = req.file;
+    console.log("Payment proof uploaded:", paymentProof);
+
+    // Prepare extras string for email
+    let extrasText = '';
+    if (extraCurls) extrasText += `Extra Curls (R100)\n`;
+    if (goddessExtra) extrasText += `Goddess (R200)\n`;
+    if (highlightExtra) extrasText += `Highlight (R150)\n`;
+    if (extraLengthKnotless) extrasText += `Extra Length Knotless (R50)\n`;
+    if (goddessExtraInvisible) extrasText += `Goddess Invisible (R100)\n`;
+    if (highlightPeekabooExtra) extrasText += `Highlight Peekaboo (R120)\n`;
+    if (goddessExtraButterfly) extrasText += `Goddess Butterfly (R200)\n`;
+    if (highlightExtraButterfly) extrasText += `Highlight Butterfly (R150)\n`;
+    if (extraBeads) extrasText += `Extra Beads (R50)\n`;
+    if (extraLengthNormal) extrasText += `Extra Length (R50)\n`;
+    if (extraLengthHairpieceNotIncluded) extrasText += `Extra Length (R50)\n`;
+
+    console.log("Formatted extras for email:", extrasText);
 
     // Send email notification to admin
     const mailOptions = {
       from: emailUser,
-      to: '	carterprince95@gmail.com', // Change to recipient email
+      to: 'carterprince95@gmail.com', // Change to recipient email
       subject: '📅 New Booking Request',
       text: `New Booking Request:
       - Name: ${name}
@@ -173,8 +227,8 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       - Date: ${date}
       - Time: ${time}
       - Price: ${price}
-      - Appointment Type: ${appointmentType}`,
-      
+      - Appointment Type: ${appointmentType}
+      - Extras: ${extras.length > 0 ? extras.join(', ') : 'None'}`,  // Added extras here
       attachments: [
         {
           filename: paymentProof.originalname,
@@ -182,6 +236,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
         }
       ]
     };
+    console.log('Received extras:', req.body.extras);
 
     console.log('Sending email...');
     const info = await transporter.sendMail(mailOptions);
@@ -189,42 +244,36 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
 
     // Send WhatsApp message to user
     const whatsappMessage = `Hello ${name},\n\nYour booking for ${hairstyle} on ${date} at ${time} has been received. ✅\n\nWe'll notify you once it's approved. Thank you!`;
-    
+
     const formatPhoneNumber = (cell) => {
-      // Remove spaces and dashes
       let cleanNumber = cell.replace(/\s|-/g, '');
-    
-      // If number already starts with '+', assume it's correct
       if (cleanNumber.startsWith('+')) {
         return cleanNumber;
       }
-    
-      // If number starts with '0', assume it's local and replace with +27 (default for SA)
       if (cleanNumber.startsWith('0')) {
         return '+27' + cleanNumber.substring(1);
       }
-    
-      // If the number is invalid, return null (so we can handle it)
       return null;
     };
-    
+
     const userPhoneNumber = formatPhoneNumber(cell);
-    
+    console.log("Formatted phone number:", userPhoneNumber);
+
     if (!userPhoneNumber) {
       console.error('❌ Invalid phone number:', cell);
       return res.status(400).json({ status: 'error', message: 'Invalid phone number format. Please use an international format.' });
     }
-    
+
     twilioClient.messages.create({
       from: twilioWhatsAppNumber,
-      to: `whatsapp:${userPhoneNumber}`, 
+      to: `whatsapp:${userPhoneNumber}`,
       body: whatsappMessage
     }).then(message => {
       console.log('✅ WhatsApp message sent:', message.sid);
     }).catch(error => {
       console.error('❌ Error sending WhatsApp message:', error.message);
     });
-    
+
     res.status(200).json({ status: 'success', message: "✅ Booking confirmed. Email & WhatsApp notification sent!" });
 
   } catch (error) {
