@@ -1,231 +1,513 @@
-// Array to store unavailable dates (in YYYY-MM-DD format)
-const unavailableDates = ["2025-01-30", "2025-02-01"];
+const form = document.getElementById('bookingForm');
+document.getElementById('bookingForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent form from submitting the default way
 
-// Prices for each service
-const servicePrices = {
-    "Box Braids": 500, 
-    "Cornrows": 350, 
-    "Twists": 400, 
-    "Crochet Styles": 450
-};
+    // Show loading spinner, overlay, and "Sending Booking..." text
+    document.getElementById('loading-spinner').style.display = 'flex'; 
+    document.getElementById('loading-text').style.display = 'block'; 
 
-// Colors available for selection
-const colorOptions = [
-    "Black", "Brown", "Blonde", "Red", "Blue", "Purple", "Pink", "Green"
-];
+    const form = e.target;
+    
+    // Validate that form fields exist before accessing their values
+    const name = form.name ? form.name.value : '';
+    const email = form.email ? form.email.value : '';
+    const cell = form.cell ? form.cell.value : '';
+    const hairstyle = form.hairstyle ? form.hairstyle.value : '';
+    const size = form.size ? form.size.value : '';
+    const color = form.color ? form.color.value : '';
+    const date = form.date ? form.date.value : '';
+    const hour = form.hour ? form.hour.value : '';
+    const minute = form.minute ? form.minute.value : '';
+    const time = `${hour}:${minute}`;
+    const price = document.getElementById('price') ? document.getElementById('price').innerText : '';
+    const appointmentType = form.appointmentType ? form.appointmentType.value : '';
+    const paymentProof = document.getElementById('fileUpload') ? document.getElementById('fileUpload').files[0] : null;
+    
+    // Handle optional extras (check which checkboxes are selected)
+    const extras = [];
 
-function openBookingForm() {
-    // Create an overlay to darken the background
-    const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    overlay.style.zIndex = '999'; // Overlay is above other content
-
-    // Create the modal form container
-    const bookingForm = document.createElement('div');
-    bookingForm.style.position = 'fixed';
-    bookingForm.style.top = '50%';
-    bookingForm.style.left = '50%';
-    bookingForm.style.transform = 'translate(-50%, -50%)';
-    bookingForm.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; // Black with transparency
-    bookingForm.style.padding = '25px';
-    bookingForm.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.3)';
-    bookingForm.style.borderRadius = '12px';
-    bookingForm.style.transition = 'opacity 0.3s ease-in-out';
-    bookingForm.style.width = '90%';
-    bookingForm.style.maxWidth = '355px'; // Adjusted max width for larger inputs
-    bookingForm.style.maxHeight = '80vh';
-    bookingForm.style.overflowY = 'auto';
-    bookingForm.style.fontFamily = 'Arial, sans-serif';
-    bookingForm.style.color = '#000'; // Default text color to black
-    bookingForm.style.zIndex = '1000'; // Above the overlay
-
-    bookingForm.innerHTML = `
-        <h2 style="text-align:center; color:white;">Book an Appointment</h2>
-        <form id="bookingForm" style="display: flex; flex-direction: column; gap: 12px;">
-            <label for="name" style="color:#000;">Name:</label>
-            <input type="text" id="name" name="name" required style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 100%;">
-
-            <label for="email" style="color:#000;">Email:</label>
-            <input type="email" id="email" name="email" required style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 100%;">
-
-            <label for="cell" style="color:#000;">Cell Number:</label>
-            <input type="tel" id="cell" name="cell" required style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 100%;">
-
-            <label for="service" style="color:#000;">Service:</label>
-            <select id="service" name="service" required style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 100%;">
-                <option value="Box Braids">Box Braids - R500</option>
-                <option value="Cornrows">Cornrows - R350</option>
-                <option value="Twists">Twists - R400</option>
-                <option value="Crochet Styles">Crochet Styles - R450</option>
-            </select>
-
-            <!-- Added color selection dropdown -->
-            <label for="color" style="color:#000;">Color Style:</label>
-            <select id="color" name="color" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 100%;">
-                ${colorOptions.map(color => `<option value="${color}">${color}</option>`).join('')}
-            </select>
-
-            <label for="price" style="color:#000;">Estimated Price:</label>
-            <input type="text" id="price" name="price" readonly style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9; width: 100%;">
-
-            <label for="date" style="color:#000;">Preferred Date:</label>
-            <input type="date" id="date" name="date" required style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 100%;">
-
-            <label for="time" style="color:#000;">Preferred Time:</label>
-<select id="time" name="time" required style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 100%;">
-    <option value="" disabled selected>Select a time</option>
-    <option value="08:00AM">04:00 AM</option>
-    <option value="08:00AM">05:00 AM</option>
-    <option value="08:00AM">06:00 AM</option>
-    <option value="08:00AM">07:00 AM</option>
-    <option value="08:00AM">08:00 AM</option>
-    <option value="09:00AM">09:00 AM</option>
-    <option value="10:00AM">10:00 AM</option>
-    <option value="11:00AM">11:00 AM</option>
-    <option value="12:00PM">12:00 PM</option>
-    <option value="01:00PM">13:00 PM</option>
-    <option value="02:00PM">14:00 PM</option>
-    <option value="03:00PM">15:00 PM</option>
-    <option value="04:00PM">16:00 PM</option>
-    <option value="04:00PM">17:00 PM</option>
-    <option value="04:00PM">18:00 PM</option>
-    <option value="04:00PM">19:00 PM</option>
-    <option value="04:00PM">20:00 PM</option>
-</select>
-
-            <h3 style="margin-top: 15px; color:#000;">Payment Details (EFT)</h3>
-            <p style="font-size: 14px; color:#000;">Please make payment to:</p>
-            <p><strong>Bank Name:</strong> XYZ Bank</p>
-            <p><strong>Account Number:</strong> 123 456 789</p>
-            <p><strong>Reference:</strong> Your Name</p>
-
-            <label for="paymentProof" style="color:#000;">Upload Proof of Payment:</label>
-            <input type="file" id="paymentProof" name="paymentProof" accept=".jpg, .png, .pdf" required style="padding: 5px; border: 1px solid #ccc; border-radius: 5px; width: 100%;">
-
-            <!-- Walk-in or House Call radio buttons -->
-            <label for="serviceType" style="color:#000;">Choose Service Type:</label>
-            <div style="display: flex; flex-direction: column; gap: 10px; color:#000;">
-                <input type="radio" id="walkIn" name="serviceType" value="Walk-in" style="margin-left: 5px;">
-                <label for="walkIn" style="color:#000;">Walk-in</label>
-
-                <input type="radio" id="houseCall" name="serviceType" value="House Call" style="margin-left: 5px;">
-                <label for="houseCall" style="color:#000;">House Call</label>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-                <button type="submit" style="flex:1; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
-                    Submit
-                </button>
-                <button type="button" onclick="closeBookingForm()" style="flex:1; margin-left: 10px; padding: 10px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
-                    Cancel
-                </button>
-            </div>
-        </form>
-    `;
-
-    // Append overlay and booking form to the body
-    document.body.appendChild(overlay);
-    document.body.appendChild(bookingForm);
-
-    // Function to close the booking form modal
-    function closeBookingForm() {
-        document.body.removeChild(overlay);
-        document.body.removeChild(bookingForm);
+    // Add selected extras based on checked checkboxes
+    if (document.getElementById('extraCurls') && document.getElementById('extraCurls').checked) {
+        extras.push('Extra Curls (R100)');
     }
 
-    // Disable unavailable dates in the date picker
-    const dateInput = document.getElementById('date');
-    dateInput.addEventListener('focus', () => {
-        const today = new Date().toISOString().split("T")[0];
-        dateInput.min = today; // Prevent selecting past dates
-    });
-
-    dateInput.addEventListener("change", () => {
-        if (unavailableDates.includes(dateInput.value)) {
-            alert("Selected date is unavailable. Please choose another date.");
-            dateInput.value = "";
-        }
-    });
-
-    // Add event listener for radio buttons to show an alert when 'House Call' is selected
-const houseCallRadio = document.getElementById('houseCall');
-houseCallRadio.addEventListener('change', () => {
-    if (houseCallRadio.checked) {
-        alert("Note: There will be an extra fee for the house call as an Uber will need to be arranged for the braider.");
+    if (document.getElementById('goddessExtra') && document.getElementById('goddessExtra').checked) {
+        extras.push('Goddess (R200)');
     }
-});
 
-    // Update price based on selected service
-    const serviceSelect = document.getElementById('service');
-    const priceInput = document.getElementById('price');
-    serviceSelect.addEventListener('change', () => {
-        priceInput.value = "R" + servicePrices[serviceSelect.value];
-    });
-
-    // Set initial price on form load
-    priceInput.value = "R" + servicePrices[serviceSelect.value];
-
-    const form = document.getElementById('bookingForm');
-    form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        
-        // Gather form data
-        const name = form.name.value;
-        const email = form.email.value;
-        const cell = form.cell.value;
-        const service = form.service.value;
-        const color = form.color.value;  // Added color selection data
-        const date = form.date.value;
-        const paymentProof = form.paymentProof.files[0];
-        const serviceType = form.serviceType.value;  // Added serviceType in the notification
-
-        if (!paymentProof) {
-            alert("Please upload proof of payment before submitting.");
-            return;
-        }
-
-        // Notify admin (simulated for now)
-        notifyAdmin(name, email, cell, service, color, date, serviceType); // Added serviceType in the notification
-
-        // Mark date as unavailable
-        unavailableDates.push(date);
-
-        // Confirmation message
-        alert('Thank you for booking! We will review your payment and contact you shortly.');
-
-        // Close form
-        closeBookingForm();
-    });
-}
-
-function closeBookingForm() {
-    const bookingForm = document.querySelector('body > div');
-    if (bookingForm) {
-        document.body.removeChild(bookingForm);
+    if (document.getElementById('highlightExtra') && document.getElementById('highlightExtra').checked) {
+        extras.push('Highlight (R150)');
     }
-}
 
-// Notify admin (simulated for now, replace with actual email or database entry)
-function notifyAdmin(name, email, cell, service, date) {
-    const bookingDetails = { name, email, cell, service, date };
+    if (document.getElementById('extraLengthKnotless') && document.getElementById('extraLengthKnotless').checked) {
+        extras.push('Extra Length Knotless (R50)');
+    }
 
-    fetch('/sendBookingNotification', {
+    if (document.getElementById('goddessExtraInvisible') && document.getElementById('goddessExtraInvisible').checked) {
+        extras.push('Goddess Invisible (R100)');
+    }
+
+    if (document.getElementById('highlightPeekabooExtra') && document.getElementById('highlightPeekabooExtra').checked) {
+        extras.push('Highlight/Peekaboo Invisible (R120)');
+    }
+
+    if (document.getElementById('goddessExtraButterfly') && document.getElementById('goddessExtraButterfly').checked) {
+        extras.push('Goddess Butterfly (R200)');
+    }
+
+    if (document.getElementById('highlightExtraButterfly') && document.getElementById('highlightExtraButterfly').checked) {
+        extras.push('Highlight Butterfly (R150)');
+    }
+
+    if (document.getElementById('extraBeads') && document.getElementById('extraBeads').checked) {
+        extras.push('Extra Beads (R50)');
+    }
+
+    if (document.getElementById('extraLengthNormal') && document.getElementById('extraLengthNormal').checked) {
+        extras.push('Extra Length Normal (R50)');
+    }
+
+    if (document.getElementById('extraLengthHairpieceNotIncluded') && document.getElementById('extraLengthHairpieceNotIncluded').checked) {
+        extras.push('Extra Length Hairpiece Not Included (R50)');
+    }
+
+    // Check if required fields are empty
+    if (!name || !email || !cell || !hairstyle || !size || !color || !date || !hour || !minute || !paymentProof) {
+        alert("Please fill in all required fields!");
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('loading-text').style.display = 'none'; // Hide loading text
+        return;
+    }
+
+    // Check if payment proof exists
+    if (!paymentProof) {
+        alert("Proof of payment is required!");
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('loading-text').style.display = 'none'; // Hide loading text
+        return;
+    }
+
+    // Construct FormData for submission
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('cell', cell);
+    formData.append('hairstyle', hairstyle);
+    formData.append('size', size);
+    formData.append('color', color);
+    formData.append('date', date);
+    formData.append('time', time);
+    formData.append('price', price);
+    formData.append('appointmentType', appointmentType);
+    formData.append('paymentProof', paymentProof);
+
+    // Add extras to formData if selected
+    if (extras.length > 0) {
+        formData.append('extras', extras.join(', ')); // Send as a comma-separated list
+    }
+
+    // Send the form data using Fetch API
+    fetch('http://localhost:3000/submit-booking', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingDetails),
+        body: formData,
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Admin notified successfully');
+        setTimeout(function () {
+            document.getElementById('spinner').style.display = 'none'; // Hide spinner after submission
+        }, 3000); // Replace with your actual API or form submission delay
+
+        // Show appropriate message based on response
+        if (data.status === 'success') {
+            alert("Booking successfully sent!");
+            closeBookingForm();
+        } else {
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('loading-text').style.display = 'none'; // Hide loading text
+            alert("There was an issue with your booking.");
+            closeBookingForm();
+        }
     })
     .catch(error => {
+        // Hide the loading spinner and text in case of an error
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('loading-text').style.display = 'none';
         console.error('Error:', error);
+        alert("There was an issue with your booking.");
     });
+});
+
+
+// Booking Form Submit Listener (your existing code)
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();  // Prevent form from submitting the default way
+    // Your existing booking form submission logic
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("newsletter-form");
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        
+        console.log("Form submitted!"); // Log here to confirm it's triggered
+        
+        const emailInput = document.getElementById("email");
+        const popupOverlay = document.getElementById('popup-overlay');
+        const popupText = document.getElementById('popup-text');
+
+        console.log("Email:", emailInput.value); // Check email value
+
+        if (!emailInput || !popupOverlay || !popupText) {
+            console.error("❌ Elements not found!");
+            return;
+        }
+
+        const email = emailInput.value.trim();
+        if (!email) {
+            alert("❌ Please enter a valid email.");
+            return;
+        }
+
+        console.log("Showing pop-up...");
+        popupOverlay.style.display = 'flex'; // Show pop-up
+
+        try {
+            const response = await fetch("/subscribe-newsletter", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+
+            if (response.ok) {
+                emailInput.value = ""; // Clear input
+            }
+
+        } catch (error) {
+            console.error("❌ Error:", error);
+            alert("Something went wrong.");
+        } finally {
+            console.log("Hiding pop-up...");
+            popupOverlay.style.display = 'none'; // Hide pop-up
+        }
+    });
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const reviews = [
+        { name: "Jane Doe", text: "Absolutely amazing service! I love my new look.", rating: 5 },
+        { name: "Mary Smith", text: "Highly professional and friendly. Will book again!", rating: 5 },
+        { name: "John Williams", text: "Great experience! Highly recommend.", rating: 4 }
+    ];
+
+    const reviewContainer = document.getElementById("review-container");
+
+    function generateStars(rating) {
+        return "⭐".repeat(rating);
+    }
+
+    reviews.forEach(review => {
+        const reviewCard = document.createElement("div");
+        reviewCard.classList.add("review-card");
+
+        reviewCard.innerHTML = `
+            <p class="review-text">"${review.text}"</p>
+            <div class="review-author">
+                <strong>${review.name}</strong> ${generateStars(review.rating)}
+            </div>
+        `;
+
+        reviewContainer.appendChild(reviewCard);
+    });
+});
+
+// Ensure the form is only handled once
+document.getElementById('contact-form').addEventListener("submit", async function(event) {
+    event.preventDefault(); // Prevent the form from submitting the traditional way
+
+    const form = event.target; // Get the form that was submitted
+
+    const name = form.name.value;
+    const email = form.email.value;
+    const message = form.message.value;
+
+    console.log("Name:", name, "Email:", email, "Message:", message); // Check if values are populated
+
+    if (!name || !email || !message) {
+        alert("All fields are required.");
+        return;
+    }
+
+    const formData = {
+        name: name,
+        email: email,
+        message: message,
+    };
+
+    try {
+         const response = await fetch("http://localhost:3000/contact", { // Update with the actual endpoint URL
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(data.message); // Show success message
+            form.reset(); // Reset the form after submission
+        } else {
+            alert(data.message); // Show error message
+        }
+    } catch (error) {
+        console.error('❌ Error submitting form:', error);
+        alert('Something went wrong. Please try again later.');
+    }
+});
+
+
+function closeBookingForm() {
+    window.location.href = 'booking.html'; // Redirect to the home page
 }
+
+// Use jQuery in noConflict mode for datepicker and dynamic price
+var $jq = jQuery.noConflict();
+
+$jq(document).ready(function () {
+    // Initialize Datepicker
+    $jq('#date').datepicker({
+        format: 'mm/dd/yyyy'
+    });
+
+    // Update Price dynamically based on selected hairstyle
+    $jq(document).ready(function() {
+        function updatePrice() {
+            var basePrices = {
+                'islandtwist': 0,
+                'distressedlocs': 0,
+                'invisiblelocs': 0,
+                'butterflylocs': 0,
+                'knotlessBraids': 0,
+                'knotlessBraidswithbeads': 0,
+                'normalBraids': 0,
+                'normalBraidsHairpieceNotIncluded': 0,
+                'Goddessbraids': 0,
+                'knotlessBraidsHairpieceNotIncluded': 0, // New option
+                'GoddessbraidsHairpieceNotIncluded': 0,  // New option
+            };
+    
+            var sizePrices = {
+                'islandtwist': { 'small': 800, 'medium': 700, 'large': 600, 'jumbo': 500 },
+                'distressedlocs': { 'shoulder': 800, 'midback': 900, 'waist': 1100, 'butt': 1200, 'knee': 1400 },
+                'invisiblelocs': { 'bob': 600, 'shoulder': 650, 'midback': 750, 'waist': 800 },
+                'butterflylocs': { 'shoulder': 900, 'midback': 1000, 'waist': 1200, 'butt': 1350, 'knee': 1500 },
+                'knotlessBraids': { 'small': 800, 'smedium': 750, 'medium': 650, 'large': 600, 'jumbo': 550 },
+                'knotlessBraidswithbeads': { 'small': 750, 'smedium': 700, 'medium': 750, 'large': 700, 'jumbo': 650 },
+                'normalBraids': { 'small': 600, 'medium': 500, 'large': 400, 'jumbo': 300 },
+                'normalBraidsHairpieceNotIncluded': { 'small': 600, 'medium': 500, 'large': 400, 'jumbo': 300 },  // New option for normal braids hairpiece not included
+                'Goddessbraids': { 'small': 900, 'medium': 850, 'large': 800 },
+                'knotlessBraidsHairpieceNotIncluded': { 'small': 550, 'smedium': 500, 'medium': 400, 'large': 450, 'jumbo': 400 }, // New option prices
+                'GoddessbraidsHairpieceNotIncluded': { 'small': 550, 'smedium': 500, 'medium': 400, 'large': 800,'jumbo': 400 },  // New option prices
+            };
+    
+            var sizeOptions = {
+                'islandtwist': ['small', 'medium', 'large', 'jumbo'],
+                'distressedlocs': ['shoulder', 'midback', 'waist', 'butt', 'knee'],
+                'invisiblelocs': ['bob', 'shoulder', 'midback', 'waist'],
+                'butterflylocs': ['shoulder', 'midback', 'waist', 'butt', 'knee'],
+                'knotlessBraids': ['small', 'smedium', 'medium', 'large', 'jumbo'],
+                'knotlessBraidswithbeads': ['small', 'smedium', 'medium', 'large', 'jumbo'],
+                'normalBraids': ['small', 'medium', 'large', 'jumbo'],
+                'normalBraidsHairpieceNotIncluded': ['small', 'medium', 'large', 'jumbo'],  // New option for normal braids hairpiece not included sizes
+                'Goddessbraids': ['small', 'medium', 'large'],
+                'knotlessBraidsHairpieceNotIncluded': ['small', 'medium', 'large', 'jumbo'], // New option sizes
+                'GoddessbraidsHairpieceNotIncluded': ['small', 'medium', 'large'],  // New option sizes
+            };
+    
+            var selectedHairstyle = $jq('#hairstyle').val();
+            var selectedSize = $jq('#size').val();
+            var basePrice = basePrices[selectedHairstyle] || 0;
+            var sizePrice = (sizePrices[selectedHairstyle] && sizePrices[selectedHairstyle][selectedSize]) || 0;
+    
+            // Extras
+            var extraCurlsPrice = $jq('#extraCurls').prop('checked') && selectedHairstyle === 'islandtwist' ? 100 : 0;
+            var goddessExtraDistressed = $jq('#goddessExtra').prop('checked') && selectedHairstyle === 'distressedlocs' ? 200 : 0;
+            var highlightExtraDistressed = $jq('#highlightExtra').prop('checked') && selectedHairstyle === 'distressedlocs' ? 150 : 0;
+            var extraLengthKnotless = $jq('#extraLengthKnotless').prop('checked') && selectedHairstyle === 'knotlessBraids' ? 50 : 0; // This line handles extra length for Knotless Braids
+            var extraBeadsPrice = $jq('#extraBeads').prop('checked') && selectedHairstyle === 'knotlessBraidswithbeads' ? 50 : 0;
+            var goddessExtraInvisible = $jq('#goddessExtraInvisible').prop('checked') && selectedHairstyle === 'invisiblelocs' ? 100 : 0;
+            var highlightPeekabooExtra = $jq('#highlightPeekabooExtra').prop('checked') && selectedHairstyle === 'invisiblelocs' ? 120 : 0;
+            var goddessExtraButterfly = $jq('#goddessExtraButterfly').prop('checked') && selectedHairstyle === 'butterflylocs' ? 200 : 0;
+            var highlightExtraButterfly = $jq('#highlightExtraButterfly').prop('checked') && selectedHairstyle === 'butterflylocs' ? 150 : 0;
+            var extraLengthNormal = $jq('#extraLengthNormal').prop('checked') && selectedHairstyle === 'normalBraids' ? 50 : 0;
+    
+            // Corrected and added unique identifiers for Hairpiece Not Included length
+            var extraLengthHairpieceNotIncludedNormal = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'normalBraidsHairpieceNotIncluded') ? 50 : 0;
+            var extraLengthHairpieceNotIncludedKnotless = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'knotlessBraidsHairpieceNotIncluded') ? 50 : 0;
+            var extraLengthHairpieceNotIncludedGoddess = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'GoddessbraidsHairpieceNotIncluded') ? 50 : 0;
+    
+            var totalPrice = basePrice + sizePrice + extraCurlsPrice + goddessExtraDistressed + highlightExtraDistressed +
+                extraLengthKnotless + extraBeadsPrice + goddessExtraInvisible + highlightPeekabooExtra +
+                goddessExtraButterfly + highlightExtraButterfly + extraLengthNormal + extraLengthHairpieceNotIncludedNormal +
+                extraLengthHairpieceNotIncludedKnotless + extraLengthHairpieceNotIncludedGoddess;
+    
+            $jq('#price').text('R' + totalPrice);
+    
+            // Update size options dynamically
+            var sizeSelect = $jq('#size');
+            sizeSelect.empty();
+    
+            // Always add the placeholder first, before dynamic options
+            sizeSelect.append('<option value="" disabled selected>Select Size</option>');
+    
+            var availableSizes = sizeOptions[selectedHairstyle] || [];
+            availableSizes.forEach(function(size) {
+                sizeSelect.append('<option value="' + size + '">' + size.charAt(0).toUpperCase() + size.slice(1) + '</option>');
+            });
+    
+            // Ensure the selected size is still valid or set to the first available option
+            if (selectedSize === "" || availableSizes.indexOf(selectedSize) === -1) {
+                sizeSelect.val(""); // Keep the placeholder if no valid size is selected
+            } else {
+                sizeSelect.val(selectedSize); // Set the selected size if it's valid
+            }
+        }
+    
+        // Trigger price update when an option changes
+        $jq('#hairstyle').change(updatePrice);
+        $jq('#size').change(updatePrice);
+        $jq('#extraCurls').change(updatePrice);
+        $jq('#goddessExtra').change(updatePrice);
+        $jq('#highlightExtra').change(updatePrice);
+        $jq('#extraLengthKnotless').change(updatePrice);  // Ensure this triggers the price update
+        $jq('#extraBeads').change(updatePrice);
+        $jq('#goddessExtraInvisible').change(updatePrice);
+        $jq('#highlightPeekabooExtra').change(updatePrice);
+        $jq('#goddessExtraButterfly').change(updatePrice);
+        $jq('#highlightExtraButterfly').change(updatePrice);
+        $jq('#extraLengthNormal').change(updatePrice);
+        $jq('#extraLengthHairpieceNotIncluded').change(updatePrice); 
+    
+        $jq('#hairstyle').change(function() {
+            $jq('#extraCurlsContainer').toggle($jq(this).val() === 'islandtwist');
+            $jq('#extraOptionsDistressed').toggle($jq(this).val() === 'distressedlocs');
+            $jq('#extraOptionsKnotless').toggle($jq(this).val() === 'knotlessBraids');
+            $jq('#extraOptionsKnotlessBeads').toggle($jq(this).val() === 'knotlessBraidswithbeads');
+            $jq('#extraOptionsInvisible').toggle($jq(this).val() === 'invisiblelocs');
+            $jq('#extraOptionsButterfly').toggle($jq(this).val() === 'butterflylocs');
+            $jq('#extraOptionsNormal').toggle($jq(this).val() === 'normalBraids');
+            $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'knotlessBraidsHairpieceNotIncluded'); 
+            $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'GoddessbraidsHairpieceNotIncluded'); 
+            $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'normalBraidsHairpieceNotIncluded');
+
+        });
+    
+        updatePrice();
+    });
+    
+});
+
+// JavaScript for Carousel Rotation
+
+var angle = 0;
+
+// Function to manually rotate the images inside the carousel
+function galleryspin(sign) { 
+    var spinner = document.querySelector("#spinner");
+    if (sign === '+') { 
+        angle = angle + 45; 
+    } else { 
+        angle = angle - 45; 
+    }
+    spinner.style.transform = "rotateY(" + angle + "deg)";
+}
+
+// Function to automatically rotate the images inside the carousel
+function autoRotate() {
+    angle += 45; // Rotate 45 degrees at a time
+    var spinner = document.querySelector("#spinner");
+    spinner.style.transform = "rotateY(" + angle + "deg)";
+}
+
+// Set an interval for automatic rotation (e.g., every 3 seconds)
+var autoRotateInterval = setInterval(autoRotate, 3000);  // Adjust the interval time as needed
+ // Get modal and button elements
+ var modal = document.getElementById('adminModal');
+ var btn = document.getElementById('adminAccessBtn');
+ var span = document.getElementsByClassName('close')[0];
+
+ // Open the modal when the "Access Admin" button is clicked
+ btn.onclick = function() {
+     modal.style.display = 'block';
+ }
+
+ // Close the modal when the "X" button is clicked
+ span.onclick = function() {
+     modal.style.display = 'none';
+ }
+
+ // Close the modal if the user clicks outside of it
+ window.onclick = function(event) {
+     if (event.target == modal) {
+         modal.style.display = 'none';
+     }
+ }
+ function showLoaderAd() {
+    document.getElementById("loading-overlay").style.display = "block";
+}
+
+function hideLoaderAd() {
+    document.getElementById("loading-overlay").style.display = "none";
+}
+
+ // Handle the login form submission
+ fetch('http://localhost:3000/admin')
+    .then(response => response.json())
+    .then(data => {
+        var adminUsername = data.adminUsername;
+        var adminPassword = data.adminPassword;
+
+        // Use the values for validation
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            showLoaderAd();
+        document.getElementById('loading-spinner').style.display = 'block'; // Show spinner
+
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Validate credentials
+            if (username === adminUsername && password === adminPassword) {
+                hideLoaderAd();
+        document.getElementById('loading-spinner').style.display = 'none'; // Hide spinner
+                window.location.href = "admin.html";
+            } else {
+                alert("Invalid username or password!");
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching admin credentials:', error));
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const houseCallRadio = document.getElementById("houseCall");
+        const walkInRadio = document.getElementById("walkIn");
+        const houseCallWarning = document.getElementById("houseCallWarning");
+
+        if (houseCallRadio && walkInRadio && houseCallWarning) { // Ensure elements exist
+            houseCallRadio.addEventListener("change", function () {
+                houseCallWarning.style.display = "block";
+                // alert("Additional charges will apply for Uber transportation to your home.");
+            });
+
+            walkInRadio.addEventListener("change", function () {
+                houseCallWarning.style.display = "none";
+            });
+        }
+    });
+
+// ======7BGN8SW8LBQBMG3MAC7MZ9EC 
