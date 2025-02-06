@@ -1,14 +1,20 @@
-/* Base Styles */
-body {
+
+
+@media screen and (max-width: 768px) {
+  /* Styles for mobile screens */
+  body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
     color: #333;
+      font-size: 14px;
+  }
 }
 
+
 header {
-    background-color: #ffb6c1;
+    background-color: #ff69b4;
     padding: 20px;
     text-align: center;
 }
@@ -49,23 +55,35 @@ nav a {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.cta {
-    text-align: center;
-    margin: 20px 0;
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh; /* Centers it vertically */
 }
 
-.cta button {
-    padding: 10px 20px;
+.custom-btn {
+    padding: 12px 24px; /* Slightly larger */
     font-size: 18px;
-    background-color: #ff69b4;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ff69b4, #ff1493);
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.15);
 }
 
-.cta button:hover {
-    background-color: #ff1493;
+.custom-btn:hover {
+    background: linear-gradient(135deg, #ff1493, #ff69b4);
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.custom-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 footer {
@@ -75,64 +93,817 @@ footer {
     padding: 10px;
 }
 
-/* Form Styling */
-#bookingForm {
-    background-color: #fff;
+.newsletter-subscription {
+    background-color: rgba(0, 0, 0, 0.7); /* Transparent black */
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    max-width: 100%;
-}
-
-#bookingForm h2 {
-    margin-bottom: 20px;
     text-align: center;
-    color: #ff69b4;
+    margin-top: 30px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .newsletter-subscription h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  
+  .newsletter-subscription p {
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+  
+  .newsletter-subscription form {
+    display: inline-block;
+  }
+  
+  .newsletter-subscription input[type="email"] {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+  }
+  
+  .newsletter-subscription button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .newsletter-subscription button:hover {
+    background-color: #0056b3;
+  }
+  
+   /* Custom pink button */
+   .btn-pink {
+    background-color: #ff69b4; /* Pink color */
+    border-color: #ff69b4;
+  }
+
+  .btn-pink:hover {
+    background-color: #ff1493; /* Darker pink on hover */
+    border-color: #ff1493;
+  }
+  footer {
+    background-color: rgba(0, 0, 0, 0.7); /* Transparent black */
+  }
+  .social-icons a {
+    color: #fff;
+    font-size: 1.5rem;
+    margin: 0 10px;
+  }
+  .social-icons a:hover {
+    color: #ff69b4; /* Pink color on hover */
+  }
+  .footer-links a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .footer-links a:hover {
+    color: #ff69b4; /* Pink color on hover */
+  }
+
+   /* Custom Loading Spinner Styles */
+   @keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
-#bookingForm label {
+#loading-spinner {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1999;
+    width: 60px;
+    height: 60px;
+    border: 8px solid #f3f3f3; 
+    border-top: 8px solid #ff69b4; 
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+    margin-right: 20px;
+}
+
+#loading-text {
+    display: none;
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1999;
+    font-size: 1.2rem;
+    color: #ff69b4; 
     font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
 }
 
-#bookingForm input, #bookingForm select {
+/* ================================================= */
+
+
+
+
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+
+/* Form Elements */
+label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+input[type="date"],
+input[type="time"] {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
+    margin: 8px 0;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 4px;
     font-size: 16px;
+    background-color: #f9f9f9;
     box-sizing: border-box;
 }
 
-#bookingForm input[type="date"] {
-    padding-left: 10px;
-}
-
-#bookingForm button {
-    width: 48%;
-    padding: 10px;
-    background-color: #ff69b4;
-    color: #fff;
+button.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #28a745; /* Green color */
+    color: white;
+    font-size: 18px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.submit-btn:hover {
+    background-color: #218838;
+}
+
+.alert {
+    display: none;
+    background-color: #f44336; /* Red */
+    color: white;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.alert.show {
+    display: block;
+}
+
+#noResultsMessage {
+    margin-top: 20px;
+    text-align: center;
     font-size: 16px;
-    margin-top: 10px;
-    display: inline-block;
+}
+/* ============================================= */
+
+body {
+  margin: 0;
+
+  background: linear-gradient(to bottom, #333333  25%, white 38%);
 }
 
-#bookingForm button:hover {
-    background-color: #ff1493;
+/* =================================================================================*/
+
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  
 }
 
-#bookingForm button[type="button"] {
-    background-color: #ddd;
-    color: #333;
+.card {
+  background: transparent !important; /* Force transparency */
+}
+.card {
+  border: none !important; /* Remove any border */
+  box-shadow: none !important; /* Remove any shadow */
+}
+.card {
+  box-shadow: none;
+  border: none;
 }
 
-#bookingForm button[type="button"]:hover {
-    background-color: #ccc;
+.card {
+  width: 100px;
+  height: 150px;
+  margin: 0 -25px;
+  position: relative;
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.card:after {
+  content: '';
+  position: absolute;
+  left: -60px;
+  right: -60px;
+  top: 0;
+  bottom: 0;
+  z-index: 10;
+}
+.card-face {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.card-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the entire card */
+  display: block; /* Removes unwanted space below images */
+}
+.card-label {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 2px;
+  font-weight: bold;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 2px;
+}
+.card:nth-child(1) .card-face {
+  background: linear-gradient(-135deg, #ff9999, #da0b0b);
+  transform: translateY(45px) rotate(-28.125deg);
+}
+
+.card:nth-child(1) .card-label {
+  color: #db0000;
+  text-shadow: -0.025em 0.025em 0 #ff8080;
+}
+
+.card:nth-child(1):hover .card-face {
+  transform: translateY(-100px) rotate(0deg) scale(2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card:nth-child(2) .card-face {
+  background: linear-gradient(-135deg, #ff99d6, #da0b87);
+  transform: translateY(35px) rotate(-21.875deg);
+}
+
+.card:nth-child(2) .card-label {
+  color: #db0084;
+  text-shadow: -0.025em 0.025em 0 #ff80cc;
+}
+
+.card:nth-child(2):hover .card-face {
+  transform: translateY(-100px) rotate(0deg) scale(2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card:nth-child(3) .card-face {
+  background: linear-gradient(-135deg, #eb99ff, #b10bda);
+  transform: translateY(25px) rotate(-15.625deg);
+}
+
+.card:nth-child(3) .card-label {
+  color: #af00db;
+  text-shadow: -0.025em 0.025em 0 #e680ff;
+}
+
+.card:nth-child(3):hover .card-face {
+  transform: translateY(-100px) rotate(0deg) scale(2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card:nth-child(4) .card-face {
+  background: linear-gradient(-135deg, #ad99ff, #350bda);
+  transform: translateY(15px) rotate(-9.375deg);
+}
+
+.card:nth-child(4) .card-label {
+  color: #2c00db;
+  text-shadow: -0.025em 0.025em 0 #9980ff;
+}
+
+.card:nth-child(4):hover .card-face {
+  transform: translateY(-100px) rotate(0deg) scale(2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card:nth-child(5) .card-face {
+  background: linear-gradient(-135deg, #99c2ff, #0b5eda);
+  transform: translateY(5px) rotate(-3.125deg);
+}
+
+.card:nth-child(5) .card-label {
+  color: #0058db;
+  text-shadow: -0.025em 0.025em 0 #80b3ff;
+}
+
+.card:nth-child(5):hover .card-face {
+  transform: translateY(-100px) rotate(0deg) scale(2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card:nth-child(6) .card-face {
+  background: linear-gradient(-135deg, #99ffff, #0bdada);
+  transform: translateY(5px) rotate(3.125deg);
+}
+
+.card:nth-child(6) .card-label {
+  color: #00dbdb;
+  text-shadow: -0.025em 0.025em 0 #80ffff;
+}
+
+.card:nth-child(6):hover .card-face {
+  transform: translateY(-100px) rotate(0deg) scale(2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card:nth-child(7) .card-face {
+  background: linear-gradient(-135deg, #99ffc2, #0bda5e);
+  transform: translateY(15px) rotate(9.375deg);
+}
+
+.card:nth-child(7) .card-label {
+  color: #00db5e;
+  text-shadow: -0.025em 0.025em 0 #80ffb3;
+}
+
+.card:nth-child(7):hover .card-face {
+  transform: translateY(-100px) rotate(0deg) scale(2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+/* ================================ */
+ /* Custom Styling for Form */
+ .modal-content {
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.btn-primary {
+  border-radius: 25px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  border: none;
+}
+
+.btn-close {
+  background-color: transparent;
+  border: none;
+}
+
+.modal-header {
+  background-color: #007bff;
+  color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.modal-body {
+  background-color: #f9f9f9;
+}
+
+.form-control-file {
+  border-radius: 8px;
+}
+
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+
+.radio-label {
+  margin-left: 5px;
+}
+
+/* Styling for time picker dropdown */
+.time-picker-dropdown {
+  display: flex;
+  justify-content: space-between;
+}
+
+.time-picker-dropdown select {
+  width: 48%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+/* Custom styles for the buttons */
+.btn-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Price styling */
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: green;
+}
+
+/* More curvy submit button */
+.btn-primary {
+width: 100%;
+border-radius: 30px; /* Increased curvature */
+padding: 12px;
+font-size: 1rem;
+}
+
+/* Small Open Appointment Button */
+.btn-small {
+  padding: 8px 15px;
+  font-size: 0.875rem;
+  border-radius: 25px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.spinner-container {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(255, 255, 255, 0.7);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 9999; /* Make sure the spinner appears on top */
+}
+.spinner-border {
+width: 3rem;
+height: 3rem;
+border-width: 0.25rem;
+}
+
+#alert-box {
+position: fixed; /* Ensure it's positioned relative to the viewport */
+top: 20px; /* Adjust as needed */
+left: 50%;
+transform: translateX(-50%);
+background-color: #f8d7da; /* Light red background for error alerts */
+color: #721c24; /* Dark red text */
+padding: 15px;
+border-radius: 5px;
+z-index: 1999; /* Higher than Bootstrap modal (default is 1040) */
+display: none; /* Initially hidden */
+box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+.subscribe-btn {
+background-color: #007bff; /* Set default button color */
+color: white; /* Ensure text is visible */
+border: none;
+padding: 10px 20px;
+border-radius: 5px;
+transition: background-color 0.3s ease-in-out;
+}
+
+.subscribe-btn:hover {
+background-color: #0056b3; /* Slightly darker shade on hover */
+}
+/* Apply the Pacifico font */
+#customHeading {
+margin-right: 55px;
+font-family: 'Pacifico', cursive; /* Artistic font */
+font-size: 48px;
+color: white; /* Set text color to white */
+}
+
+div#carousel { 
+perspective: 1200px; 
+background: white; 
+padding-top: 10%; 
+font-size: 0; 
+margin-bottom: 3rem; 
+overflow: hidden; 
+}
+
+figure#spinner { 
+transform-style: preserve-3d; 
+height: 300px; 
+transform-origin: 50% 50% -500px; 
+transition: 1s; 
+}
+
+figure#spinner img {
+width: 300px; /* Set a fixed width */
+height: 300px; /* Set a fixed height */
+object-fit: cover; /* Ensures the image covers the space without distortion */
+position: absolute;
+left: 30%;
+transform-origin: 50% 50% -500px;
+outline: 1px solid transparent;
+}
+figure#spinner img:nth-child(1) { transform: rotateY(0deg); }
+figure#spinner img:nth-child(2) { transform: rotateY(-45deg); }
+figure#spinner img:nth-child(3) { transform: rotateY(-90deg); }
+figure#spinner img:nth-child(4) { transform: rotateY(-135deg); }
+figure#spinner img:nth-child(5) { transform: rotateY(-180deg); }
+figure#spinner img:nth-child(6) { transform: rotateY(-225deg); }
+figure#spinner img:nth-child(7) { transform: rotateY(-270deg); }
+figure#spinner img:nth-child(8) { transform: rotateY(-315deg); }
+
+div#carousel ~ span { 
+color: #fff; 
+margin: 5%; 
+display: inline-block; 
+text-decoration: none; 
+font-size: 2rem; 
+transition: 0.6s color; 
+position: relative; 
+margin-top: -6rem; 
+border-bottom: none; 
+line-height: 0;
+}
+div#carousel ~ span:hover { color: #888; cursor: pointer; }
+
+/* ========================================= */
+
+.sectioniv {
+  text-align: center;
+  padding: 50px;
+  background-color: #f9f9f9;
+}
+
+.review-title {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.review-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.review-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.review-card:hover {
+  transform: scale(1.05);
+}
+
+.review-text {
+  font-style: italic;
+  color: #555;
+}
+
+.review-author {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #222;
+}
+/* =============================== */
+
+.sectioncon {
+  padding: 50px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.contact-title {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.contact-item i {
+  font-size: 1.5rem;
+  color: #ff69b4; /* Icon color */
+}
+
+.contact-item a {
+  color: #ff69b4;
+  text-decoration: none;
+}
+
+.contact-form h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.contact-form textarea {
+  resize: vertical;
+}
+
+.contact-btn {
+  padding: 10px 20px;
+  background-color: #ff69b4;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.contact-btn:hover {
+  background-color: #e05b8a;
+}
+#loading-message {
+  font-size: 16px;
+  color: #007BFF;
+  font-weight: bold;
+}
+/* =============================================== */
+
+ /* Modal styles */
+ .modalv4 {
+  display: none; 
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding-top: 60px;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.7); /* Transparent black background */
+  transition: opacity 0.3s ease;
+
+
+}
+
+.modal-contentv4 {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 400px;
+  animation: modalIn 0.3s ease-in-out;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Modal title */
+h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Form input fields */
+.form-input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+.form-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #FF69B4; /* Pink background for the submit button */
+  color: white;
+  cursor: pointer;
+  width: 100%;
+}
+
+.form-btn:hover {
+  background-color: #FF1493; /* Darker pink when hovered */
+}
+
+/* Animation for modal */
+@keyframes modalIn {
+  from {
+      opacity: 0;
+      transform: translateY(-50px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+/* ========================================== */
+   /* Floating WhatsApp Icon Styles */
+   .whatsapp-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    border-radius: 50%;
+    background-color: #25d366; /* WhatsApp green */
+    padding: 8px; /* Reduced padding */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.whatsapp-icon:hover {
+    transform: scale(1.1); /* Slight zoom effect on hover */
+}
+
+.whatsapp-icon img {
+    display: block;
+    width: 40px; /* Reduced size */
+    height: 40px; /* Reduced size */
+}
+
+
+
+
+#popup-overlay {
+  display: none !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+
+
+#popup-message {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+}
+
+#popup-text {
+  font-weight: bold;
 }
