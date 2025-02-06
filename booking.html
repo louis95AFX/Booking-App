@@ -3,70 +3,414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Braider Booking Website</title>
-    
+    <title>Touched By Jess</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="favicon.ico.png" type="image/x-icon">  
     <link rel="stylesheet" href="booking.css"> <!-- External CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
+      <!-- Floating WhatsApp Icon -->
+      <a href="https://wa.me/+27681219213" target="_blank" id="whatsapp-icon" class="whatsapp-icon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="60" height="60">
+    </a>
+    <div data-aos="fade-up" data-aos-duration="1000">
     <!-- Header -->
     <header>
-        <h1>Braider's Booking Service</h1>
+        <h1 id="customHeading">Touched By Jess</h1>
         <nav>
             <a href="#services">Services</a>
             <a href="#gallery">Gallery</a>
             <a href="#reviews">Reviews</a>
             <a href="#contact">Contact</a>
+            <a href="#" class="admin-link" id="adminAccessBtn">
+                <i class="fas fa-user-shield" style="font-size: 1.5rem; color: #333;"></i>
+            </a>
         </nav>
     </header>
 
+    <!-- The Modal -->
+    <div id="adminModal" class="modalv4">
+        <div class="modal-contentv4">
+            <span class="close">&times;</span>
+            <h2>Admin Login</h2>
+            <form id="loginForm">
+                <input type="text" id="username" class="form-input" placeholder="Username" required>
+                <input type="password" id="password" class="form-input" placeholder="Password" required>
+                <button type="submit" class="form-btn">Login</button>
+            </form>
+        </div>
+    </div>
+    <div id="loading-overlay">
+        <div id="loading-spinner">
+        </div>
+    </div>
+
+    <div id="alert-box" class="alert" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+        <span id="alert-message"></span>
+    </div>
+    
     <!-- Main Content -->
     <div class="container">
         <!-- Services Section -->
-        <section id="services" class="section">
-            <h2>Our Services</h2>
-            <p>We offer professional braiding services tailored to your style and preferences. Book your appointment today!</p>
-            <ul>
-                <li>Box Braids</li>
-                <li>Cornrows</li>
-                <li>Twists</li>
-                <li>Crochet Styles</li>
-            </ul>
-            <div class="cta">
-                <button onclick="openBookingForm()">Book Now</button>
+        <section id="services" class="section" style="margin-top: 50px; padding-bottom: 30px;">
+    <div class="cards">
+        <div class="card">
+            <div class="card-face">
+                <img src="tbj9-removebg-preview.png" alt="Service 1">
+                <div class="card-label">1</div>
             </div>
-        </section>
-
-        <!-- Gallery Section -->
-        <section id="gallery" class="section">
-            <h2>Gallery</h2>
-            <div class="gallery">
-                <img src="brade1.jpg" alt="Booking Image">
-                <img src="averie-woodard-4nulm-JUYFo-unsplash.jpg" alt="Braiding Style 2">
-                <img src="gustavo-spindula-K2D7muBun1A-unsplash.jpg" alt="Braiding Style 3">
+        </div>
+        <div class="card">
+            <div class="card-face">
+                <img src="tbj10-removebg-preview.png" alt="Service 2">
+                <div class="card-label">2</div>
             </div>
-        </section>
+        </div>
+        <div class="card">
+            <div class="card-face">
+                <img src="tbj11-removebg-preview.png" alt="Service 3">
+                <div class="card-label">3</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-face">
+                <img src="tbj12-removebg-preview.png" alt="Service 4">
+                <div class="card-label">4</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-face">
+                <img src="tbj13-removebg-preview.png" alt="Service 5">
+                <div class="card-label">5</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-face">
+                <img src="tbj14-removebg-preview.png" alt="Service 6">
+                <div class="card-label">6</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-face">
+                <img src="tbj15-removebg-preview.png" alt="Service 7">
+                <div class="card-label">7</div>
+            </div>
+        </div>
+    </div>
+</section>
+          <div class="button-container">
+            <button type="button" class="custom-btn" data-bs-toggle="modal" data-bs-target="#appointmentModal" style="margin-bottom: 30px;">
+              BOOK NOW
+            </button>
+          </div>
+<!-- =========== -->
+        <!-- Modal -->
+        <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header text-center" style="background-color: #ff69b4; color: white;">
+                        <h5 class="modal-title w-100" id="appointmentModalLabel">Appointment Form</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <form id="bookingForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Cellphone Number</label>
+                                <input type="tel" class="form-control" id="cell" name="cell" placeholder="Enter your cellphone number">
+                            </div>
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Select Date</label>
+                                <input type="text" class="form-control datepicker" id="date" name="date" placeholder="Choose a date">
+                            </div>
+                            <div class="mb-3">
+                                <label for="time" class="form-label">Select Time</label>
+                                <div class="time-picker-dropdown">
+                                    <select id="hour" name="hour" class="form-control" aria-placeholder="hrs">
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                    </select>
+                                    <select id="minute" name="minute" class="form-control" aria-placeholder="min">
+                                        <option value="00">00</option>
+                                        <option value="05">05</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                        <option value="20">20</option>
+                                        <option value="25">25</option>
+                                        <option value="30">30</option>
+                                        <option value="35">35</option>
+                                        <option value="40">40</option>
+                                        <option value="45">45</option>
+                                        <option value="50">50</option>
+                                        <option value="55">55</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="hairstyle" class="form-label">Hairstyle</label>
+                                <select class="form-control" id="hairstyle" name="hairstyle">
+                                    <option value="" disabled selected>Select Hairstyle</option>
+                                    <option value="islandtwist">Island twist</option>
+                                    <option value="distressedlocs">Distressed locs</option>
+                                    <option value="invisiblelocs">Invisible locs</option>
+                                    <option value="butterflylocs">Butterfly locs</option>
+                                    <option value="knotlessBraids">Knotless Braids</option>
+                                    <option value="knotlessBraidswithbeads">Knotless Braids (With beads)</option>
+                                    <option value="normalBraids">Normal Braids</option>
+                                    <option value="normalBraidsHairpieceNotIncluded">Normal Braids (Hairpiece not included)</option>
+                                    <option value="Goddessbraids">Goddess Braids</option>
+                                    <option value="knotlessBraidsHairpieceNotIncluded">Knotless Braids (Hairpiece not included)</option>
+                                    <option value="GoddessbraidsHairpieceNotIncluded">Goddess Braids (Hairpiece not included)</option>
+                                </select>
+                            </div>
+                            <!-- New Size Selection -->
+                            <div class="mb-3">
+                                <label for="size" class="form-label">Select Size</label>
+                                <select class="form-control" id="size" name="size" required>
+                    
+                                </select>
+                            </div>
+                            
+                            
+                            <!-- Extra Curls Checkbox for Island Twist -->
+                            <div class="mb-3" id="extraCurlsContainer" style="display: none;">
+                                <label for="extraCurls" class="form-label">Add Extra Curls (R100)</label>
+                                <input type="checkbox" id="extraCurls" name="extraCurls">
+                            </div>
+                            <!-- Extra options for Distressed Locs -->
+                            <div id="extraOptionsDistressed" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="goddessExtra"> <label for="goddessExtra">Goddess (R200)</label><br>
+                                <input type="checkbox" id="highlightExtra"> <label for="highlightExtra">Highlight (R150)</label><br>
+                            </div>
 
-        <!-- Reviews Section -->
-        <section id="reviews" class="section">
-            <h2>Client Reviews</h2>
-            <p>"Absolutely amazing service! I love my new look." - Jane Doe</p>
-            <p>"Highly professional and friendly. Will book again!" - Mary Smith</p>
-        </section>
+                            <!-- Extra options for Knotless Braids -->
+                            <div id="extraOptionsKnotless" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="extraLengthKnotless"> <label for="extraLengthKnotless">Extra Length (R50)</label><br>
+                            </div>
 
-        <!-- Contact Section -->
-        <section id="contact" class="section">
-            <h2>Contact Us</h2>
-            <p>Email: braider@example.com</p>
-            <p>Phone: +123 456 7890</p>
-        </section>
+                            <!-- Extra options for Invisible Locs -->
+                            <div id="extraOptionsInvisible" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="goddessExtraInvisible"> <label for="goddessExtraInvisible">Goddess (R100)</label><br>
+                                <input type="checkbox" id="highlightPeekabooExtra"> <label for="highlightPeekabooExtra">Highlight/Peekaboo (R120)</label><br>
+                            </div>
+                            
+                            <!-- Extra options for Butterfly Locs -->
+                            <div id="extraOptionsButterfly" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="goddessExtraButterfly"> <label for="goddessExtraButterfly">Goddess (R200)</label><br>
+                                <input type="checkbox" id="highlightExtraButterfly"> <label for="highlightExtraButterfly">Highlight (R150)</label><br>
+                            </div>
+                            <!-- Extra options for Knotless Braids with Beads -->
+                            <div id="extraOptionsKnotlessBeads" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="extraBeads"> <label for="extraBeads">Extra Beads (R50)</label><br>
+                            </div>
+                           <!-- Extra options for Normal Braids -->
+                            <div id="extraOptionsNormal" style="display: none;">
+                                <label class="form-label">Extras:</label><br>
+                                <input type="checkbox" id="extraLengthNormal"> <label for="extraLengthNormal">Extra Length (R50)</label><br>
+                            </div>
 
+
+                            <div class="mb-3">
+                                <label for="color" class="form-label">Select Color</label>
+                                <select class="form-control" id="color" name="color">
+                                    <option value="black">Black</option>
+                                    <option value="brown">Brown</option>
+                                    <option value="blonde">Blonde</option>
+                                    <option value="red">Red</option>
+                                    <option value="blue">Blue</option>
+                                    <option value="green">Green</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="pink">Pink</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="white">White</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Price</label>
+                                <div id="price" class="price"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="fileUpload" class="form-label">Upload File</label>
+                                <input type="file" class="form-control" id="fileUpload" name="paymentProof">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Select Appointment Type</label><br>
+                                <input type="radio" id="walkIn" name="appointmentType" value="walkIn" checked>
+                                <label for="walkIn" class="radio-label">Walk-in</label><br>
+                                <input type="radio" id="houseCall" name="appointmentType" value="houseCall">
+                                <label for="houseCall" class="radio-label">House Call</label>
+                                <div id="houseCallWarning" style="color: red; font-size: 14px; display: none; margin-top: 5px;">
+                                    ⚠️ Additional charges will apply for Uber transportation to your home.
+                                </div>
+                            </div>
+                            <div class="btn-container">
+                                <button type="submit" class="btn btn-primary" style="background-color: #ff69b4">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+    <!-- Modal for Success Message -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Booking Status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="successModalMessage">
+                <!-- Success message will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- ==================== -->
+
+       <!-- Carousel Section -->
+<section id="gallery" class="section">
+    <div id="carousel">
+        <figure id="spinner">
+            <img src="tbj1-removebg-preview.png" alt="Image 1">
+            <img src="tbj2-removebg-preview.png" alt="Image 2">
+            <img src="tbj3-removebg-preview.png" alt="Image 3">
+            <img src="tbj4-removebg-preview.png" alt="Image 4">
+            <img src="tbj5-removebg-preview.png" alt="Image 5">
+            <img src="tbj6-removebg-preview.png" alt="Image 6">
+            <img src="tbj7-removebg-preview.png" alt="Image 7">
+            <img src="tbj8-removebg-preview.png" alt="Image 8">
+        </figure>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 Braider Booking Service. All Rights Reserved.</p>
-    </footer>
+    <!-- Carousel Navigation -->
+    <span style="float:left" class="ss-icon" onclick="galleryspin('-')">&lt;</span>
+    <span style="float:right" class="ss-icon" onclick="galleryspin('+')">&gt;</span>
+</section>
 
-    <script src="booking.js"></script> <!-- External JS -->
+        <!-- Reviews Section -->
+        <section id="reviews" class="sectioniv">
+            <h2 class="review-title">🌟 Client Reviews 🌟</h2>
+            
+            <div id="review-container" class="review-container">
+                <!-- Reviews will be inserted dynamically here -->
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="sectioncon">
+            <h2 class="contact-title">📞 Contact Us</h2>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <p>Email: <a href="#">thandiwejessica30@icloud.com</a></p>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <p>Phone: <a href="#">+27 68 121 9213</a></p>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <h3>Send us a Message</h3>
+                <form id="contact-form">
+                    <input type="text" id="name" name="name" placeholder="Your Name" required>
+                    <input type="email" id="email" name="email" placeholder="Your Email" required>
+                    <textarea id="message" name="message" placeholder="Your Message" rows="4" required></textarea>
+                         <!-- Loading message -->
+            <div id="loading-message" style="display: none;">Sending your message...</div>
+                    <button type="submit" class="contact-btn">Send Message</button>
+                </form>
+            </div>
+        </section>
+        
+        </div>
+    </div>
+ <!-- Footer Section -->
+ <footer class="bg-dark text-white py-2 mt-5">
+    <div class="container text-center">
+        <h3 class="mb-2" style="font-size: 1.2rem;">Subscribe to Our Newsletter</h3>
+        <p class="mb-2" style="font-size: 0.8rem;">Get the latest updates and news directly in your inbox.</p>
+        <form id="newsletter-form" class="d-flex justify-content-center mb-2">
+            <input type="email" name="email" id="email" class="form-control w-50 me-2" placeholder="Enter your email" required>
+            <button type="submit" class="subscribe-btn" style="background-color: #ff69b4">Subscribe</button>
+            <!-- Pop-up -->
+<div id="popup-overlay">
+    <div id="popup-message">
+        <p id="popup-text">Sending email...</p>
+    </div>
+</div>  
+        </form>
+        <!-- Social Media Icons -->
+        <div class="social-icons mb-2">
+            <a href="https://www.tiktok.com/@touched_by_jess?lang=en" target="_blank" class="fab fa-tiktok" style="font-size: 1.2rem;"></a>
+            <a href="https://www.instagram.com/touched_by_jess/" target="_blank" class="fab fa-instagram" style="font-size: 1.2rem;"></a>
+        </div>
+
+        <!-- Useful Footer Links -->
+        <div class="footer-links">
+            <ul class="list-unstyled">
+                <li><a href="privacy.html" style="font-size: 0.8rem;">Privacy Policy</a></li>
+                <li><a href="terms-of-service.html" style="font-size: 0.8rem;">Terms of Service</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+ <!-- Loading Spinner, placed right before the closing body tag -->
+ <div id="loading-spinner" style="display: none;">
+    <div class="spinner"></div> <!-- Your spinner element -->
+  </div>
+  <div id="loading-text" style="display: none;">
+    Sending Booking...
+  </div>
+
+<!-- Link to Bootstrap JS and Popper (For Bootstrap functionality like tooltips, dropdowns, etc.) -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script src="booking.js"></script> <!-- External JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+    </div>
 </body>
 </html>
