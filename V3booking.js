@@ -225,7 +225,6 @@ $jq(document).ready(function () {
     // Update Price dynamically based on selected hairstyle
     $jq(document).ready(function() {
         function updatePrice() {
-            // Base prices for each hairstyle
             var basePrices = {
                 'islandtwist': 0,
                 'distressedlocs': 0,
@@ -233,23 +232,25 @@ $jq(document).ready(function () {
                 'butterflylocs': 0,
                 'knotlessBraids': 0,
                 'knotlessBraidswithbeads': 0,
-                'senegaleseTwists': 0,
-                'dreadlocks': 0
+                'normalBraids': 0,
+                'Goddessbraids': 0,
+                'knotlessBraidsHairpieceNotIncluded': 0, // New option
+                'GoddessbraidsHairpieceNotIncluded': 0,  // New option
             };
     
-            // Size prices for each hairstyle
             var sizePrices = {
                 'islandtwist': { 'small': 800, 'medium': 700, 'large': 600, 'jumbo': 500 },
                 'distressedlocs': { 'shoulder': 800, 'midback': 900, 'waist': 1100, 'butt': 1200, 'knee': 1400 },
                 'invisiblelocs': { 'bob': 600, 'shoulder': 650, 'midback': 750, 'waist': 800 },
-                'butterflylocs': { 'shoulder': 70, 'midback': 130, 'waist': 140, 'butt': 210, 'knee': 400 },
+                'butterflylocs': { 'shoulder': 700, 'midback': 900, 'waist': 1100, 'butt': 1200, 'knee': 1400 },
                 'knotlessBraids': { 'small': 800, 'smedium': 750, 'medium': 700, 'large': 650, 'jumbo': 600 },
-                'knotlessBraidswithbeads': { 'small': 750, 'smedium': 700, 'medium': 650, 'large': 600, 'jumbo': 550 },
-                'normalbraids': { 'small': 600, 'medium': 500, 'large': 400, 'jumbo': 300 },
-                'Goddessbraids': { 'small': 95, 'smedium': 150, 'medium': 190, 'large': 285, 'jumbo': 400 }
+                'knotlessBraidswithbeads': { 'small': 850, 'smedium': 800, 'medium': 750, 'large': 700, 'jumbo': 650 },
+                'normalBraids': { 'small': 700, 'medium': 650, 'large': 600, 'jumbo': 550 },
+                'Goddessbraids': { 'small': 900, 'medium': 850, 'large': 800 },
+                'knotlessBraidsHairpieceNotIncluded': { 'small': 800, 'medium': 750, 'large': 700, 'jumbo': 650 }, // New option prices
+                'GoddessbraidsHairpieceNotIncluded': { 'small': 900, 'medium': 850, 'large': 800 },  // New option prices
             };
     
-            // Size options for each hairstyle
             var sizeOptions = {
                 'islandtwist': ['small', 'medium', 'large', 'jumbo'],
                 'distressedlocs': ['shoulder', 'midback', 'waist', 'butt', 'knee'],
@@ -257,48 +258,80 @@ $jq(document).ready(function () {
                 'butterflylocs': ['shoulder', 'midback', 'waist', 'butt', 'knee'],
                 'knotlessBraids': ['small', 'smedium', 'medium', 'large', 'jumbo'],
                 'knotlessBraidswithbeads': ['small', 'smedium', 'medium', 'large', 'jumbo'],
-                'normalbraids': ['small', 'medium', 'large', 'jumbo'],
-                'Goddessbraids': ['small', 'smedium', 'medium', 'large', 'jumbo']
+                'normalBraids': ['small', 'medium', 'large', 'jumbo'],
+                'Goddessbraids': ['small', 'medium', 'large'],
+                'knotlessBraidsHairpieceNotIncluded': ['small', 'medium', 'large', 'jumbo'], // New option sizes
+                'GoddessbraidsHairpieceNotIncluded': ['small', 'medium', 'large'],  // New option sizes
             };
     
             var selectedHairstyle = $jq('#hairstyle').val();
             var selectedSize = $jq('#size').val();
-    
             var basePrice = basePrices[selectedHairstyle] || 0;
             var sizePrice = (sizePrices[selectedHairstyle] && sizePrices[selectedHairstyle][selectedSize]) || 0;
     
-            // Update the displayed price
-            var totalPrice = basePrice + sizePrice;
+            // Extras
+            var extraCurlsPrice = $jq('#extraCurls').prop('checked') && selectedHairstyle === 'islandtwist' ? 100 : 0;
+            var goddessExtraDistressed = $jq('#goddessExtra').prop('checked') && selectedHairstyle === 'distressedlocs' ? 200 : 0;
+            var highlightExtraDistressed = $jq('#highlightExtra').prop('checked') && selectedHairstyle === 'distressedlocs' ? 150 : 0;
+            var extraLengthKnotless = $jq('#extraLengthKnotless').prop('checked') && selectedHairstyle === 'knotlessBraids' ? 50 : 0; // This line handles extra length for Knotless Braids
+            var extraBeadsPrice = $jq('#extraBeads').prop('checked') && selectedHairstyle === 'knotlessBraidswithbeads' ? 50 : 0;
+            var goddessExtraInvisible = $jq('#goddessExtraInvisible').prop('checked') && selectedHairstyle === 'invisiblelocs' ? 100 : 0;
+            var highlightPeekabooExtra = $jq('#highlightPeekabooExtra').prop('checked') && selectedHairstyle === 'invisiblelocs' ? 120 : 0;
+            var goddessExtraButterfly = $jq('#goddessExtraButterfly').prop('checked') && selectedHairstyle === 'butterflylocs' ? 200 : 0;
+            var highlightExtraButterfly = $jq('#highlightExtraButterfly').prop('checked') && selectedHairstyle === 'butterflylocs' ? 150 : 0;
+            var extraLengthNormal = $jq('#extraLengthNormal').prop('checked') && selectedHairstyle === 'normalBraids' ? 50 : 0;
+    
+            // New extra option for knotless and goddess braids hairpiece not included
+            var extraLengthHairpieceNotIncluded = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'knotlessBraidsHairpieceNotIncluded' || selectedHairstyle === 'GoddessbraidsHairpieceNotIncluded') ? 50 : 0;
+    
+            var totalPrice = basePrice + sizePrice + extraCurlsPrice + goddessExtraDistressed + highlightExtraDistressed +
+                extraLengthKnotless + extraBeadsPrice + goddessExtraInvisible + highlightPeekabooExtra +
+                goddessExtraButterfly + highlightExtraButterfly + extraLengthNormal + extraLengthHairpieceNotIncluded;
+    
             $jq('#price').text('R' + totalPrice);
     
-            // Dynamically update the size options based on the selected hairstyle
+            // Update size options dynamically
             var sizeSelect = $jq('#size');
-            sizeSelect.empty(); // Clear the existing options
-    
-            // Add new options based on the selected hairstyle
+            sizeSelect.empty();
             var availableSizes = sizeOptions[selectedHairstyle] || [];
             availableSizes.forEach(function(size) {
                 sizeSelect.append('<option value="' + size + '">' + size.charAt(0).toUpperCase() + size.slice(1) + '</option>');
             });
     
-            // Ensure the selected size is still available and set it
             if (availableSizes.indexOf(selectedSize) !== -1) {
                 sizeSelect.val(selectedSize);
             } else {
-                sizeSelect.val(availableSizes[0]); // Default to the first available size if the selected one is not found
+                sizeSelect.val(availableSizes[0]);
             }
-    
-            // Trigger price update when a new size is selected
-            sizeSelect.change(updatePrice);
         }
     
-        // Trigger price update when hairstyle is selected
         $jq('#hairstyle').change(updatePrice);
+        $jq('#size').change(updatePrice);
+        $jq('#extraCurls').change(updatePrice);
+        $jq('#goddessExtra').change(updatePrice);
+        $jq('#highlightExtra').change(updatePrice);
+        $jq('#extraLengthKnotless').change(updatePrice);  // Ensure this triggers the price update
+        $jq('#extraBeads').change(updatePrice);
+        $jq('#goddessExtraInvisible').change(updatePrice);
+        $jq('#highlightPeekabooExtra').change(updatePrice);
+        $jq('#goddessExtraButterfly').change(updatePrice);
+        $jq('#highlightExtraButterfly').change(updatePrice);
+        $jq('#extraLengthNormal').change(updatePrice);
+        $jq('#extraLengthHairpieceNotIncluded').change(updatePrice);
     
-        // Initialize price and size options on page load
+        $jq('#hairstyle').change(function() {
+            $jq('#extraCurlsContainer').toggle($jq(this).val() === 'islandtwist');
+            $jq('#extraOptionsDistressed').toggle($jq(this).val() === 'distressedlocs');
+            $jq('#extraOptionsKnotless').toggle($jq(this).val() === 'knotlessBraids');
+            $jq('#extraOptionsKnotlessBeads').toggle($jq(this).val() === 'knotlessBraidswithbeads');
+            $jq('#extraOptionsInvisible').toggle($jq(this).val() === 'invisiblelocs');
+            $jq('#extraOptionsButterfly').toggle($jq(this).val() === 'butterflylocs');
+            $jq('#extraOptionsNormal').toggle($jq(this).val() === 'normalBraids');
+            $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'knotlessBraidsHairpieceNotIncluded' || $jq(this).val() === 'GoddessbraidsHairpieceNotIncluded');
+        });
+    
         updatePrice();
     });
-    
     
 });
 
