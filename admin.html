@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - View Bookings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for Icons -->
+    <link rel="stylesheet"> <!-- External CSS for Admin Styles -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+         <!-- Include CSS for intl-tel-input -->
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css">
+
+         <!-- Include JavaScript for intl-tel-input -->
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+     
+     
+    
+</head>
+<style>
+    /* Overlay to dim the background */
+#loading-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 1000; /* Below the spinner */
+}
+
+/* Center the spinner */
+#loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001; /* Above the overlay */
+}
+
+/* Optional: Adjust spinner size */
+#loading-spinner img {
+    width: 50px;
+    height: 50px;
+}
+
+       /* Modal styles */
+       .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+    padding-top: 60px;
+}
+
+/* Modal content */
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Responsive width */
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Close button */
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Heading */
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+/* Form labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Form inputs */
+input[type="date"], 
+input[type="time"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+input[type="date"]:focus, 
+input[type="time"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* Submit button */
+.submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+</style>
+<body>
+    <!-- Admin Header -->
+    <header class="bg-dark text-white py-3">
+        <div class="container d-flex justify-content-between">
+            <h1>Admin Dashboard</h1>
+            <nav class="d-flex align-items-center">
+                <!-- Search Bar for Client Names -->
+                <div class="me-3">
+                    <input type="text" id="searchClient" class="form-control" placeholder="Search Clients" onkeyup="searchClients()">
+                </div>
+                <!-- Logout with Icon -->
+                <a href="booking.html" class="text-white d-flex align-items-center">
+                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </a>
+            </nav>
+        </div>
+    </header>
+    <!-- No results found message (initially hidden) -->
+<div id="noResultsMessage" class="alert alert-warning" style="display:none;">
+    <strong>No results found for the given name.</strong>
+</div>
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+        <h2 class="mb-4">Your Bookings</h2>
+        <!-- Custom Alert -->
+<div id="customAlert" class="alert" style="display: none;">
+    <span id="alertMessage"></span>
+</div>
+
+        <!-- Filter Dropdown for Booking Status -->
+        <div class="mb-3">
+            <label for="statusFilter" class="form-label">Filter by Status</label>
+            <select id="statusFilter" class="form-select" onchange="fetchBookings()">
+                <option value="">All</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="pending">Pending</option>
+            </select>
+        </div>
+         <!-- Loading Spinner -->
+         <div id="loading-spinner">
+            <!-- Add a simple spinner (you can replace with your own spinner here) -->
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Booking Table -->
+        <table class="table table-striped" id="bookingTable">
+            <thead>
+                <tr>
+                    <th scope="col">Booking ID</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Cell</th>
+                    <th scope="col">Booking Date</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be inserted here dynamically -->
+            </tbody>
+        </table>
+        
+        <!-- Pagination (if needed) -->
+        <ul id="items-list"></ul>
+
+<nav aria-label="Booking Navigation">
+    <ul class="pagination" id="pagination">
+        <li class="page-item">
+            <a class="page-link" href="#" id="prev">&laquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="#" id="next">&raquo;</a>
+        </li>
+    </ul>
+</nav>
+        
+ <!-- Modal to Shift Dates -->
+ <div id="shiftDateModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Shift Booking Dates</h2>
+        
+        <form id="shiftDateForm">
+            <label for="newDate">New Date:</label>
+            <input type="date" id="newDate" required min="" />
+            
+            <label for="newTime">New Time:</label>
+            <input type="time" id="newTime" required min="07:00" max="18:00">
+            
+            <button type="submit" class="submit-btn">Save</button>
+        </form>
+    </div>
+</div>
+
+<div id="loading-overlay">
+    <div id="loading-spinner">
+    </div>
+</div>
+
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-dark text-white py-2 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2025 Braider's Booking Service. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <!-- JavaScript to fetch booking data -->
+    <script>
+
+function showLoader() {
+    document.getElementById("loading-overlay").style.display = "block";
+}
+
+function hideLoader() {
+    document.getElementById("loading-overlay").style.display = "none";
+}
+
+// Example: Show loader for 3 seconds
+showLoader();
+setTimeout(hideLoader, 3000);
+
+        // Helper function to format the date to "14 July 2025"
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-GB', options);  // 'en-GB' ensures "Day Month Year" format
+        }
+    
+        // Function to update the booking status
+        async function updateBookingStatus(bookingId, status) {
+    try {
+        showLoader();
+        document.getElementById('loading-spinner').style.display = 'block'; // Show spinner
+        const response = await fetch(`http://localhost:3000/update-booking-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: bookingId, status: status }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update booking status');
+        }
+
+        alert(`Booking ${status === 'approved' ? 'Approved' : 'Declined'} successfully`);
+        fetchBookings(); // Refresh the table
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error updating booking status');
+    } finally {
+        hideLoader();
+        document.getElementById('loading-spinner').style.display = 'none'; // Hide spinner
+    }
+}
+
+
+        // Fetch booking data from the server with status filter
+        let bookingsData = [];
+let currentPage = 1;
+const itemsPerPage = 15;
+
+async function fetchBookings() {
+    try {
+        showLoader();
+        document.getElementById('loading-spinner').style.display = 'block';
+
+        const statusFilter = document.getElementById('statusFilter').value;
+        const response = await fetch(`http://localhost:3000/get-bookings?status=${statusFilter}`);
+
+        if (!response.ok) throw new Error('Failed to fetch data');
+
+        bookingsData = await response.json(); // Store all fetched data
+        currentPage = 1; // Reset to first page
+        renderTable(); // Render first page
+        renderPagination(); // Create pagination controls
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching bookings');
+    } finally {
+        hideLoader();
+        document.getElementById('loading-spinner').style.display = 'none';
+    }
+}
+
+function renderTable() {
+    const bookingsTableBody = document.querySelector('#bookingTable tbody');
+    bookingsTableBody.innerHTML = '';
+
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedData = bookingsData.slice(start, end);
+
+    paginatedData.forEach(booking => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${booking.id}</td>
+            <td>${booking.name}</td>
+            <td>${booking.email}</td>
+            <td>${booking.cell}</td>
+            <td>${formatDate(booking.date)} ${booking.time}</td>
+            <td>${formatDate(booking.created_at)}</td>
+            <td>${booking.approved ? 'Confirmed' : 'Pending'}</td>
+            <td>
+                <button class="btn btn-success btn-sm" onclick="approveBooking(${booking.id}, '${booking.time}')">Approve</button>
+                <button class="btn btn-warning btn-sm" onclick="showShiftDateModal(${booking.id})">Shift Dates</button>
+            </td>
+        `;
+        bookingsTableBody.appendChild(row);
+    });
+}
+
+function renderPagination() {
+    const totalPages = Math.ceil(bookingsData.length / itemsPerPage);
+    const paginationContainer = document.querySelector('.pagination');
+    paginationContainer.innerHTML = '';
+
+    // Previous button
+    paginationContainer.innerHTML += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">&laquo;</a>
+    </li>`;
+
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        paginationContainer.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+            <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+        </li>`;
+    }
+
+    // Next button
+    paginationContainer.innerHTML += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">&raquo;</a>
+    </li>`;
+}
+
+function changePage(page) {
+    const totalPages = Math.ceil(bookingsData.length / itemsPerPage);
+    if (page < 1 || page > totalPages) return;
+
+    currentPage = page;
+    renderTable();
+    renderPagination();
+}
+
+// Call fetchBookings() on page load
+fetchBookings();
+
+    
+        // Function to approve a booking
+        async function approveBooking(bookingId, currentBookingTime) {
+    try {
+        // Ensure that currentBookingTime is not undefined or null
+        if (!currentBookingTime) {
+            alert('Error: Current booking time is undefined.');
+            return;  // Exit the function if the time is not provided
+        }
+
+        // Show loading spinner while processing
+        showLoader();
+        document.getElementById('loading-spinner').style.display = 'block';
+
+        // Send the booking ID and the current available time (using currentBookingTime)
+        const response = await fetch('http://localhost:3000/approve-booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                bookingId,
+                currentBookingTime,  // Send current time for the booking
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to approve booking');
+        }
+
+        alert(`Booking successfully approved!`);
+
+        // Fetch updated bookings to refresh the table
+        fetchBookings();
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to approve booking');
+    } finally {
+        // Hide loading spinner
+        hideLoader();
+        document.getElementById('loading-spinner').style.display = 'none';
+    }
+}
+
+        let bookingToShift = null; // Variable to hold the booking ID that needs to be shifted
+
+// Show the modal to shift dates
+function showShiftDateModal(bookingId) {
+    // Store the booking ID globally so we can use it when submitting the form
+    window.bookingId = bookingId;
+
+    // Show the modal
+    $('#shiftDateModal').fadeIn(); // Fade in effect when opening the modal
+}
+
+function closeModal() {
+    $('#shiftDateModal').fadeOut(); // Fade out effect when closing the modal
+}
+
+$('#shiftDateForm').submit(async function(e) {
+    e.preventDefault(); // Prevent the default form submission
+    showLoader();
+    document.getElementById('loading-spinner').style.display = 'block';
+    const newDate = $('#newDate').val();
+    const newTime = $('#newTime').val();
+    const bookingId = window.bookingId; // Use the global bookingId
+
+    // Send the new date and time to the backend to update the booking
+    try {
+        const response = await fetch('http://localhost:3000/shift-booking-dates', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ bookingId, newDate, newTime }),  // Send the booking ID, new date, and time
+        });
+
+        if (response.ok) {
+            showAlert('Booking dates updated successfully!');
+            hideLoader();
+            document.getElementById('loading-spinner').style.display = 'none';
+            closeModal(); // Close the modal after successful update
+        } else {
+            throw new Error('Failed to update booking dates');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error updating booking dates', 'error');
+    } finally {
+        hideLoader();
+        document.getElementById('loading-spinner').style.display = 'none';
+    }
+});
+
+// Function to show custom alert
+function showAlert(message, type = 'success') {
+    const alertBox = document.getElementById('customAlert');
+    const alertMessage = document.getElementById('alertMessage');
+
+    // Set the message and type
+    alertMessage.textContent = message;
+    alertBox.classList.remove('success', 'error');
+    alertBox.classList.add(type);
+
+    // Show the alert
+    alertBox.style.display = 'block';
+    setTimeout(function() {
+        alertBox.style.opacity = 1; // Fade in
+    }, 10); // Small delay to trigger the fade-in
+
+    // Hide the alert after 3 seconds
+    setTimeout(function() {
+        alertBox.style.opacity = 0; // Fade out
+        setTimeout(function() {
+            alertBox.style.display = 'none'; // Hide after fade-out
+        }, 500); // Wait for fade-out to finish
+    }, 3000); // 3 seconds for the alert to be visible
+}
+
+// Function to shift booking dates
+async function shiftBooking() {
+    const newDate = document.getElementById('newDate').value;
+    const newTime = document.getElementById('newTime').value;
+
+    // Set the min date to today's date dynamically
+    document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
+  // Ensure time is between 07:00 and 18:00
+  const selectedTime = new Date(`${newDate}T${newTime}`);
+    const currentTime = new Date();
+
+    // Check if the selected time is before 7 AM or after 6 PM
+    const minTime = new Date(`${newDate}T07:00`);
+    const maxTime = new Date(`${newDate}T18:00`);
+
+    // Check if the date is in the past
+    if (newDate && selectedTime < currentTime) {
+        alert("The selected date and time cannot be in the past.");
+        return;
+    }
+
+    // Validate both date and time are provided
+    if (!newDate || !newTime) {
+        alert("Please provide both a new date and time.");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/shift-booking-dates', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ bookingId: bookingToShift, newDate, newTime }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to shift booking dates');
+        }
+
+        alert('Booking dates successfully updated!');
+        // Optionally, update the table or status here
+        $('#shiftDateModal').modal('hide'); // Close the modal after success
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error shifting booking dates');
+    }
+}
+
+
+// Function to update the status of a booking in the table
+function updateBookingStatusInTable(bookingId, newStatus) {
+    const rows = document.querySelectorAll('#bookingTable tbody tr');
+    rows.forEach(row => {
+        const bookingCell = row.cells[0]; // Assuming the booking ID is in the first cell
+        if (bookingCell && bookingCell.textContent == bookingId) {
+            const statusCell = row.cells[6]; // Assuming the status is in the 7th column
+            if (statusCell) {
+                statusCell.textContent = newStatus; // Update the status text
+            }
+        }
+    });
+}
+
+function searchClients() {
+    // Show loading spinner
+    showLoader()
+    document.getElementById('loading-spinner').style.display = 'block';
+
+    // Get search input value and convert it to lowercase for case-insensitive search
+    const input = document.getElementById('searchClient').value.toLowerCase();
+    const table = document.getElementById('bookingTable');
+    const rows = table.getElementsByTagName('tr');
+    let found = false;  // Flag to track if any result is found
+
+    // Loop through all table rows, and hide those who don't match the search query
+    setTimeout(() => {  // Using setTimeout to simulate a delay (remove if not necessary)
+        for (let i = 1; i < rows.length; i++) { // Start at index 1 to skip the table header
+            const cells = rows[i].getElementsByTagName('td');
+            const clientName = cells[1] ? cells[1].textContent.toLowerCase() : ''; // Assuming the client name is in the 2nd column
+
+            if (clientName.indexOf(input) > -1) {
+                rows[i].style.display = '';
+                found = true;  // A match was found
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+
+        // Show or hide the "No results found" message based on search results
+        if (!found && input !== '') {
+            document.getElementById('noResultsMessage').style.display = 'block'; // Show message
+        } else {
+            document.getElementById('noResultsMessage').style.display = 'none'; // Hide message
+        }
+
+        // Hide loading spinner after the search is complete
+        hideLoader();
+        document.getElementById('loading-spinner').style.display = 'none';
+    }, 500);  // Simulated delay of 500ms, adjust as needed
+}   
+        // Call fetchBookings on page load
+        window.onload = fetchBookings;
+    </script>
+    
+</body>
+</html>
