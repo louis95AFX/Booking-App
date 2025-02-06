@@ -129,7 +129,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
   try {
     console.log("Received booking data:", req.body);
 
-    const { name, email, cell, service, size, color, date, time, price, appointmentType } = req.body;
+    const { name, email, cell, hairstyle, size, color, date, time, price, appointmentType } = req.body;
 
 
 
@@ -167,7 +167,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       - Name: ${name}
       - Email: ${email}
       - Cell: ${cell}
-      - Service: ${service}
+      - Hairstyle: ${hairstyle}
       - Size: ${size}
       - Color: ${color}
       - Date: ${date}
@@ -188,7 +188,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     console.log('✅ Email sent successfully:', info.response);
 
     // Send WhatsApp message to user
-    const whatsappMessage = `Hello ${name},\n\nYour booking for ${service} on ${date} at ${time} has been received. ✅\n\nWe'll notify you once it's approved. Thank you!`;
+    const whatsappMessage = `Hello ${name},\n\nYour booking for ${hairstyle} on ${date} at ${time} has been received. ✅\n\nWe'll notify you once it's approved. Thank you!`;
     
     const formatPhoneNumber = (cell) => {
       // Remove spaces and dashes
@@ -283,39 +283,7 @@ app.post('/approve-booking', async (req, res) => {
   }
 });
 
-app.post('/shift-booking-dates', async (req, res) => {
-  const { bookingId, newDate, newTime } = req.body;
 
-  // Ensure the bookingId, newDate, and newTime are provided
-  if (!bookingId || !newDate || !newTime) {
-    return res.status(400).send({ message: 'Booking ID, new date, and new time are required.' });
-  }
-
-  try {
-    // Convert the newDate and newTime to a valid Date object (optional)
-    const updatedDateTime = new Date(`${newDate}T${newTime}:00`);
-
-    if (isNaN(updatedDateTime)) {
-      return res.status(400).send({ message: 'Invalid date or time format.' });
-    }
-
-    // Update the booking date and time in the database
-    const result = await pool.query(
-      'UPDATE bookings SET date = $1, time = $2 WHERE id = $3',
-      [updatedDateTime.toISOString().split('T')[0], updatedDateTime.toISOString().split('T')[1], bookingId]
-    );
-
-    // Check if the booking was found and updated
-    if (result.rowCount === 0) {
-      return res.status(404).send({ message: 'Booking not found.' });
-    }
-
-    res.status(200).send({ message: 'Booking dates updated successfully' });
-  } catch (err) {
-    console.error('Error updating booking dates:', err);
-    res.status(500).send({ message: 'Failed to update booking dates' });
-  }
-});
 app.post('/shift-booking-dates', async (req, res) => {
   const { bookingId, newDate, newTime } = req.body;
 
