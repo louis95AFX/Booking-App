@@ -53,11 +53,12 @@ app.use(bodyParser.json({ limit: '10mb' }));  // JSON body parser with 10MB limi
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));  // URL-encoded parser with 10MB limit
 
 // PostgreSQL Database Connection
+
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'postgres', // Your PostgreSQL database name
-  password: process.env.DB_PASSWORD || 'Vinote1', // Allow env override
+  user: 'postgres_e88h_user',
+  host: 'dpg-cumerbdds78s73cv24dg-a.oregon-postgres.render.com',
+  database: 'postgres_e88h',
+  password: process.env.DB_PASSWORD || '6AduOecuU4aoWXwt2fkhwbH1TmEvYdpu', // Use the Render password or your environment variable
   port: 5432,
 });
 
