@@ -58,8 +58,11 @@ const pool = new Pool({
   user: 'postgres_e88h_user',
   host: 'dpg-cumerbdds78s73cv24dg-a.oregon-postgres.render.com',
   database: 'postgres_e88h',
-  password: process.env.DB_PASSWORD || '6AduOecuU4aoWXwt2fkhwbH1TmEvYdpu', // Use the Render password or your environment variable
+  password: process.env.DB_PASSWORD || '6AduOecuU4aoWXwt2fkhwbH1TmEvYdpu',
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false, // Allow unsigned certificates
+  },
 });
 
 pool.connect()
