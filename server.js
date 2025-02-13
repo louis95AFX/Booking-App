@@ -176,7 +176,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     });
 
     // Check if an approved booking exists for this date and time
-    const checkQuery = `SELECT * FROM public.bookings WHERE date = $1 AND time = $2 AND approved = TRUE`;
+    const checkQuery = `SELECT * FROM bookings WHERE date = $1 AND time = $2 AND approved = TRUE`;
     const { rows } = await pool.query(checkQuery, [date, time]);
 
     console.log("Checking existing bookings:", { date, time, rows });
@@ -186,21 +186,9 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       return res.status(400).json({ status: 'error', message: '❌ This slot is already booked!' });
     }
 
-    // Add the test booking entry here:
-    const testQuery = `
-      INSERT INTO public.bookings (name, email, cell, hairstyle, size, color, date, time, price, appointmentType)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING *;
-    `;
-    const testValues = ['Test User', 'testuser@example.com', '+1234567890', 'braids', 'medium', 'black', '2025-02-19', '08:00', 'R500', 'walkIn'];
-    
-    console.log("Inserting test booking into the database:", testValues);
-    const testResult = await pool.query(testQuery, testValues);
-    console.log("✅ Test booking added to database:", testResult.rows[0]);
-
-    // Insert the actual booking into the database
+    // Insert booking into the database
     const query = `
-      INSERT INTO public.bookings (name, email, cell, date, time)
+      INSERT INTO bookings (name, email, cell, date, time)
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
