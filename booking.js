@@ -248,7 +248,7 @@ document.getElementById('contact-form').addEventListener("submit", async functio
     };
 
     try {
-         const response = await fetch("http://localhost:3000/contact", { // Update with the actual endpoint URL
+         const response = await fetch("https://booking-app-c91o.onrender.com/contact", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
