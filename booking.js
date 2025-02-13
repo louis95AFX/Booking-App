@@ -107,7 +107,7 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
     }
 
     // Send the form data using Fetch API
-    fetch('http://localhost:3000/submit-booking', {
+    fetch('https://booking-app-c91o.onrender.com/submit-booking', {
         method: 'POST',
         body: formData,
     })
