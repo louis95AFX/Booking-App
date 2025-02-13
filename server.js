@@ -267,7 +267,7 @@ We’ve received your booking request for ${hairstyle} on ${date} at ${time}. Yo
 Thank you for choosing our service!
 
 Best regards,
-Touched by Jess.
+Touched by Jess`
     };
 
     console.log('Sending confirmation email to user...');
