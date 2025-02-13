@@ -65,13 +65,22 @@ const pool = new Pool({
   },
 });
 
+
 pool.connect()
-  .then(() => console.log("✅ Connected to PostgreSQL"))
+  .then(client => {
+    console.log("✅ Connected to PostgreSQL");
+    
+    // Check the current database being used
+    return client.query('SELECT current_database();')
+      .then(res => {
+        console.log('Connected to database:', res.rows[0].current_database);
+        client.release(); // Release the client after the query
+      });
+  })
   .catch(err => {
     console.error("❌ PostgreSQL Connection Error:", err); // Log the error if connection fails
     process.exit(1); // Exit the application if DB fails to connect
   });
-
 // Configure Winston Logger
 const logger = winston.createLogger({
   level: 'info',
