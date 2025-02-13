@@ -186,7 +186,19 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       return res.status(400).json({ status: 'error', message: '❌ This slot is already booked!' });
     }
 
-    // Insert booking into the database
+    // Add the test booking entry here:
+    const testQuery = `
+      INSERT INTO public.bookings (name, email, cell, hairstyle, size, color, date, time, price, appointmentType)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING *;
+    `;
+    const testValues = ['Test User', 'testuser@example.com', '+1234567890', 'braids', 'medium', 'black', '2025-02-19', '08:00', 'R500', 'walkIn'];
+    
+    console.log("Inserting test booking into the database:", testValues);
+    const testResult = await pool.query(testQuery, testValues);
+    console.log("✅ Test booking added to database:", testResult.rows[0]);
+
+    // Insert the actual booking into the database
     const query = `
       INSERT INTO public.bookings (name, email, cell, date, time)
       VALUES ($1, $2, $3, $4, $5)
@@ -294,6 +306,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     res.status(500).json({ status: 'error', message: `Internal Server Error: ${error.message}` });
   }
 });
+
 
 // Get all bookings for the admin to view
 app.get('/get-bookings', async (req, res) => {
