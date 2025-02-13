@@ -57,7 +57,7 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));  // URL-encod
 const pool = new Pool({
   user: 'postgres_e88h_user',
   host: 'dpg-cumerbdds78s73cv24dg-a.oregon-postgres.render.com',
-  database: 'postgres',
+  database: 'postgres_e88h',
   password: process.env.DB_PASSWORD || '6AduOecuU4aoWXwt2fkhwbH1TmEvYdpu',
   port: 5432,
   ssl: {
