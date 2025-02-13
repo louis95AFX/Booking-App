@@ -226,7 +226,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     console.log("Formatted extras for email:", extrasText);
 
     // Send email notification to admin
-    const mailOptions = {
+    const mailOptionsAdmin = {
       from: emailUser,
       to: 'carterprince95@gmail.com', // Change to recipient email
       subject: '📅 New Booking Request',
@@ -252,8 +252,27 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     console.log('Received extras:', req.body.extras);
 
     console.log('Sending email...');
-    const info = await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptionsAdmin);
     console.log('✅ Email sent successfully:', info.response);
+
+    // Send email to user confirming receipt of the booking
+    const mailOptionsUser = {
+      from: emailUser,
+      to: email,
+      subject: '📅 Your Booking Has Been Received',
+      text: `Hello ${name},
+
+We’ve received your booking request for ${hairstyle} on ${date} at ${time}. Your appointment is currently being reviewed, and we’ll notify you once it has been approved.
+
+Thank you for choosing our service!
+
+Best regards,
+Touched by Jess.
+    };
+
+    console.log('Sending confirmation email to user...');
+    await transporter.sendMail(mailOptionsUser);
+    console.log('✅ Confirmation email sent to user successfully.');
 
     // Send WhatsApp message to user
     const whatsappMessage = `Hello ${name},\n\nYour booking for ${hairstyle} on ${date} at ${time} has been received. ✅\n\nWe'll notify you once it's approved. Thank you!`;
