@@ -147,15 +147,18 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
 document.getElementById('subscribeForm').addEventListener('submit', async function(event) {
     event.preventDefault(); // Prevent form from submitting the default way
 
-    const email = document.getElementById('email').value.trim();
+    const responseMessage = document.getElementById('responseMessage');
+    const errorMessage = document.getElementById('errorMessage');
 
     // Clear previous messages
-    document.getElementById('responseMessage').textContent = '';
-    document.getElementById('errorMessage').textContent = '';
+    if (responseMessage) responseMessage.textContent = '';
+    if (errorMessage) errorMessage.textContent = '';
+
+    const email = document.getElementById('email').value.trim();
 
     // Basic email validation
     if (!email || !validateEmail(email)) {
-        document.getElementById('errorMessage').textContent = "❌ Please enter a valid email address.";
+        if (errorMessage) errorMessage.textContent = "❌ Please enter a valid email address.";
         return;
     }
 
@@ -173,15 +176,15 @@ document.getElementById('subscribeForm').addEventListener('submit', async functi
 
         if (response.status === 200) {
             // Successfully subscribed
-            document.getElementById('responseMessage').textContent = result.message;
+            if (responseMessage) responseMessage.textContent = result.message;
         } else {
             // Show error message from server
-            document.getElementById('errorMessage').textContent = result.message;
+            if (errorMessage) errorMessage.textContent = result.message;
         }
     } catch (error) {
         // Handle unexpected errors
         console.error("Error during subscription request:", error);
-        document.getElementById('errorMessage').textContent = "❌ Something went wrong. Please try again later.";
+        if (errorMessage) errorMessage.textContent = "❌ Something went wrong. Please try again later.";
     }
 });
 
