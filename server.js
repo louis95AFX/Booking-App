@@ -333,18 +333,61 @@ app.get('/get-bookings', async (req, res) => {
 
 
 // Endpoint to approve a booking
-app.post('/approve-booking', async (req, res) => {
-  const { bookingId } = req.body;  // Get booking ID from the request body
+const express = require('express');
+const nodemailer = require('nodemailer');
+const pool = require('./db'); // Ensure this is your database connection file
 
-  try {
-      // Update the booking status to approved
-      await pool.query('UPDATE bookings SET approved = TRUE WHERE id = $1', [bookingId]);
-      res.status(200).send({ message: 'Booking approved' });
-  } catch (err) {
-      console.error('Error updating booking:', err);
-      res.status(500).send({ message: 'Failed to approve booking' });
-  }
+const app = express();
+app.use(express.json());
+
+// Email transporter setup (Replace with your email credentials)
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // Use your email service (Gmail, Outlook, etc.)
+    auth: {
+        user: 'your-email@gmail.com', // Your email
+        pass: 'your-email-password'  // Your email password or app-specific password
+    }
 });
+
+app.post('/approve-booking', async (req, res) => {
+    const { bookingId } = req.body;  // Get booking ID from the request body
+
+    try {
+        // Get user details from the database
+        const result = await pool.query('SELECT email, name FROM bookings WHERE id = $1', [bookingId]);
+        if (result.rows.length === 0) {
+            return res.status(404).send({ message: 'Booking not found' });
+        }
+        
+        const { email, name } = result.rows[0];
+
+        // Update the booking status to approved
+        await pool.query('UPDATE bookings SET approved = TRUE WHERE id = $1', [bookingId]);
+
+        // Send approval email
+        const mailOptions = {
+            from: 'thandiwejessica30@icloud.com',
+            to: email,
+            subject: 'Booking Approved ✅',
+            text: `Dear ${name},\n\nYour booking has been successfully approved! 🎉\nWe look forward to seeing you.\n\nBest Regards,\nTouched by Jess`
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error);
+            } else {
+                console.log('Email sent:', info.response);
+            }
+        });
+
+        res.status(200).send({ message: 'Booking approved and email sent' });
+    } catch (err) {
+        console.error('Error approving booking:', err);
+        res.status(500).send({ message: 'Failed to approve booking' });
+    }
+});
+
+
 
 
 app.post('/shift-booking-dates', async (req, res) => {
