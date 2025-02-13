@@ -314,7 +314,7 @@ async function fetchBookings() {
         document.getElementById('loading-spinner').style.display = 'block';
 
         const statusFilter = document.getElementById('statusFilter').value;
-        const response = await fetch(`http://localhost:3000/get-bookings?status=${statusFilter}`);
+        const response = await fetch(`https://booking-app-c91o.onrender.com/get-bookings?status=${encodeURIComponent(statusFilter)}`);
 
         if (!response.ok) throw new Error('Failed to fetch data');
 
