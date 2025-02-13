@@ -161,7 +161,7 @@ document.getElementById('subscribeForm').addEventListener('submit', async functi
 
     try {
         // Sending subscription request to server
-        const response = await fetch('https://your-live-url.com/subscribe-newsletter', {
+        const response = await fetch('https://booking-app-c91o.onrender.com/subscribe-newsletter', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
