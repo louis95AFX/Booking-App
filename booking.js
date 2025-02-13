@@ -144,56 +144,52 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
     // Your existing booking form submission logic
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("newsletter-form");
-    form.addEventListener("submit", async function(event) {
-        event.preventDefault();
-        
-        console.log("Form submitted!"); // Log here to confirm it's triggered
-        
-        const emailInput = document.getElementById("email");
-        const popupOverlay = document.getElementById('popup-overlay');
-        const popupText = document.getElementById('popup-text');
+document.getElementById('subscribeForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Prevent form from submitting the default way
 
-        console.log("Email:", emailInput.value); // Check email value
+    const email = document.getElementById('email').value.trim();
 
-        if (!emailInput || !popupOverlay || !popupText) {
-            console.error("❌ Elements not found!");
-            return;
+    // Clear previous messages
+    document.getElementById('responseMessage').textContent = '';
+    document.getElementById('errorMessage').textContent = '';
+
+    // Basic email validation
+    if (!email || !validateEmail(email)) {
+        document.getElementById('errorMessage').textContent = "❌ Please enter a valid email address.";
+        return;
+    }
+
+    try {
+        // Sending subscription request to server
+        const response = await fetch('https://your-live-url.com/subscribe-newsletter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+
+        const result = await response.json();
+
+        if (response.status === 200) {
+            // Successfully subscribed
+            document.getElementById('responseMessage').textContent = result.message;
+        } else {
+            // Show error message from server
+            document.getElementById('errorMessage').textContent = result.message;
         }
-
-        const email = emailInput.value.trim();
-        if (!email) {
-            alert("❌ Please enter a valid email.");
-            return;
-        }
-
-        console.log("Showing pop-up...");
-        popupOverlay.style.display = 'flex'; // Show pop-up
-
-        try {
-            const response = await fetch("/subscribe-newsletter", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email })
-            });
-
-            const result = await response.json();
-            alert(result.message);
-
-            if (response.ok) {
-                emailInput.value = ""; // Clear input
-            }
-
-        } catch (error) {
-            console.error("❌ Error:", error);
-            alert("Something went wrong.");
-        } finally {
-            console.log("Hiding pop-up...");
-            popupOverlay.style.display = 'none'; // Hide pop-up
-        }
-    });
+    } catch (error) {
+        // Handle unexpected errors
+        console.error("Error during subscription request:", error);
+        document.getElementById('errorMessage').textContent = "❌ Something went wrong. Please try again later.";
+    }
 });
+
+// Email validation function
+function validateEmail(email) {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(email);
+}
 
 
 document.addEventListener("DOMContentLoaded", () => {
