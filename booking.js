@@ -147,12 +147,12 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
 document.getElementById('subscribeForm').addEventListener('submit', async function(event) {
     event.preventDefault(); // Prevent form from submitting the default way
 
-    const responseMessage = document.getElementById('responseMessage');
-    const errorMessage = document.getElementById('errorMessage');
+    // const responseMessage = document.getElementById('responseMessage');
+    // const errorMessage = document.getElementById('errorMessage');
 
     // Clear previous messages
-    if (responseMessage) responseMessage.textContent = '';
-    if (errorMessage) errorMessage.textContent = '';
+    // if (responseMessage) responseMessage.textContent = '';
+    // if (errorMessage) errorMessage.textContent = '';
 
     const email = document.getElementById('email').value.trim();
 
