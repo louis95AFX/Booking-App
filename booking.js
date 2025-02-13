@@ -466,7 +466,7 @@ function hideLoaderAd() {
 }
 
  // Handle the login form submission
- fetch('http://localhost:3000/admin')
+ fetch('https://booking-app-c91o.onrender.com/admin')
     .then(response => response.json())
     .then(data => {
         var adminUsername = data.adminUsername;
