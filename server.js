@@ -176,7 +176,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     });
 
     // Check if an approved booking exists for this date and time
-    const checkQuery = `SELECT * FROM bookings WHERE date = $1 AND time = $2 AND approved = TRUE`;
+    const checkQuery = `SELECT * FROM public.bookings WHERE date = $1 AND time = $2 AND approved = TRUE`;
     const { rows } = await pool.query(checkQuery, [date, time]);
 
     console.log("Checking existing bookings:", { date, time, rows });
@@ -188,7 +188,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
 
     // Insert booking into the database
     const query = `
-      INSERT INTO bookings (name, email, cell, date, time)
+      INSERT INTO public.bookings (name, email, cell, date, time)
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
