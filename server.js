@@ -331,24 +331,6 @@ app.get('/get-bookings', async (req, res) => {
   }
 });
 
-
-// Endpoint to approve a booking
-const express = require('express');
-const nodemailer = require('nodemailer');
-const pool = require('./db'); // Ensure this is your database connection file
-
-const app = express();
-app.use(express.json());
-
-// Email transporter setup (Replace with your email credentials)
-const transporter = nodemailer.createTransport({
-    service: 'gmail', // Use your email service (Gmail, Outlook, etc.)
-    auth: {
-        user: 'your-email@gmail.com', // Your email
-        pass: 'your-email-password'  // Your email password or app-specific password
-    }
-});
-
 app.post('/approve-booking', async (req, res) => {
     const { bookingId } = req.body;  // Get booking ID from the request body
 
@@ -386,9 +368,6 @@ app.post('/approve-booking', async (req, res) => {
         res.status(500).send({ message: 'Failed to approve booking' });
     }
 });
-
-
-
 
 app.post('/shift-booking-dates', async (req, res) => {
   const { bookingId, newDate, newTime } = req.body;
