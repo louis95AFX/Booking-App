@@ -1,6 +1,21 @@
 const form = document.getElementById('bookingForm');
 document.getElementById('bookingForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Prevent form from submitting the default way
+     // Show the modal
+  document.getElementById('policyModal').style.display = 'flex';
+
+  // Handle Accept Button Click
+  document.getElementById('acceptPolicy').addEventListener('click', function () {
+      document.getElementById('policyModal').style.display = 'none'; // Hide modal
+      proceedWithFetch(); // Run the fetch function
+  });
+
+  // Handle Decline Button Click
+  document.getElementById('declinePolicy').addEventListener('click', function () {
+    window.location.href = 'booking.html'; // Redirect to booking page
+  });
+
+  function proceedWithFetch() {
 
     // Show loading spinner, overlay, and "Sending Booking..." text
     document.getElementById('loading-spinner').style.display = 'flex'; 
@@ -135,7 +150,7 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
         console.error('Error:', error);
         alert("There was an issue with your booking.");
     });
-});
+}});
 
 
 // Booking Form Submit Listener (your existing code)
