@@ -907,3 +907,148 @@ h2 {
 #popup-text {
   font-weight: bold;
 }
+/* ======================================================================== */
+
+/* Modal background */
+.pmodal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal content */
+.pmodal-content {
+  background: #fff;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Title */
+.pmodal-content h2 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  color: #333;
+}
+
+/* Policy content */
+.policy-content {
+  max-height: 250px;
+  overflow-y: auto;
+  text-align: left;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: #f9f9f9;
+  margin-bottom: 15px;
+}
+
+.policy-content ul {
+  padding-left: 20px;
+}
+
+.policy-content li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #444;
+}
+
+/* Buttons */
+button {
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+#acceptPolicy {
+  background: #28a745;
+  color: white;
+}
+
+#acceptPolicy:hover {
+  background: #218838;
+}
+
+#declinePolicy {
+  background: #dc3545;
+  color: white;
+}
+
+#declinePolicy:hover {
+  background: #c82333;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: scale(0.9);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1);
+  }
+}
+/* Style only the buttons inside the modal */
+#policyModal .modal-buttons button {
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  max-width: 200px;
+}
+
+/* Accept Button - Green */
+#policyModal #acceptPolicy {
+  background: linear-gradient(to right, #28a745, #218838);
+  color: white;
+  box-shadow: 0px 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+#policyModal #acceptPolicy:hover {
+  background: linear-gradient(to right, #218838, #1e7e34);
+  box-shadow: 0px 6px 12px rgba(40, 167, 69, 0.5);
+  transform: scale(1.05);
+}
+
+/* Decline Button - Red */
+#policyModal #declinePolicy {
+  background: linear-gradient(to right, #dc3545, #c82333);
+  color: white;
+  box-shadow: 0px 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+#policyModal #declinePolicy:hover {
+  background: linear-gradient(to right, #c82333, #b21f2d);
+  box-shadow: 0px 6px 12px rgba(220, 53, 69, 0.5);
+  transform: scale(1.05);
+}
+
+/* Flex container for buttons */
+#policyModal .modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+}
