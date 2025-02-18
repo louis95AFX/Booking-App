@@ -1,156 +1,174 @@
 const form = document.getElementById('bookingForm');
 document.getElementById('bookingForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Prevent form from submitting the default way
-     // Show the modal
-  document.getElementById('policyModal').style.display = 'flex';
 
-  // Handle Accept Button Click
-  document.getElementById('acceptPolicy').addEventListener('click', function () {
-      document.getElementById('policyModal').style.display = 'none'; // Hide modal
-      proceedWithFetch(); // Run the fetch function
-  });
+    // Show the modal
+    document.getElementById('policyModal').style.display = 'flex';
 
-  // Handle Decline Button Click
-  document.getElementById('declinePolicy').addEventListener('click', function () {
-    window.location.href = 'booking.html'; // Redirect to booking page
-  });
+    // Handle Accept Button Click
+    document.getElementById('acceptPolicy').addEventListener('click', function () {
+        document.getElementById('policyModal').style.display = 'none'; // Hide modal
+        proceedWithFetch(); // Run the fetch function
+    });
 
-  function proceedWithFetch() {
+    // Handle Decline Button Click
+    document.getElementById('declinePolicy').addEventListener('click', function () {
+        window.location.href = 'booking.html'; // Redirect to booking page
+    });
 
-    // Show loading spinner, overlay, and "Sending Booking..." text
-    document.getElementById('loading-spinner').style.display = 'flex'; 
-    document.getElementById('loading-text').style.display = 'block'; 
+    function proceedWithFetch() {
+        // Show loading spinner, overlay, and "Sending Booking..." text
+        document.getElementById('loading-spinner').style.display = 'flex'; 
+        document.getElementById('loading-text').style.display = 'block'; 
 
-    const form = e.target;
-    
-    // Validate that form fields exist before accessing their values
-    const name = form.name ? form.name.value : '';
-    const email = form.email ? form.email.value : '';
-    const cell = form.cell ? form.cell.value : '';
-    const hairstyle = form.hairstyle ? form.hairstyle.value : '';
-    const size = form.size ? form.size.value : '';
-    const color = form.color ? form.color.value : '';
-    const date = form.date ? form.date.value : '';
-    const hour = form.hour ? form.hour.value : '';
-    const minute = form.minute ? form.minute.value : '';
-    const time = `${hour}:${minute}`;
-    const price = document.getElementById('price') ? document.getElementById('price').innerText : '';
-    const appointmentType = form.appointmentType ? form.appointmentType.value : '';
-    const paymentProof = document.getElementById('fileUpload') ? document.getElementById('fileUpload').files[0] : null;
-    
-    // Handle optional extras (check which checkboxes are selected)
-    const extras = [];
+        const form = e.target;
+        
+        // Validate that form fields exist before accessing their values
+        const name = form.name ? form.name.value : '';
+        const email = form.email ? form.email.value : '';
+        const cell = form.cell ? form.cell.value : '';
+        const hairstyle = form.hairstyle ? form.hairstyle.value : '';
+        const size = form.size ? form.size.value : '';
+        const color = form.color ? form.color.value : '';
+        const date = form.date ? form.date.value : '';
+        const hour = form.hour ? form.hour.value : '';
+        const minute = form.minute ? form.minute.value : '';
+        const time = `${hour}:${minute}`;
+        const price = document.getElementById('price') ? document.getElementById('price').innerText : '';
+        const appointmentType = form.appointmentType ? form.appointmentType.value : '';
+        const paymentProof = document.getElementById('fileUpload') ? document.getElementById('fileUpload').files[0] : null;
+        
+        // Handle optional extras (check which checkboxes are selected)
+        const extras = [];
 
-    // Add selected extras based on checked checkboxes
-    if (document.getElementById('extraCurls') && document.getElementById('extraCurls').checked) {
-        extras.push('Extra Curls (R100)');
-    }
+        // Add selected extras based on checked checkboxes
+        if (document.getElementById('extraCurls') && document.getElementById('extraCurls').checked) {
+            extras.push('Extra Curls (R100)');
+        }
 
-    if (document.getElementById('goddessExtra') && document.getElementById('goddessExtra').checked) {
-        extras.push('Goddess (R200)');
-    }
+        if (document.getElementById('goddessExtra') && document.getElementById('goddessExtra').checked) {
+            extras.push('Goddess (R200)');
+        }
 
-    if (document.getElementById('highlightExtra') && document.getElementById('highlightExtra').checked) {
-        extras.push('Highlight (R150)');
-    }
+        if (document.getElementById('highlightExtra') && document.getElementById('highlightExtra').checked) {
+            extras.push('Highlight (R150)');
+        }
 
-    if (document.getElementById('extraLengthKnotless') && document.getElementById('extraLengthKnotless').checked) {
-        extras.push('Extra Length Knotless (R50)');
-    }
+        if (document.getElementById('extraLengthKnotless') && document.getElementById('extraLengthKnotless').checked) {
+            extras.push('Extra Length Knotless (R50)');
+        }
 
-    if (document.getElementById('goddessExtraInvisible') && document.getElementById('goddessExtraInvisible').checked) {
-        extras.push('Goddess Invisible (R100)');
-    }
+        if (document.getElementById('goddessExtraInvisible') && document.getElementById('goddessExtraInvisible').checked) {
+            extras.push('Goddess Invisible (R100)');
+        }
 
-    if (document.getElementById('highlightPeekabooExtra') && document.getElementById('highlightPeekabooExtra').checked) {
-        extras.push('Highlight/Peekaboo Invisible (R120)');
-    }
+        if (document.getElementById('highlightPeekabooExtra') && document.getElementById('highlightPeekabooExtra').checked) {
+            extras.push('Highlight/Peekaboo Invisible (R120)');
+        }
 
-    if (document.getElementById('goddessExtraButterfly') && document.getElementById('goddessExtraButterfly').checked) {
-        extras.push('Goddess Butterfly (R200)');
-    }
+        if (document.getElementById('goddessExtraButterfly') && document.getElementById('goddessExtraButterfly').checked) {
+            extras.push('Goddess Butterfly (R200)');
+        }
 
-    if (document.getElementById('highlightExtraButterfly') && document.getElementById('highlightExtraButterfly').checked) {
-        extras.push('Highlight Butterfly (R150)');
-    }
+        if (document.getElementById('highlightExtraButterfly') && document.getElementById('highlightExtraButterfly').checked) {
+            extras.push('Highlight Butterfly (R150)');
+        }
 
-    if (document.getElementById('extraBeads') && document.getElementById('extraBeads').checked) {
-        extras.push('Extra Beads (R50)');
-    }
+        if (document.getElementById('extraBeads') && document.getElementById('extraBeads').checked) {
+            extras.push('Extra Beads (R50)');
+        }
 
-    if (document.getElementById('extraLengthNormal') && document.getElementById('extraLengthNormal').checked) {
-        extras.push('Extra Length Normal (R50)');
-    }
+        if (document.getElementById('extraLengthNormal') && document.getElementById('extraLengthNormal').checked) {
+            extras.push('Extra Length Normal (R50)');
+        }
 
-    if (document.getElementById('extraLengthHairpieceNotIncluded') && document.getElementById('extraLengthHairpieceNotIncluded').checked) {
-        extras.push('Extra Length Hairpiece Not Included (R50)');
-    }
+        if (document.getElementById('extraLengthHairpieceNotIncluded') && document.getElementById('extraLengthHairpieceNotIncluded').checked) {
+            extras.push('Extra Length Hairpiece Not Included (R50)');
+        }
 
-    // Check if required fields are empty
-    if (!name || !email || !cell || !hairstyle || !size || !color || !date || !hour || !minute || !paymentProof) {
-        alert("Please fill in all required fields!");
-        document.getElementById('loading-spinner').style.display = 'none';
-        document.getElementById('loading-text').style.display = 'none'; // Hide loading text
-        return;
-    }
-
-    // Check if payment proof exists
-    if (!paymentProof) {
-        alert("Proof of payment is required!");
-        document.getElementById('loading-spinner').style.display = 'none';
-        document.getElementById('loading-text').style.display = 'none'; // Hide loading text
-        return;
-    }
-
-    // Construct FormData for submission
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('cell', cell);
-    formData.append('hairstyle', hairstyle);
-    formData.append('size', size);
-    formData.append('color', color);
-    formData.append('date', date);
-    formData.append('time', time);
-    formData.append('price', price);
-    formData.append('appointmentType', appointmentType);
-    formData.append('paymentProof', paymentProof);
-
-    // Add extras to formData if selected
-    if (extras.length > 0) {
-        formData.append('extras', extras.join(', ')); // Send as a comma-separated list
-    }
-
-    // Send the form data using Fetch API
-    fetch('https://booking-app-c91o.onrender.com/submit-booking', {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        setTimeout(function () {
-            document.getElementById('spinner').style.display = 'none'; // Hide spinner after submission
-        }, 3000); // Replace with your actual API or form submission delay
-
-        // Show appropriate message based on response
-        if (data.status === 'success') {
-            alert("Booking successfully sent!");
-            closeBookingForm();
-        } else {
+        // Check if required fields are empty
+        if (!name || !email || !cell || !hairstyle || !size || !color || !date || !hour || !minute || !paymentProof) {
+            alert("Please fill in all required fields!");
             document.getElementById('loading-spinner').style.display = 'none';
             document.getElementById('loading-text').style.display = 'none'; // Hide loading text
-            alert("There was an issue with your booking.");
-            closeBookingForm();
+            return;
         }
-    })
-    .catch(error => {
-        // Hide the loading spinner and text in case of an error
-        document.getElementById('loading-spinner').style.display = 'none';
-        document.getElementById('loading-text').style.display = 'none';
-        console.error('Error:', error);
-        alert("There was an issue with your booking.");
-    });
-}});
+
+        // Check if payment proof exists
+        if (!paymentProof) {
+            alert("Proof of payment is required!");
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('loading-text').style.display = 'none'; // Hide loading text
+            return;
+        }
+
+        // Initialize selectedColors as an array
+        const selectedColors = [];
+
+        // Add selected colors to the array (example: collecting values of selected checkboxes)
+        const colorInputs = document.querySelectorAll('input[name="colorBlend"]:checked'); // Change this to colorBlend
+        console.log("Checked color checkboxes:", colorInputs); // Log to debug
+        colorInputs.forEach(function(input) {
+            selectedColors.push(input.value);
+        });
+
+        console.log("Selected colors array:", selectedColors); // Log the selected colors
+
+        // Construct FormData for submission
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('cell', cell);
+        formData.append('hairstyle', hairstyle);
+        formData.append('size', size);
+        formData.append('color', color);
+        formData.append('date', date);
+        formData.append('time', time);
+        formData.append('price', price);
+        formData.append('appointmentType', appointmentType);
+        formData.append('paymentProof', paymentProof);
+
+        // Check if selectedColors has been populated before appending to FormData
+        if (selectedColors.length > 0) {
+            formData.append('colorBlend', selectedColors.join(', ')); // Append the selected colors as a comma-separated string
+        }
+
+        // Add extras to formData if selected
+        if (extras.length > 0) {
+            formData.append('extras', extras.join(', ')); // Send as a comma-separated list
+        }
+
+        // Send the form data using Fetch API
+        fetch('https://booking-app-c91o.onrender.com/submit-booking', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            setTimeout(function () {
+                document.getElementById('spinner').style.display = 'none'; // Hide spinner after submission
+            }, 3000); // Replace with your actual API or form submission delay
+
+            // Show appropriate message based on response
+            if (data.status === 'success') {
+                alert("Booking successfully sent!");
+                closeBookingForm();
+            } else {
+                document.getElementById('loading-spinner').style.display = 'none';
+                document.getElementById('loading-text').style.display = 'none'; // Hide loading text
+                alert("There was an issue with your booking.");
+                closeBookingForm();
+            }
+        })
+        .catch(error => {
+            // Hide the loading spinner and text in case of an error
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('loading-text').style.display = 'none';
+            console.error('Error:', error);
+            alert("There was an issue with your booking.");
+        });
+    }
+});
 
 
 // Booking Form Submit Listener (your existing code)
@@ -307,12 +325,12 @@ $jq(document).ready(function () {
                 'invisiblelocs': 0,
                 'butterflylocs': 0,
                 'knotlessBraids': 0,
-                'knotlessBraidswithbeads': 0,
+                'knotless_Braids_with_beads': 0,
                 'normalBraids': 0,
-                'normalBraidsHairpieceNotIncluded': 0,
+                'normal_Braids_Hairpiece_Not_Included': 0,
                 'Goddessbraids': 0,
-                'knotlessBraidsHairpieceNotIncluded': 0, // New option
-                'GoddessbraidsHairpieceNotIncluded': 0,  // New option
+                'knotless_Braids_Hairpiece_Not_Included': 0, // New option
+                'Goddess_braids_Hairpiece_Not_Included': 0,  // New option
             };
     
             var sizePrices = {
@@ -321,12 +339,12 @@ $jq(document).ready(function () {
                 'invisiblelocs': { 'bob': 600, 'shoulder': 650, 'midback': 750, 'waist': 800 },
                 'butterflylocs': { 'shoulder': 900, 'midback': 1000, 'waist': 1200, 'butt': 1350, 'knee': 1500 },
                 'knotlessBraids': { 'small': 800, 'smedium': 750, 'medium': 650, 'large': 600, 'jumbo': 550 },
-                'knotlessBraidswithbeads': { 'small': 750, 'smedium': 700, 'medium': 750, 'large': 700, 'jumbo': 650 },
+                'knotless_Braids_with_beads': { 'small': 750, 'smedium': 700, 'medium': 750, 'large': 700, 'jumbo': 650 },
                 'normalBraids': { 'small': 600, 'medium': 500, 'large': 400, 'jumbo': 300 },
-                'normalBraidsHairpieceNotIncluded': { 'small': 600, 'medium': 500, 'large': 400, 'jumbo': 300 },  // New option for normal braids hairpiece not included
+                'normal_Braids_Hairpiece_Not_Included': { 'small': 600, 'medium': 500, 'large': 400, 'jumbo': 300 },  // New option for normal braids hairpiece not included
                 'Goddessbraids': { 'small': 900, 'medium': 850, 'large': 800 },
-                'knotlessBraidsHairpieceNotIncluded': { 'small': 550, 'smedium': 500, 'medium': 400, 'large': 450, 'jumbo': 400 }, // New option prices
-                'GoddessbraidsHairpieceNotIncluded': { 'small': 550, 'smedium': 500, 'medium': 400, 'large': 800,'jumbo': 400 },  // New option prices
+                'knotless_Braids_Hairpiece_Not_Included': { 'small': 550, 'smedium': 500, 'medium': 400, 'large': 450, 'jumbo': 400 }, // New option prices
+                'Goddess_braids_Hairpiece_Not_Included': { 'small': 550, 'smedium': 500, 'medium': 400, 'large': 800,'jumbo': 400 },  // New option prices
             };
     
             var sizeOptions = {
@@ -335,12 +353,12 @@ $jq(document).ready(function () {
                 'invisiblelocs': ['bob', 'shoulder', 'midback', 'waist'],
                 'butterflylocs': ['shoulder', 'midback', 'waist', 'butt', 'knee'],
                 'knotlessBraids': ['small', 'smedium', 'medium', 'large', 'jumbo'],
-                'knotlessBraidswithbeads': ['small', 'smedium', 'medium', 'large', 'jumbo'],
+                'knotless_Braids_with_beads': ['small', 'smedium', 'medium', 'large', 'jumbo'],
                 'normalBraids': ['small', 'medium', 'large', 'jumbo'],
-                'normalBraidsHairpieceNotIncluded': ['small', 'medium', 'large', 'jumbo'],  // New option for normal braids hairpiece not included sizes
+                'normal_Braids_Hairpiece_Not_Included': ['small', 'medium', 'large', 'jumbo'],  // New option for normal braids hairpiece not included sizes
                 'Goddessbraids': ['small', 'medium', 'large'],
-                'knotlessBraidsHairpieceNotIncluded': ['small', 'medium', 'large', 'jumbo'], // New option sizes
-                'GoddessbraidsHairpieceNotIncluded': ['small', 'medium', 'large'],  // New option sizes
+                'knotless_Braids_Hairpiece_Not_Included': ['small', 'medium', 'large', 'jumbo'], // New option sizes
+                'Goddess_braids_Hairpiece_Not_Included': ['small', 'medium', 'large'],  // New option sizes
             };
     
             var selectedHairstyle = $jq('#hairstyle').val();
@@ -353,25 +371,28 @@ $jq(document).ready(function () {
             var goddessExtraDistressed = $jq('#goddessExtra').prop('checked') && selectedHairstyle === 'distressedlocs' ? 200 : 0;
             var highlightExtraDistressed = $jq('#highlightExtra').prop('checked') && selectedHairstyle === 'distressedlocs' ? 150 : 0;
             var extraLengthKnotless = $jq('#extraLengthKnotless').prop('checked') && selectedHairstyle === 'knotlessBraids' ? 50 : 0; // This line handles extra length for Knotless Braids
-            var extraBeadsPrice = $jq('#extraBeads').prop('checked') && selectedHairstyle === 'knotlessBraidswithbeads' ? 50 : 0;
+            var extraBeadsPrice = $jq('#extraBeads').prop('checked') && selectedHairstyle === 'knotless_Braids_with_beads' ? 50 : 0;
             var goddessExtraInvisible = $jq('#goddessExtraInvisible').prop('checked') && selectedHairstyle === 'invisiblelocs' ? 100 : 0;
             var highlightPeekabooExtra = $jq('#highlightPeekabooExtra').prop('checked') && selectedHairstyle === 'invisiblelocs' ? 120 : 0;
             var goddessExtraButterfly = $jq('#goddessExtraButterfly').prop('checked') && selectedHairstyle === 'butterflylocs' ? 200 : 0;
             var highlightExtraButterfly = $jq('#highlightExtraButterfly').prop('checked') && selectedHairstyle === 'butterflylocs' ? 150 : 0;
             var extraLengthNormal = $jq('#extraLengthNormal').prop('checked') && selectedHairstyle === 'normalBraids' ? 50 : 0;
+            var colorBlendPrice = $jq('#colorBlend').prop('checked') ? 50 : 0; // Color blend extra
+
+
     
             // Corrected and added unique identifiers for Hairpiece Not Included length
-            var extraLengthHairpieceNotIncludedNormal = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'normalBraidsHairpieceNotIncluded') ? 50 : 0;
-            var extraLengthHairpieceNotIncludedKnotless = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'knotlessBraidsHairpieceNotIncluded') ? 50 : 0;
-            var extraLengthHairpieceNotIncludedGoddess = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'GoddessbraidsHairpieceNotIncluded') ? 50 : 0;
+            var extraLengthHairpieceNotIncludedNormal = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'normal_Braids_Hairpiece_Not_Included') ? 50 : 0;
+            var extraLengthHairpieceNotIncludedKnotless = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'knotless_Braids_Hairpiece_Not_Included') ? 50 : 0;
+            var extraLengthHairpieceNotIncludedGoddess = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'Goddess_braids_Hairpiece_Not_Included') ? 50 : 0;
     
             var totalPrice = basePrice + sizePrice + extraCurlsPrice + goddessExtraDistressed + highlightExtraDistressed +
                 extraLengthKnotless + extraBeadsPrice + goddessExtraInvisible + highlightPeekabooExtra +
                 goddessExtraButterfly + highlightExtraButterfly + extraLengthNormal + extraLengthHairpieceNotIncludedNormal +
-                extraLengthHairpieceNotIncludedKnotless + extraLengthHairpieceNotIncludedGoddess;
+                extraLengthHairpieceNotIncludedKnotless + extraLengthHairpieceNotIncludedGoddess + colorBlendPrice;
     
             $jq('#price').text('R' + totalPrice);
-    
+               
             // Update size options dynamically
             var sizeSelect = $jq('#size');
             sizeSelect.empty();
@@ -406,20 +427,29 @@ $jq(document).ready(function () {
         $jq('#highlightExtraButterfly').change(updatePrice);
         $jq('#extraLengthNormal').change(updatePrice);
         $jq('#extraLengthHairpieceNotIncluded').change(updatePrice); 
+        $jq('#colorBlend').change(updatePrice);
+
     
         $jq('#hairstyle').change(function() {
             $jq('#extraCurlsContainer').toggle($jq(this).val() === 'islandtwist');
             $jq('#extraOptionsDistressed').toggle($jq(this).val() === 'distressedlocs');
             $jq('#extraOptionsKnotless').toggle($jq(this).val() === 'knotlessBraids');
-            $jq('#extraOptionsKnotlessBeads').toggle($jq(this).val() === 'knotlessBraidswithbeads');
+            $jq('#extraOptionsKnotlessBeads').toggle($jq(this).val() === 'knotless_Braids_with_beads');
             $jq('#extraOptionsInvisible').toggle($jq(this).val() === 'invisiblelocs');
             $jq('#extraOptionsButterfly').toggle($jq(this).val() === 'butterflylocs');
             $jq('#extraOptionsNormal').toggle($jq(this).val() === 'normalBraids');
-            $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'knotlessBraidsHairpieceNotIncluded'); 
-            $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'GoddessbraidsHairpieceNotIncluded'); 
-            $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'normalBraidsHairpieceNotIncluded');
+            $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'knotless_Braids_Hairpiece_Not_Included'); 
+            $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'Goddess_braids_Hairpiece_Not_Included'); 
+            $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'normal_Braids_Hairpiece_Not_Included');
 
         });
+       // "Done" button functionality - add R50
+       $jq('#doneButton').click(function() {
+        var currentPrice = parseInt($jq('#price').text().replace('R', '')) || 0;
+        var newPrice = currentPrice + 50;
+        $jq('#price').text('R' + newPrice);
+    });
+
     
         updatePrice();
     });
