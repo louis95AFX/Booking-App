@@ -142,10 +142,15 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
   try {
     console.log("Received booking data:", req.body);
 
-    const { name, email, cell, hairstyle, size, color, date, time, price, appointmentType } = req.body;
+    const { name, email, cell, hairstyle, size, color, date, time, price, appointmentType, colorBlend } = req.body;
 
     // Log received values
-    console.log("Booking Details:", { name, email, cell, hairstyle, size, color, date, time, price, appointmentType });
+    console.log("Booking Details:", { name, email, cell, hairstyle, size, color, date, time, price, appointmentType, colorBlend });
+    // Convert colorBlend to an array if it's a string and then join it to a string
+    const colorBlendArray = colorBlend ? colorBlend.split(',').map(item => item.trim()) : [];
+    const colorBlendStr = colorBlendArray.length > 0 ? colorBlendArray.join(', ') : 'None'
+    console.log("Color Blend Selected:", colorBlendStr);
+    
 
     // Extract the extras from the body, or set them to null if they are not present
     const extraCurls = req.body.extraCurls || null;
@@ -188,11 +193,11 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
 
     // Insert booking into the database
     const query = `
-      INSERT INTO bookings (name, email, cell, date, time)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO bookings (name, email, cell, hairstyle, size, color, date, time, colorBlend)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *;
     `;
-    const values = [name, email, cell, date, time];
+    const values = [name, email, cell, hairstyle, size, color, date, time, colorBlendStr];
 
     console.log("Inserting booking into the database:", { name, email, cell, date, time });
     const result = await pool.query(query, values);
@@ -203,9 +208,6 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       console.error("❌ No payment proof uploaded.");
       return res.status(400).json({ status: 'error', message: '❌ No payment proof uploaded.' });
     }
-    const extras = req.body.extras ? req.body.extras.split(', ') : [];
-    console.log('Parsed Extras:', extras);
-
     const paymentProof = req.file;
     console.log("Payment proof uploaded:", paymentProof);
 
@@ -237,11 +239,12 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       - Hairstyle: ${hairstyle}
       - Size: ${size}
       - Color: ${color}
+      - Color Blend: ${colorBlendStr}
       - Date: ${date}
       - Time: ${time}
       - Price: ${price}
       - Appointment Type: ${appointmentType}
-      - Extras: ${extras.length > 0 ? extras.join(', ') : 'None'}`,  // Added extras here
+      - Extras: ${extrasText.length > 0 ? extrasText : 'None'}`,  // Added extras here
       attachments: [
         {
           filename: paymentProof.originalname,
@@ -249,11 +252,10 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
         }
       ]
     };
-    console.log('Received extras:', req.body.extras);
 
-    console.log('Sending email...');
+    console.log('Sending email to admin...');
     const info = await transporter.sendMail(mailOptionsAdmin);
-    console.log('✅ Email sent successfully:', info.response);
+    console.log('✅ Email sent to admin:', info.response);
 
     // Send email to user confirming receipt of the booking
     const mailOptionsUser = {
