@@ -1,4 +1,42 @@
 const form = document.getElementById('bookingForm');
+document.addEventListener("DOMContentLoaded", function () {
+    const hairstyleSelect = document.getElementById("hairstyle"); // Select hairstyle dropdown
+    const colorSelect = document.getElementById("color"); // Select color dropdown
+    const colorContainer = document.getElementById("color-container"); // Container for title + dropdown
+    const notification = document.getElementById("notification"); // Notification message
+
+
+    function toggleColorSelection() {
+        const selectedHairstyle = hairstyleSelect.value;
+        if (selectedHairstyle === "Goddess_braids_Hairpiece_Not_Included" || 
+            selectedHairstyle === "knotless_Braids_Hairpiece_Not_Included") {
+            colorSelect.style.display = "none"; // Hide the color selection
+            colorContainer.style.display = "none"; // Hide the entire section
+            notification.style.display = "block"; // Show notification
+
+        } else {
+            colorSelect.style.display = "block"; // Show the color selection
+            colorContainer.style.display = "block"; // Show the section
+            notification.style.display = "none"; // Hide notification
+
+        }
+    }
+
+    // Event listener to detect changes in the hairstyle selection
+    hairstyleSelect.addEventListener("change", toggleColorSelection);
+
+    // Initial check in case the page is loaded with a pre-selected value
+    toggleColorSelection();
+});
+
+document.getElementById('bookingForm').addEventListener('submit', function(event) {
+    var beadColor = document.getElementById('beadColor');
+    
+    if (beadColorContainer.style.display !== "none" && beadColor.value === "") {
+        alert("Please select a bead color.");
+        event.preventDefault(); // Prevent form submission
+    }
+});
 document.getElementById('bookingForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Prevent form from submitting the default way
 
