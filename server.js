@@ -150,7 +150,8 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     const colorBlendArray = colorBlend ? colorBlend.split(',').map(item => item.trim()) : [];
     const colorBlendStr = colorBlendArray.length > 0 ? colorBlendArray.join(', ') : 'None'
     console.log("Color Blend Selected:", colorBlendStr);
-    
+    const beadColor = req.body.beadColor || 'Not specified'; // Get bead color directly
+
 
     // Extract the extras from the body, or set them to null if they are not present
     const extraCurls = req.body.extraCurls || null;
@@ -240,6 +241,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       - Size: ${size}
       - Color: ${color}
       - Color Blend: ${colorBlendStr}
+      - Bead Color: ${beadColor}  
       - Date: ${date}
       - Time: ${time}
       - Price: ${price}
