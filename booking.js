@@ -123,7 +123,14 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
         if (document.getElementById('extraLengthHairpieceNotIncluded') && document.getElementById('extraLengthHairpieceNotIncluded').checked) {
             extras.push('Extra Length Hairpiece Not Included (R50)');
         }
+        // Add the new Goddess extras
+        if (document.getElementById('extraCurlsGoddess') && document.getElementById('extraCurlsGoddess').checked) {
+            extras.push('Extra Curl Goddess (R80)');
+        }
 
+        if (document.getElementById('highlightCurlsGoddess') && document.getElementById('highlightCurlsGoddess').checked) {
+            extras.push('Highlight Curls Goddess (R50)');
+        }
         // Check if required fields are empty
         if (!name || !email || !cell || !hairstyle || !size || !color || !date || !hour || !minute || !paymentProof) {
             alert("Please fill in all required fields!");
@@ -425,6 +432,10 @@ $jq(document).ready(function () {
             var highlightExtraButterfly = $jq('#highlightExtraButterfly').prop('checked') && selectedHairstyle === 'butterflylocs' ? 150 : 0;
             var extraLengthNormal = $jq('#extraLengthNormal').prop('checked') && selectedHairstyle === 'normalBraids' ? 50 : 0;
             var colorBlendPrice = $jq('#colorBlend').prop('checked') ? 50 : 0; // Color blend extra
+            // Extras for Goddess Braids
+            var extraCurlsGoddess = $jq('#extraCurlsGoddess').prop('checked') && (selectedHairstyle === 'Goddessbraids' || selectedHairstyle === 'Goddess_braids_Hairpiece_Not_Included') ? 80 : 0;
+            var highlightCurlsGoddess = $jq('#highlightCurlsGoddess').prop('checked') && (selectedHairstyle === 'Goddessbraids' || selectedHairstyle === 'Goddess_braids_Hairpiece_Not_Included') ? 50 : 0;
+
 
 
     
@@ -436,7 +447,7 @@ $jq(document).ready(function () {
             var totalPrice = basePrice + sizePrice + extraCurlsPrice + goddessExtraDistressed + highlightExtraDistressed +
                 extraLengthKnotless + extraBeadsPrice + goddessExtraInvisible + highlightPeekabooExtra +
                 goddessExtraButterfly + highlightExtraButterfly + extraLengthNormal + extraLengthHairpieceNotIncludedNormal +
-                extraLengthHairpieceNotIncludedKnotless + extraLengthHairpieceNotIncludedGoddess + colorBlendPrice;
+                extraLengthHairpieceNotIncludedKnotless + extraLengthHairpieceNotIncludedGoddess + colorBlendPrice + extraCurlsGoddess + highlightCurlsGoddess;
     
             $jq('#price').text('R' + totalPrice);
                
@@ -475,6 +486,8 @@ $jq(document).ready(function () {
         $jq('#extraLengthNormal').change(updatePrice);
         $jq('#extraLengthHairpieceNotIncluded').change(updatePrice); 
         $jq('#colorBlend').change(updatePrice);
+        $jq('#extraCurlsGoddess').change(updatePrice);
+        $jq('#highlightCurlsGoddess').change(updatePrice);
 
     
         $jq('#hairstyle').change(function() {
@@ -488,6 +501,7 @@ $jq(document).ready(function () {
             $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'knotless_Braids_Hairpiece_Not_Included'); 
             $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'Goddess_braids_Hairpiece_Not_Included'); 
             $jq('#extraOptionsHairpieceNotIncluded').toggle($jq(this).val() === 'normal_Braids_Hairpiece_Not_Included');
+            $jq('#extraOptionsGoddess').toggle($jq(this).val() === 'Goddessbraids');
 
         });
        // "Done" button functionality - add R50
