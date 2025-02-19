@@ -176,6 +176,15 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
             formData.append('extras', extras.join(', ')); // Send as a comma-separated list
         }
 
+        // Get bead color selection
+            const beadColorElement = document.getElementById('beadColor');
+            const beadColor = beadColorElement ? beadColorElement.value : '';
+
+            // Append bead color to formData if selected
+            if (beadColor) {
+                formData.append('beadColor', beadColor);
+            }
+
         // Send the form data using Fetch API
         fetch('https://booking-app-c91o.onrender.com/submit-booking', {
             method: 'POST',
