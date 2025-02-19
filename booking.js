@@ -284,9 +284,9 @@ function validateEmail(email) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const reviews = [
-        { name: "Jane Doe", text: "Absolutely amazing service! I love my new look.", rating: 5 },
-        { name: "Mary Smith", text: "Highly professional and friendly. Will book again!", rating: 5 },
-        { name: "John Williams", text: "Great experience! Highly recommend.", rating: 4 }
+       { name: "Jane ", text: "Absolutely amazing service! I love my new look.", rating: 5 },
+        { name: "Mary ", text: "Highly professional and friendly. Will book again!", rating: 5 },
+        { name: "Anna ", text: "Great experience! Highly recommend.", rating: 4 }
     ];
 
     const reviewContainer = document.getElementById("review-container");
