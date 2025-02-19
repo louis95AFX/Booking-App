@@ -234,7 +234,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     // Send email notification to admin
     const mailOptionsAdmin = {
       from: emailUser,
-      to: 'carterprince95@gmail.com', // Change to recipient email
+      to: 'thandiwejessica30@icloud.com', // Change to recipient email
       subject: '📅 New Booking Request',
       text: `New Booking Request:
       - Name: ${name}
@@ -459,7 +459,7 @@ app.post('/contact', async (req, res) => {
 
   const mailOptions = {
     from: email, // Sender's email
-    to: 'carterprince95@gmail.com', // Your email address where you want to receive messages
+    to: 'thandiwejessica30@icloud.com', // Your email address where you want to receive messages
     subject: 'New Contact Form Submission',
     text: `
       You have received a new message from ${name}:
