@@ -142,14 +142,17 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
   try {
     console.log("Received booking data:", req.body);
 
-    const { name, email, cell, hairstyle, size, color, date, time, price, appointmentType, colorBlend } = req.body;
+     const { name, email, cell, hairstyle, size, color, date, time, price, appointmentType, colorBlend, extras } = req.body;
+    console.log("Extras selected:", extras);
 
     // Log received values
     console.log("Booking Details:", { name, email, cell, hairstyle, size, color, date, time, price, appointmentType, colorBlend });
     // Convert colorBlend to an array if it's a string and then join it to a string
+      
     const colorBlendArray = colorBlend ? colorBlend.split(',').map(item => item.trim()) : [];
-    const colorBlendStr = colorBlendArray.length > 0 ? colorBlendArray.join(', ') : 'None'
+    const colorBlendStr = colorBlendArray.length > 0 ? colorBlendArray.join(', ') : 'None';
     console.log("Color Blend Selected:", colorBlendStr);
+    
     const beadColor = req.body.beadColor || 'Not specified'; // Get bead color directly
 
 
@@ -246,7 +249,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       - Time: ${time}
       - Price: ${price}
       - Appointment Type: ${appointmentType}
-      - Extras: ${extrasText.length > 0 ? extrasText : 'None'}`,  // Added extras here
+      - Extras: ${extras || 'None'}`,
       attachments: [
         {
           filename: paymentProof.originalname,
