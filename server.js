@@ -55,14 +55,11 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));  // URL-encod
 // PostgreSQL Database Connection
 
 const pool = new Pool({
-  user: 'postgres_e88h_user',
-  host: 'dpg-cumerbdds78s73cv24dg-a.oregon-postgres.render.com',
-  database: 'postgres_e88h',
-  password: process.env.DB_PASSWORD || '6AduOecuU4aoWXwt2fkhwbH1TmEvYdpu',
-  port: 5432,
+ connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false, // Allow unsigned certificates
-  },
+     rejectUnauthorized: false  // Ensure SSL is configured for Railway
+
+  }
 });
 
 
@@ -185,7 +182,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
     });
 
     // Check if an approved booking exists for this date and time
-    const checkQuery = `SELECT * FROM bookings WHERE date = $1 AND time = $2 AND approved = TRUE`;
+    const checkQuery = `SELECT * FROM "Touched_by_jess".bookings WHERE date = $1 AND time = $2 AND approved = TRUE`;
     const { rows } = await pool.query(checkQuery, [date, time]);
 
     console.log("Checking existing bookings:", { date, time, rows });
@@ -197,7 +194,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
 
     // Insert booking into the database
     const query = `
-      INSERT INTO bookings (name, email, cell, hairstyle, size, color, date, time, colorBlend)
+      INSERT INTO "Touched_by_jess".bookings (name, email, cell, hairstyle, size, color, date, time, colorBlend)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *;
     `;
@@ -329,7 +326,7 @@ app.get('/get-bookings', async (req, res) => {
     const { status } = req.query;
 
     // Build the query based on the status filter
-    let query = 'SELECT id, name, email, cell, date, time, created_at, approved FROM bookings';
+    let query = 'SELECT id, name, email, cell, date, time, created_at, approved FROM "Touched_by_jess".bookings';
     let queryParams = [];
 
     if (status) {
@@ -362,7 +359,7 @@ app.post('/approve-booking', async (req, res) => {
 
     try {
         // Get user details from the database
-        const result = await pool.query('SELECT email, name FROM bookings WHERE id = $1', [bookingId]);
+        const result = await pool.query('SELECT email, name FROM "Touched_by_jess".bookings WHERE id = $1', [bookingId]);
         if (result.rows.length === 0) {
             return res.status(404).send({ message: 'Booking not found' });
         }
@@ -370,7 +367,7 @@ app.post('/approve-booking', async (req, res) => {
         const { email, name } = result.rows[0];
 
         // Update the booking status to approved
-        await pool.query('UPDATE bookings SET approved = TRUE WHERE id = $1', [bookingId]);
+        await pool.query('UPDATE "Touched_by_jess".bookings SET approved = TRUE WHERE id = $1', [bookingId]);
 
         // Send approval email
         const mailOptions = {
@@ -400,7 +397,7 @@ app.post('/shift-booking-dates', async (req, res) => {
 
   try {
       // Update the booking date and time in the database
-      await pool.query('UPDATE bookings SET date = $1, time = $2 WHERE id = $3', [newDate, newTime, bookingId]);
+      await pool.query('UPDATE "Touched_by_jess".bookings SET date = $1, time = $2 WHERE id = $3', [newDate, newTime, bookingId]);
 
       res.status(200).send({ message: 'Booking dates updated successfully' });
   } catch (err) {
@@ -417,14 +414,17 @@ app.post('/subscribe-newsletter', async (req, res) => {
           return res.status(400).json({ status: "error", message: "❌ Email is required" });
       }
 
-      const checkQuery = `SELECT * FROM newsletters WHERE email = $1`;
+     // Check if the email is already subscribed in the "TouchedByJess" schema
+
+      const checkQuery = `SELECT * FROM "Touched_by_jess".newsletters WHERE email = $1`;
       const { rows } = await pool.query(checkQuery, [email]);
 
       if (rows.length > 0) {
           return res.status(400).json({ status: "error", message: "⚠️ Email is already subscribed" });
       }
+// Insert new subscription into the "TouchedByJess" schema
 
-      const insertQuery = `INSERT INTO newsletters (email) VALUES ($1) RETURNING *`;
+      const insertQuery = `INSERT INTO "Touched_by_jess".newsletters (email) VALUES ($1) RETURNING *`;
       const result = await pool.query(insertQuery, [email]);
 
       console.log("✅ New Newsletter Subscription:", result.rows[0]);
@@ -470,6 +470,11 @@ app.post('/contact', async (req, res) => {
   };
 
   try {
+        // Insert the contact message into the "TouchedByJess" schema (optional logging)
+
+    const insertQuery = `INSERT INTO "Touched_by_jess".contact_messages (name, email, message) VALUES ($1, $2, $3) RETURNING *`;
+
+    await pool.query(insertQuery, [name, email, message]);
     // Send the email
     await transporter.sendMail(mailOptions);
     console.log('📧 Email sent successfully:', mailOptions);
