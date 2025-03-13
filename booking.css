@@ -1288,13 +1288,15 @@ button {
   background-color: #218838;
 }
 
-select, input {
+.ACCmodal select, 
+.ACCmodal input {
   margin-top: 10px;
   padding: 5px;
   font-size: 16px;
   width: 100%;
   max-width: 200px;
 }
+
 /* Container for all items */
 .accessory-items {
   display: flex;
@@ -1314,8 +1316,39 @@ select, input {
   text-align: center;
 }
 
+
 /* Accessory item */
 .accessory p {
   font-size: 1.2em;
   margin-bottom: 10px;
+}
+
+/* Responsive Design for smaller screens */
+@media screen and (max-width: 768px) {
+  .ACCmodal-content {
+    width: 95%; /* Slightly smaller modal */
+    padding: 15px;
+  }
+  .accessory-box {
+    max-width: 100%; /* Full width for small screens */
+  }
+  .order-btn {
+    font-size: 14px;
+  }
+}
+
+/* Further responsive for very small devices (phones in portrait mode) */
+@media screen and (max-width: 480px) {
+  .ACCmodal-content {
+    width: 100%; /* Full width for phones */
+    padding: 10px;
+  }
+  .accessory-box {
+    max-width: 100%; /* Full width */
+    padding: 8px;
+  }
+  .order-btn {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
 }
