@@ -196,7 +196,7 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
 
 
         // Send the form data using Fetch API
-        fetch('http://localhost:3000/submit-booking', {
+        fetch('https://booking-app-c91o.onrender.com/submit-booking', {
             method: 'POST',
             body: formData,
         })
@@ -254,7 +254,7 @@ document.getElementById('subscribeForm').addEventListener('submit', async functi
 
     try {
         // Sending subscription request to server
-        const response = await fetch('http://localhost:3000/subscribe-newsletter', {
+        const response = await fetch('https://booking-app-c91o.onrender.com/subscribe-newsletter', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -337,7 +337,7 @@ document.getElementById('contact-form').addEventListener("submit", async functio
     };
 
     try {
-         const response = await fetch("http://localhost:3000/contact", {
+         const response = await fetch("https://booking-app-c91o.onrender.com/contact", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -573,7 +573,7 @@ function hideLoaderAd() {
 }
 
  // Handle the login form submission
- fetch('http://localhost:3000/admin')
+ fetch('https://booking-app-c91o.onrender.com/admin')
     .then(response => response.json())
     .then(data => {
         var adminUsername = data.adminUsername;
@@ -781,7 +781,7 @@ document.getElementById("checkoutButton").addEventListener("click", function (ev
     loadingMessage.innerHTML = "⏳ Processing your order... Please wait.";
 
     // Send request to server
-    fetch("http://localhost:3000/place-order", {
+    fetch("https://booking-app-c91o.onrender.com/place-order", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
