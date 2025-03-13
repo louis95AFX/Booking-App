@@ -13,6 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 </head>
@@ -112,7 +113,7 @@
             </button>
           </div>
 <!-- =========== -->
-       <!-- Modal -->
+        <!-- Modal -->
         <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -195,6 +196,7 @@
                     
                                 </select>
                             </div>
+
                             <div class="mb-3" id="beadColorContainer" style="display: none;">
                                 <label for="beadColor" class="form-label">Select Bead Color (3 beads per braid)</label>
                                 <select class="form-control" id="beadColor" name="beadColor">
@@ -207,8 +209,7 @@
                                     <option value="white">White</option>
                                 </select>
                             </div>
-                            
-                            
+                          
                             <!-- Extra Curls Checkbox for Island Twist -->
                             <div class="mb-3" id="extraCurlsContainer" style="display: none;">
                                 <label for="extraCurls" class="form-label">Add Extra Curls (R100)</label>
@@ -259,7 +260,6 @@
                                 <input type="checkbox" id="highlightCurlsGoddess" name="highlightCurlsGoddess">
                                 <label for="highlightCurlsGoddess">Highlight Curls (R50)</label><br>
                             </div>
-
 
                             <div class="mb-3">
                                 <label for="color" class="form-label" id="color-container">Select Color</label>
@@ -345,56 +345,57 @@
                                 <label for="walkIn" class="radio-label">Walk-in</label><br>
                                 <input type="radio" id="houseCall" name="appointmentType" value="houseCall" required>
                                 <label for="houseCall" class="radio-label">House Call</label>
-                               <div id="houseCallWarning" style="color: red; font-size: 14px; display: none; margin-top: 5px;">
+                                <div id="houseCallWarning" style="color: red; font-size: 14px; display: none; margin-top: 5px;">
                                     ⚠️ Additional charges will apply for Uber transportation to your home.
                                     <div class="house-call-info">
                                         <h3>House Call Option</h3>
                                         <p>If you'd like to request a house call, here is our address for Uber or any other transport services:</p>
-                                        <p><strong>Our Address:</strong> 10 Kenia Crescent, The Hill</p>
+                                        <p><strong>Our Address:</strong> 147 rose street, Rosetenville</p>
                                         <p>
-                                            <a href="https://m.uber.com/?pickup[latitude]=-26.2050&pickup[longitude]=28.0273&pickup[formatted_address]=10%20Kenia%20Crescent,%20The%20Hill&dropoff[latitude]=-26.2041&dropoff[longitude]=28.0295&dropoff[formatted_address]=123%20User%20Street,%20User%20City" target="_blank">
-                                                Click here to view approximate Uber price to your place.
-                                            </a>
+                                            <a href="https://m.uber.com/?pickup[latitude]=-26.2417&pickup[longitude]=28.0500&pickup[formatted_address]=147%20Rose%20Street,%20Rosettenville" target="_blank">
+                                                Click here to request an Uber from 147 Rose Street, Rosettenville.
+                                            </a>                                            
                                         </p>
                                     </div>
-                               </div>
-                        
+                                </div>
                             </div>
+                            
                             <div class="btn-container">
                                 <button type="submit" class="btn btn-primary" style="background-color: #ff69b4">Submit</button>
                             </div>
                             <!-- Modal Structure -->
-                        <div id="policyModal" class="pmodal" style="display: none;">
-                            <div class="pmodal-content">
-                                <h2>Booking Policy</h2>
-                                <p>Please accept the booking policy before proceeding.</p>
-                                <div class="policy-content" id="policyContent">
-                                    <ul>
-                                        <li>Once you have secured your booking fee, no refunds will be made.</li>
-                                        <li>Changing your appointment date is allowed only once and must be done several days prior to your scheduled appointment.</li>
-                                        <li>House calls are available, and the house call fee depends on your location.</li>
-                                        <li>Booking fees must be paid in advance — not on the day of your appointment or the day before.</li>
-                                        <li>Same-day or day-before bookings will only be accepted at an extra cost of R200.</li>
-                                        <li>Please be on time for your appointment or communicate any unforeseen delays.</li>
-                                        <li>If you are 1 hour late, your appointment will be canceled, and your booking fee will be forfeited.</li>
-                                        <li>We are a mobile service and work from home.</li>
-                                        <li>We do not wash or blow-dry hair — even at an extra cost.</li>
-                                        <li>Please arrive with your hair clean, detangled, dry, and free of any products.</li>
-                                        <li>If you have short hair or thick hair, please mention this when booking.</li>
-                                        <li><strong>⚠️ Please take this policy seriously.</strong></li>
-                                    </ul>
+                            <div id="policyModal" class="pmodal" style="display: none;">
+                                <div class="pmodal-content">
+                                    <h2>Booking Policy</h2>
+                                    <p>Please accept the booking policy before proceeding.</p>
+                                    <div class="policy-content" id="policyContent">
+                                        <ul>
+                                            <li>Once you have secured your booking fee, no refunds will be made.</li>
+                                            <li>Changing your appointment date is allowed only once and must be done several days prior to your scheduled appointment.</li>
+                                            <li>House calls are available, and the house call fee depends on your location.</li>
+                                            <li>Booking fees must be paid in advance — not on the day of your appointment or the day before.</li>
+                                            <li>Same-day or day-before bookings will only be accepted at an extra cost of R200.</li>
+                                            <li>Please be on time for your appointment or communicate any unforeseen delays.</li>
+                                            <li>If you are 1 hour late, your appointment will be canceled, and your booking fee will be forfeited.</li>
+                                            <li>We are a mobile service and work from home.</li>
+                                            <li>We do not wash or blow-dry hair — even at an extra cost.</li>
+                                            <li>Please arrive with your hair clean, detangled, dry, and free of any products.</li>
+                                            <li>If you have short hair or thick hair, please mention this when booking.</li>
+                                            <li><strong>⚠️ Please take this policy seriously.</strong></li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-buttons">
+                                        <button id="acceptPolicy">✔ Accept</button>
+                                        <button id="declinePolicy">❌ Decline</button>
+                                    </div>
                                 </div>
-                                <div class="modal-buttons">
-                                    <button id="acceptPolicy">✔ Accept</button>
-                                    <button id="declinePolicy">❌ Decline</button>
-                                </div>
-                            </div>
                             </div>
                         </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+   
     <!-- Modal for Success Message -->
 <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -436,6 +437,93 @@
     <span style="float:left" class="ss-icon" onclick="galleryspin('-')">&lt;</span>
     <span style="float:right" class="ss-icon" onclick="galleryspin('+')">&gt;</span>
 </section>
+
+<section id="services" style="padding-bottom: 50px;">
+    <h2>Other Services</h2>
+    <div class="service-buttons">
+        <button class="service-btn">Eyelashes</button>
+        <button class="service-btn">Nails</button>
+        <button class="service-btn" id="accessoriesBtn">Accessories</button>
+    </div>
+</section>
+
+<!-- Modal for Accessories -->
+<div id="accessoriesModal" class="ACCmodal">
+    <div class="ACCmodal-content">
+        <span id="closeButton" class="close">&times;</span>
+        <h2>Accessories</h2>
+        <div class="accessory-items">
+            <!-- Item 1 -->
+            <div class="accessory-box">
+                <div class="accessory">
+                    <p>Bonnet</p>
+                    <!-- Main image display -->
+                    <div class="image-slider">
+                        <img id="mainImage" src="bonnet1.png" alt="Bonnet" style="width: 100%; max-width: 300px;">
+                        <span id="nextIcon" class="next-icon fas fa-chevron-right"></span>
+                    </div>
+                    <input type="number" min="1" placeholder="Qty">
+                    <label for="colorSelect">Choose color:</label>
+                    <select id="colorSelect" name="color">
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                        <option value="black">Black</option>
+                        <option value="white">White</option>
+                    </select>
+                    <button class="order-btn">Order Now</button>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="accessory-box">
+                <div class="accessory">
+                    <p>Isoplus Hair Spray</p>
+                    <div class="image-slider">
+                        <img class="image-slider" src="Isoplus.jpg" alt="Crystal Earrings">
+                    </div>
+                    <input type="number" min="1" placeholder="Qty">
+                    <button class="order-btn">Order Now</button>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="accessory-box">
+                <div class="accessory">
+                    <p>Mousse</p>
+                    <div class="image-slider">
+                        <img src="moos.jpg" alt="Bracelet">
+                    </div>
+                    <input type="number" min="1" placeholder="Qty">
+                    <button class="order-btn">Order Now</button>
+                </div>
+            </div>
+
+            <div class="accessory-box">
+                <div class="accessory">
+                    <p>Edge Control</p>
+                    <div class="image-slider">
+                        <img src="edge control.jpg" alt="Bracelet">
+                    </div>
+                    <input type="number" min="1" placeholder="Qty">
+                    <button class="order-btn">Order Now</button>
+                </div>
+            </div>
+
+            <div class="accessory-box">
+                <div class="accessory">
+                    <p>Brush</p>
+                    <div class="image-slider">
+                        <img src="combrush.jpg" alt="Bracelet">
+                    </div>
+                    <input type="number" min="1" placeholder="Qty">
+                    <button class="order-btn">Order Now</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 
         <!-- Reviews Section -->
         <section id="reviews" class="sectioniv">
@@ -492,6 +580,7 @@
     </div>
 </div>  
         </form>
+
         <div class="social-icons mb-2">
             <a href="https://www.tiktok.com/@touched_by_jess?lang=en" target="_blank" class="fab fa-tiktok" style="font-size: 1.2rem;"></a>
             <a href="https://www.instagram.com/touched_by_jess/" target="_blank" class="fab fa-instagram" style="font-size: 1.2rem;"></a>
@@ -656,8 +745,10 @@ function confirmColorSelection() {
         alert('Please select at least two colors.');
     }
 }
+
   </script>
-    <script>
+
+<script>
     // JavaScript to show the bead color selection when "Knotless Braids with beads" is selected
     document.getElementById("hairstyle").addEventListener("change", function() {
         var hairstyle = this.value;
