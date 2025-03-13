@@ -1,7 +1,7 @@
 const form = document.getElementById('bookingForm');
 document.addEventListener("DOMContentLoaded", function () {
     const hairstyleSelect = document.getElementById("hairstyle"); // Select hairstyle dropdown
-    const colorSelect = document.getElementById("color"); // Select color dropdown
+    const colorSelect = document.getElementById ("color"); // Select color dropdown
     const colorContainer = document.getElementById("color-container"); // Container for title + dropdown
     const notification = document.getElementById("notification"); // Notification message
 
@@ -37,6 +37,7 @@ document.getElementById('bookingForm').addEventListener('submit', function(event
         event.preventDefault(); // Prevent form submission
     }
 });
+
 document.getElementById('bookingForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Prevent form from submitting the default way
 
@@ -170,8 +171,10 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
         formData.append('date', date);
         formData.append('time', time);
         formData.append('price', price);
+        // formData.append('extras', extras.join(', ')); 
         formData.append('appointmentType', appointmentType);
         formData.append('paymentProof', paymentProof);
+
 
         // Check if selectedColors has been populated before appending to FormData
         if (selectedColors.length > 0) {
@@ -182,7 +185,6 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
         if (extras.length > 0) {
             formData.append('extras', extras.join(', ')); // Send as a comma-separated list
         }
-
         // Get bead color selection
             const beadColorElement = document.getElementById('beadColor');
             const beadColor = beadColorElement ? beadColorElement.value : '';
@@ -192,8 +194,9 @@ document.getElementById('bookingForm').addEventListener('submit', function (e) {
                 formData.append('beadColor', beadColor);
             }
 
+
         // Send the form data using Fetch API
-        fetch('https://booking-app-c91o.onrender.com/submit-booking', {
+        fetch('http://localhost:3000/submit-booking', {
             method: 'POST',
             body: formData,
         })
@@ -251,7 +254,7 @@ document.getElementById('subscribeForm').addEventListener('submit', async functi
 
     try {
         // Sending subscription request to server
-        const response = await fetch('https://booking-app-c91o.onrender.com/subscribe-newsletter', {
+        const response = await fetch('http://localhost:3000/subscribe-newsletter', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -284,7 +287,7 @@ function validateEmail(email) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const reviews = [
-       { name: "Jane ", text: "Absolutely amazing service! I love my new look.", rating: 5 },
+        { name: "Jane ", text: "Absolutely amazing service! I love my new look.", rating: 5 },
         { name: "Mary ", text: "Highly professional and friendly. Will book again!", rating: 5 },
         { name: "Anna ", text: "Great experience! Highly recommend.", rating: 4 }
     ];
@@ -334,7 +337,7 @@ document.getElementById('contact-form').addEventListener("submit", async functio
     };
 
     try {
-         const response = await fetch("https://booking-app-c91o.onrender.com/contact", {
+         const response = await fetch("http://localhost:3000/contact", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -437,7 +440,6 @@ $jq(document).ready(function () {
             var highlightCurlsGoddess = $jq('#highlightCurlsGoddess').prop('checked') && (selectedHairstyle === 'Goddessbraids' || selectedHairstyle === 'Goddess_braids_Hairpiece_Not_Included') ? 50 : 0;
 
 
-
     
             // Corrected and added unique identifiers for Hairpiece Not Included length
             var extraLengthHairpieceNotIncludedNormal = $jq('#extraLengthHairpieceNotIncluded').prop('checked') && (selectedHairstyle === 'normal_Braids_Hairpiece_Not_Included') ? 50 : 0;
@@ -489,6 +491,7 @@ $jq(document).ready(function () {
         $jq('#extraCurlsGoddess').change(updatePrice);
         $jq('#highlightCurlsGoddess').change(updatePrice);
 
+
     
         $jq('#hairstyle').change(function() {
             $jq('#extraCurlsContainer').toggle($jq(this).val() === 'islandtwist');
@@ -511,7 +514,6 @@ $jq(document).ready(function () {
         $jq('#price').text('R' + newPrice);
     });
 
-    
         updatePrice();
     });
     
@@ -571,7 +573,7 @@ function hideLoaderAd() {
 }
 
  // Handle the login form submission
- fetch('https://booking-app-c91o.onrender.com/admin')
+ fetch('http://localhost:3000/admin')
     .then(response => response.json())
     .then(data => {
         var adminUsername = data.adminUsername;
@@ -614,5 +616,48 @@ function hideLoaderAd() {
             });
         }
     });
+
+    document.getElementById("accessoriesBtn").addEventListener("click", function () {
+        document.getElementById("accessoriesModal").style.display = "flex";
+    });
+    
+    // Change from "closeModal" to "closeButton"
+    document.getElementById("closeButton").addEventListener("click", function () {
+        document.getElementById("accessoriesModal").style.display = "none";
+    });
+    
+    // Close when clicking outside modal content
+    window.onclick = function (event) {
+        let modal = document.getElementById("accessoriesModal");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    // Array to hold the available images for the Bonnet based on color
+const bonnetImages = [
+    "bonnet1.jpg", // Red
+    "bonnet2.jpg", // Blue
+    "bonnet3.jpg", // Green
+    "bonnet4.jpg", // Black
+    "bonnet5.jpg"  // White
+];
+
+let currentIndex = 0; // Start at the first image
+
+// Function to update the main image
+function updateImage() {
+    document.getElementById("mainImage").src = bonnetImages[currentIndex];
+}
+
+// Event listener for the arrow icon to go to the next image
+document.getElementById("nextIcon").addEventListener("click", function () {
+    // Increment the current index and loop back to the start if necessary
+    currentIndex = (currentIndex + 1) % bonnetImages.length;
+    updateImage();
+});
+
+// Initialize the first image
+updateImage();
 
 // ======7BGN8SW8LBQBMG3MAC7MZ9EC 
