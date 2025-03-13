@@ -55,13 +55,11 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));  // URL-encod
 // PostgreSQL Database Connection
 
 const pool = new Pool({
- connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
-     rejectUnauthorized: false  // Ensure SSL is configured for Railway
-
+    rejectUnauthorized: false  // Ensure SSL is configured for Railway
   }
 });
-
 
 pool.connect()
   .then(client => {
@@ -139,19 +137,17 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
   try {
     console.log("Received booking data:", req.body);
 
-     const { name, email, cell, hairstyle, size, color, date, time, price, appointmentType, colorBlend, extras } = req.body;
+    const { name, email, cell, hairstyle, size, color, date, time, price, appointmentType, colorBlend, extras } = req.body;
     console.log("Extras selected:", extras);
 
     // Log received values
     console.log("Booking Details:", { name, email, cell, hairstyle, size, color, date, time, price, appointmentType, colorBlend });
     // Convert colorBlend to an array if it's a string and then join it to a string
-      
     const colorBlendArray = colorBlend ? colorBlend.split(',').map(item => item.trim()) : [];
     const colorBlendStr = colorBlendArray.length > 0 ? colorBlendArray.join(', ') : 'None';
     console.log("Color Blend Selected:", colorBlendStr);
-    
-    const beadColor = req.body.beadColor || 'Not specified'; // Get bead color directly
 
+    const beadColor = req.body.beadColor || 'Not specified'; // Get bead color directly
 
     // Extract the extras from the body, or set them to null if they are not present
     const extraCurls = req.body.extraCurls || null;
@@ -192,7 +188,7 @@ app.post('/submit-booking', upload.single('paymentProof'), async (req, res) => {
       return res.status(400).json({ status: 'error', message: '❌ This slot is already booked!' });
     }
 
-    // Insert booking into the database
+    // Insert booking into the database for the correct schema
     const query = `
       INSERT INTO "Touched_by_jess".bookings (name, email, cell, hairstyle, size, color, date, time, colorBlend)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -324,6 +320,8 @@ app.get('/get-bookings', async (req, res) => {
   try {
     // Get the status query parameter (if provided)
     const { status } = req.query;
+    console.log("Status Filter:", status);  // Log the status filter to make sure it's correct
+
 
     // Build the query based on the status filter
     let query = 'SELECT id, name, email, cell, date, time, created_at, approved FROM "Touched_by_jess".bookings';
@@ -354,49 +352,51 @@ app.get('/get-bookings', async (req, res) => {
   }
 });
 
+
 app.post('/approve-booking', async (req, res) => {
-    const { bookingId } = req.body;  // Get booking ID from the request body
+  const { bookingId } = req.body;  // Get booking ID from the request body
 
-    try {
-        // Get user details from the database
-        const result = await pool.query('SELECT email, name FROM "Touched_by_jess".bookings WHERE id = $1', [bookingId]);
-        if (result.rows.length === 0) {
-            return res.status(404).send({ message: 'Booking not found' });
-        }
-        
-        const { email, name } = result.rows[0];
+  try {
+      // Get user details from the database
+      const result = await pool.query('SELECT email, name FROM "Touched_by_jess".bookings WHERE id = $1', [bookingId]);
+      if (result.rows.length === 0) {
+          return res.status(404).send({ message: 'Booking not found' });
+      }
+      
+      const { email, name } = result.rows[0];
 
-        // Update the booking status to approved
-        await pool.query('UPDATE "Touched_by_jess".bookings SET approved = TRUE WHERE id = $1', [bookingId]);
+      // Update the booking status to approved
+      await pool.query('UPDATE "Touched_by_jess".bookings SET approved = TRUE WHERE id = $1', [bookingId]);
 
-        // Send approval email
-        const mailOptions = {
-            from: 'thandiwejessica30@icloud.com',
-            to: email,
-            subject: 'Booking Approved ✅',
-            text: `Dear ${name},\n\nYour booking has been successfully approved! 🎉\nWe look forward to seeing you.\n\nBest Regards,\nTouched by Jess`
-        };
+      // Send approval email
+      const mailOptions = {
+          from: 'thandiwejessica30@icloud.com',
+          to: email,
+          subject: 'Booking Approved ✅',
+          text: `Dear ${name},\n\nYour booking has been successfully approved! 🎉\nWe look forward to seeing you.\n\nBest Regards,\nTouched by Jess`
+      };
 
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.error('Error sending email:', error);
-            } else {
-                console.log('Email sent:', info.response);
-            }
-        });
+      transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              console.error('Error sending email:', error);
+          } else {
+              console.log('Email sent:', info.response);
+          }
+      });
 
-        res.status(200).send({ message: 'Booking approved and email sent' });
-    } catch (err) {
-        console.error('Error approving booking:', err);
-        res.status(500).send({ message: 'Failed to approve booking' });
-    }
+      res.status(200).send({ message: 'Booking approved and email sent' });
+  } catch (err) {
+      console.error('Error approving booking:', err);
+      res.status(500).send({ message: 'Failed to approve booking' });
+  }
 });
+
 
 app.post('/shift-booking-dates', async (req, res) => {
   const { bookingId, newDate, newTime } = req.body;
 
   try {
-      // Update the booking date and time in the database
+      // Update the booking date and time in the database within the "TouchedByJess" schema
       await pool.query('UPDATE "Touched_by_jess".bookings SET date = $1, time = $2 WHERE id = $3', [newDate, newTime, bookingId]);
 
       res.status(200).send({ message: 'Booking dates updated successfully' });
@@ -406,6 +406,7 @@ app.post('/shift-booking-dates', async (req, res) => {
   }
 });
 
+
 app.post('/subscribe-newsletter', async (req, res) => {
   try {
       const { email } = req.body;
@@ -414,16 +415,15 @@ app.post('/subscribe-newsletter', async (req, res) => {
           return res.status(400).json({ status: "error", message: "❌ Email is required" });
       }
 
-     // Check if the email is already subscribed in the "TouchedByJess" schema
-
+      // Check if the email is already subscribed in the "TouchedByJess" schema
       const checkQuery = `SELECT * FROM "Touched_by_jess".newsletters WHERE email = $1`;
       const { rows } = await pool.query(checkQuery, [email]);
 
       if (rows.length > 0) {
           return res.status(400).json({ status: "error", message: "⚠️ Email is already subscribed" });
       }
-// Insert new subscription into the "TouchedByJess" schema
 
+      // Insert new subscription into the "TouchedByJess" schema
       const insertQuery = `INSERT INTO "Touched_by_jess".newsletters (email) VALUES ($1) RETURNING *`;
       const result = await pool.query(insertQuery, [email]);
 
@@ -448,6 +448,7 @@ app.post('/subscribe-newsletter', async (req, res) => {
   }
 });
 
+
 // POST endpoint to receive the form data and send an email
 app.post('/contact', async (req, res) => {
   const { name, email, message } = req.body;
@@ -470,11 +471,10 @@ app.post('/contact', async (req, res) => {
   };
 
   try {
-        // Insert the contact message into the "TouchedByJess" schema (optional logging)
-
+    // Insert the contact message into the "TouchedByJess" schema (optional logging)
     const insertQuery = `INSERT INTO "Touched_by_jess".contact_messages (name, email, message) VALUES ($1, $2, $3) RETURNING *`;
-
     await pool.query(insertQuery, [name, email, message]);
+
     // Send the email
     await transporter.sendMail(mailOptions);
     console.log('📧 Email sent successfully:', mailOptions);
@@ -486,7 +486,73 @@ app.post('/contact', async (req, res) => {
     res.status(500).json({ status: 'error', message: 'Internal server error. Please try again later.' });
   }
 });
+// API endpoint to handle order data
+app.post('/place-order', async (req, res) => {
+  try {
+      console.log("Received order:", req.body);
 
+      const { 
+          itemName, price, quantity, totalAmount, 
+          fullName, contactNumber, emailAddress, pepStore, 
+          altContact, specialInstructions 
+      } = req.body;
+
+      // Check for missing required fields
+      if (!itemName || !price || !quantity || !totalAmount || 
+          !fullName || !contactNumber || !emailAddress || !pepStore) {
+          return res.status(400).json({ success: false, message: "Missing required fields" });
+      }
+
+      // Insert order into database
+      const query = `
+      INSERT INTO "Touched_by_jess".orders 
+      (item_name, price, quantity, total_amount, full_name, contact_number, email, pep_store, alt_contact, special_instructions) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING *;
+      `;
+      const values = [itemName, price, quantity, totalAmount, fullName, contactNumber, emailAddress, pepStore, altContact, specialInstructions];
+      const result = await pool.query(query, values);  
+
+      console.log("✅ Order placed:", result.rows[0]);
+
+      // Prepare email for the admin
+      const mailOptionsAdmin = {
+          from: emailUser,   
+          to: 'thandiwejessica30@icloud.com', // Admin email
+          subject: '🛒 New Order Received!',
+          text: `New Order Details:
+          - Item: ${itemName}
+          - Price: R${price}
+          - Quantity: ${quantity}
+          - Total Amount: R${totalAmount}
+          
+          🏠 Delivery Details:
+          - Name: ${fullName}
+          - Contact: ${contactNumber}
+          - Email: ${emailAddress}
+          - PEP Store: ${pepStore}
+          - Alt Contact: ${altContact || 'N/A'}
+          - Special Instructions: ${specialInstructions || 'N/A'}
+          `,
+      };
+
+      // Send email notification to the admin
+      transporter.sendMail(mailOptionsAdmin, (error, info) => {
+          if (error) {
+              console.error("❌ Email Error:", error);
+          } else {
+              console.log("📧 Email Sent:", info.response);
+          }
+      });
+
+      // Send success response
+      res.json({ success: true, order: result.rows[0] });
+
+  } catch (error) {
+      console.error("❌ Error placing order:", error);
+      res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
 
 // Access the environment variables
 const adminUsername = process.env.ADMIN_USERNAME;
