@@ -1362,3 +1362,219 @@ button {
     gap: 5px; /* Even smaller gap */
   }
 }
+/* General Modal Styling */
+.orderSummaryModal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* Enables scrolling if needed */
+  background-color: rgba(0, 0, 0, 0.4); /* Black background with transparency */
+}
+
+.orderSummaryModal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Default width for larger screens */
+  max-width: 600px;
+  text-align: center;
+  border-radius: 15px; /* Rounded corners */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Order Summary Styling */
+#orderSummaryContent {
+  margin-top: 20px;
+}
+
+.orderSummaryModal img {
+  width: 100%;
+  max-width: 150px;
+  margin: 10px 0;
+}
+
+/* Add some space and style for text */
+#orderSummaryContent p {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+h2 {
+  font-size: 24px;
+  color: #333;
+}
+
+/* Checkout Button */
+#checkoutBtn {
+  background-color: #4CAF50; /* Green background */
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px; /* Rounded corners for button */
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+#checkoutBtn:hover {
+  background-color: #45a049; /* Darker green when hovered */
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+  .orderSummaryModal-content {
+      width: 90%;
+  }
+}
+#loadingMessage {
+  position: fixed; /* Keeps it on top */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Ensures it's centered */
+  background: white; /* Adds contrast */
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  color: blue;
+  z-index: 9999; /* Ensures it's above the modal */
+}
+/* Modal Styling */
+/* Modal Styling */
+.order-summary-modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center; /* Vertically center */
+  justify-content: center; /* Horizontally center */
+}
+
+.order-summary-modal-content {
+  background: #fff;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: absolute; /* Use absolute positioning to ensure strict centering */
+  top: 50%; /* Position at the vertical center of the screen */
+  left: 50%; /* Position at the horizontal center of the screen */
+  transform: translate(-50%, -50%); /* Adjust for exact centering */
+  max-height: 80vh; /* Limit the max height */
+  overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  box-sizing: border-box; /* Ensure padding doesn't increase width */
+}
+
+/* Close Button */
+.order-summary-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Modal Title */
+.order-summary-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Form Styling */
+.order-summary-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: left;
+}
+
+/* Form Groups */
+.order-summary-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-summary-form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.order-summary-input, 
+.order-summary-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.order-summary-textarea {
+  resize: none;
+  height: 80px;
+}
+
+/* Checkout Button */
+.order-summary-checkout-btn {
+  background-color: #ff6600;
+  color: #fff;
+  font-size: 18px;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.order-summary-checkout-btn:hover {
+  background-color: #cc5200;
+}
+
+/* Order Now Button Styling */
+.order-now-btn {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.order-now-btn:hover {
+  background-color: #45a049;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .order-summary-modal-content {
+    width: 95%;
+  }
+}
