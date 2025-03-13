@@ -660,4 +660,160 @@ document.getElementById("nextIcon").addEventListener("click", function () {
 // Initialize the first image
 updateImage();
 
+function placeOrder(itemName, price, imageUrl) {
+    // Get the quantity selected in the accessory modal
+    var quantityInput;
+
+    // Handle different item names and their respective quantity fields
+    if (itemName === 'Bonnet') {
+        quantityInput = document.getElementById("bonnet-qty");
+    } else if (itemName === 'Isoplus Hair Spray') {
+        quantityInput = document.getElementById("isoplus-qty");
+    } else if (itemName === 'Mousse') {
+        quantityInput = document.getElementById("mousse-qty");
+    }
+
+    // Retrieve the quantity and validate it
+    var quantity = quantityInput ? parseInt(quantityInput.value) : 1; // Default to 1 if not set
+    
+    // Check if the quantity is less than 1
+    if (quantity < 1 || isNaN(quantity)) {
+        alert("Please add at least 1 item before ordering.");
+        return; // Exit the function if the quantity is invalid
+    }
+
+    // Calculate the total price
+    var totalAmount = (parseFloat(price) * quantity).toFixed(2); // Calculate total price
+
+    // Close the accessories modal
+    document.getElementById("accessoriesModal").style.display = "none";
+
+    // Prepare the order summary content
+    var orderSummaryContent = `
+        <img src="${imageUrl}" alt="${itemName} Image" style="width: 100px; height: auto;">
+        <p><strong>Item:</strong> ${itemName}</p>
+        <p><strong>Price:</strong> R${price}</p>
+        <p><strong>Quantity:</strong> ${quantity}</p>
+        <p><strong>Total Amount:</strong> R${totalAmount}</p>
+    `;
+    
+    // Inject the content into the order summary modal
+    document.getElementById("orderSummaryContent").innerHTML = orderSummaryContent;
+
+    // Show the order summary modal
+    document.getElementById("orderSummaryModal").style.display = "block";
+}
+
+// Immediately hide the modal upon page load
+window.onload = function() {
+    document.getElementById("orderSummaryModal").style.display = "none";
+};
+
+
+document.getElementById("closeSummaryButton").onclick = function () {
+    document.getElementById("orderSummaryModal").style.display = "none";
+};
+
+document.getElementById("checkoutButton").addEventListener("click", function (event) {
+    event.preventDefault(); // Prevent form submission from reloading the page
+
+    var orderSummaryContent = document.getElementById("orderSummaryContent");
+
+    if (!orderSummaryContent) {
+        alert("Order summary not available.");
+        return;
+    }
+
+    // Extract order details
+    var itemNameElement = orderSummaryContent.querySelector("p:nth-child(2)");
+    var priceElement = orderSummaryContent.querySelector("p:nth-child(3)");
+    var quantityElement = orderSummaryContent.querySelector("p:nth-child(4)");
+    var totalAmountElement = orderSummaryContent.querySelector("p:nth-child(5)");
+
+    if (!itemNameElement || !priceElement || !quantityElement || !totalAmountElement) {
+        alert("Order summary details are missing.");
+        return;
+    }
+
+    var itemName = itemNameElement.textContent.split(":")[1].trim();
+    var price = parseFloat(priceElement.textContent.replace(/[^0-9.]/g, "")); // Extract numeric value
+    var quantity = parseInt(quantityElement.textContent.split(":")[1].trim());
+    var totalAmount = parseFloat(totalAmountElement.textContent.replace(/[^0-9.]/g, "")); // Extract numeric value
+
+    if (quantity < 1) {
+        alert("Please add at least 1 quantity.");
+        return;
+    }
+
+    // Extract delivery form details
+    var fullName = document.getElementById("fullName").value.trim();
+    var contactNumber = document.getElementById("contactNumber").value.trim();
+    var emailAddress = document.getElementById("emailAddress").value.trim();
+    var pepStore = document.getElementById("pepStore").value.trim();
+    var altContact = document.getElementById("altContact").value.trim();
+    var specialInstructions = document.getElementById("specialInstructions").value.trim();
+
+    if (!fullName || !contactNumber || !emailAddress || !pepStore) {
+        alert("Please fill in all required delivery details.");
+        return;
+    }
+
+    // Create order data matching backend format
+    var orderData = {
+        itemName: itemName,
+        price: price,
+        quantity: quantity,
+        totalAmount: totalAmount,
+        fullName: fullName,
+        contactNumber: contactNumber,
+        emailAddress: emailAddress,
+        pepStore: pepStore,
+        altContact: altContact || null,
+        specialInstructions: specialInstructions || null
+    };
+
+    // Show loading message
+    var checkoutButton = document.getElementById("checkoutButton");
+    var loadingMessage = document.getElementById("loadingMessage");
+
+    checkoutButton.disabled = true;
+    loadingMessage.style.display = "block";
+    loadingMessage.innerHTML = "⏳ Processing your order... Please wait.";
+
+    // Send request to server
+    fetch("http://localhost:3000/place-order", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+    })
+        .then((response) => response.json().then((data) => ({ status: response.status, body: data })))
+        .then((result) => {
+            console.log("Server Response:", result);
+            if (result.status === 400) {
+                alert("❌ Bad Request: " + result.body.message);
+            } else if (result.status === 200) {
+                alert("✅ Order placed successfully!");
+                document.getElementById("orderSummaryModal").style.display = "none";
+                
+                // Safeguard: Check if the form exists before resetting
+                var checkoutForm = document.getElementById("checkoutForm");
+                if (checkoutForm) {
+                    checkoutForm.reset();
+                }
+            }
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("⚠️ Network error. Please try again.");
+        })
+        .finally(() => {
+            checkoutButton.disabled = false;
+            loadingMessage.style.display = "none";
+        });
+});
+
+
+
 // ======7BGN8SW8LBQBMG3MAC7MZ9EC 
