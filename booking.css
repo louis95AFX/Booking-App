@@ -1335,6 +1335,11 @@ button {
   .order-btn {
     font-size: 14px;
   }
+
+  /* Adjust gap for smaller screens */
+  .accessory-items {
+    gap: 10px; /* Reduce gap between items */
+  }
 }
 
 /* Further responsive for very small devices (phones in portrait mode) */
@@ -1350,5 +1355,10 @@ button {
   .order-btn {
     font-size: 12px;
     padding: 8px 16px;
+  }
+
+  /* Adjust gap further for phones */
+  .accessory-items {
+    gap: 5px; /* Even smaller gap */
   }
 }
