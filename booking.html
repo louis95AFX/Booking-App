@@ -447,14 +447,64 @@
     </div>
 </section>
 
-<!-- Modal for Accessories -->
+<div id="orderSummaryModal" class="order-summary-modal">
+    <div class="order-summary-modal-content">
+        <span id="closeSummaryButton" class="order-summary-close">&times;</span>
+        <h2 class="order-summary-title">🛒 Order Summary</h2>
+        <div id="orderSummaryContent" class="order-summary-details">
+            <!-- Order details will be injected here by JavaScript -->
+        </div>
+
+        <!-- Delivery Details Form -->
+        <h3 class="order-summary-section-title">🚚 Delivery Information</h3>
+        <form id="deliveryForm" class="order-summary-form">
+            <div class="order-summary-form-group">
+                <label for="fullName" class="order-summary-label">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" class="order-summary-input" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="order-summary-form-group">
+                <label for="contactNumber" class="order-summary-label">Contact Number:</label>
+                <input type="tel" id="contactNumber" name="contactNumber" class="order-summary-input" placeholder="e.g. +27 71 234 5678" required>
+            </div>
+
+            <div class="order-summary-form-group">
+                <label for="emailAddress" class="order-summary-label">Email Address:</label>
+                <input type="email" id="emailAddress" name="emailAddress" class="order-summary-input" placeholder="your@email.com" required>
+            </div>
+
+            <div class="order-summary-form-group">
+                <label for="pepStore" class="order-summary-label">PEP Store Location:</label>
+                <input type="text" id="pepStore" name="pepStore" class="order-summary-input" placeholder="e.g. PEP Store, Pretoria CBD" required>
+            </div>
+
+            <div class="order-summary-form-group">
+                <label for="altContact" class="order-summary-label">Alternative Contact Number (Optional):</label>
+                <input type="tel" id="altContact" name="altContact" class="order-summary-input" placeholder="e.g. +27 82 345 6789">
+            </div>
+
+            <div class="order-summary-form-group">
+                <label for="specialInstructions" class="order-summary-label">Special Instructions (Optional):</label>
+                <textarea id="specialInstructions" name="specialInstructions" class="order-summary-textarea" placeholder="e.g. Call before delivery"></textarea>
+            </div>
+
+            <!-- Checkout Button -->
+            <button id="checkoutButton">Checkout</button>
+        </form>
+    </div>
+</div>
+
+<p id="loadingMessage" style="display: none; color: rgb(250, 118, 140); font-weight: bold;"></p>
+
+
+<!-- Accessories Modal (for reference) -->
 <div id="accessoriesModal" class="ACCmodal">
     <div class="ACCmodal-content">
         <span id="closeButton" class="close">&times;</span>
         <h2>Accessories</h2>
         <div class="accessory-items">
-            <!-- Item 1 -->
-            <div class="accessory-box">
+            <!-- Item 1: Bonnet -->
+            <div class="accessory-box" id="accessory-bonnet">
                 <div class="accessory">
                     <p>Bonnet</p>
                     <!-- Main image display -->
@@ -462,7 +512,7 @@
                         <img id="mainImage" src="bonnet1.png" alt="Bonnet" style="width: 100%; max-width: 300px;">
                         <span id="nextIcon" class="next-icon fas fa-chevron-right"></span>
                     </div>
-                    <input class="accessory-input" type="number" min="1" placeholder="Qty">
+                    <input class="accessory-input" id="bonnet-qty" type="number" min="1" placeholder="Qty">
                     <label for="colorSelect">Choose color:</label>
                     <select id="colorSelect" name="color">
                         <option value="red">Red</option>
@@ -471,56 +521,55 @@
                         <option value="black">Black</option>
                         <option value="white">White</option>
                     </select>
-                    <button class="order-btn">Order Now</button>
+                    <button class="order-btn" onclick="placeOrder('Bonnet', 30, 'bonnet1.png')">Order Now</button>
                 </div>
             </div>
 
-            <!-- Item 2 -->
-            <div class="accessory-box">
+            <!-- Item 2: Isoplus Hair Spray -->
+            <div class="accessory-box" id="accessory-isoplus">
                 <div class="accessory">
                     <p>Isoplus Hair Spray</p>
                     <div class="image-slider">
-                        <img class="image-slider" src="Isoplus.jpg" alt="Crystal Earrings">
+                        <img src="Isoplus.jpg" alt="Isoplus Hair Spray">
                     </div>
-                    <input class="accessory-input" type="number" min="1" placeholder="Qty">
-                    <button class="order-btn">Order Now</button>
+                    <input class="accessory-input" id="isoplus-qty" type="number" min="1" placeholder="Qty">
+                    <button class="order-btn" onclick="placeOrder('Isoplus Hair Spray', 15, 'Isoplus.jpg')">Order Now</button>
                 </div>
             </div>
 
-            <!-- Item 3 -->
-            <div class="accessory-box">
+            <!-- Item 3: Mousse -->
+            <div class="accessory-box" id="accessory-mousse">
                 <div class="accessory">
                     <p>Mousse</p>
                     <div class="image-slider">
-                        <img src="moos.jpg" alt="Bracelet">
+                        <img src="moos.jpg" alt="Mousse">
                     </div>
-                    <input class="accessory-input" type="number" min="1" placeholder="Qty">
-                    <button class="order-btn">Order Now</button>
+                    <input class="accessory-input" id="mousse-qty" type="number" min="1" placeholder="Qty">
+                    <button class="order-btn" onclick="placeOrder('Mousse', 10, 'moos.jpg')">Order Now</button>
                 </div>
             </div>
-
-            <div class="accessory-box">
+            <!-- Item 4: Edge Control -->
+            <div class="accessory-box" id="accessory-Edge Control">
                 <div class="accessory">
                     <p>Edge Control</p>
                     <div class="image-slider">
-                        <img src="edge control.jpg" alt="Bracelet">
+                        <img src="edge control.jpg" alt="Edge Control">
                     </div>
-                    <input class="accessory-input" type="number" min="1" placeholder="Qty">
-                    <button class="order-btn">Order Now</button>
+                    <input class="accessory-input" id="Edge Control-qty" type="number" min="1" placeholder="Qty">
+                    <button class="order-btn" onclick="placeOrder('Edge Control', 10, 'moos.jpg')">Order Now</button>
                 </div>
             </div>
-
-            <div class="accessory-box">
+            <!-- Item 5: Brush -->
+            <div class="accessory-box" id="accessory-Brush">
                 <div class="accessory">
                     <p>Brush</p>
                     <div class="image-slider">
-                        <img src="combrush.jpg" alt="Bracelet">
+                        <img src="combrush.jpg" alt="Brush">
                     </div>
-                    <input class="accessory-input" type="number" min="1" placeholder="Qty">
-                    <button class="order-btn">Order Now</button>
+                    <input class="accessory-input" id="Brush-qty" type="number" min="1" placeholder="Qty">
+                    <button class="order-btn" onclick="placeOrder('Brush', 10, 'moos.jpg')">Order Now</button>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
