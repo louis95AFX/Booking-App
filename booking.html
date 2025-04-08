@@ -340,25 +340,41 @@
                        
                             <div class="mb-3">
                                 <label class="form-label">Select Appointment Type</label><br>
-                                <!-- Removed the 'checked' attribute to prevent preselection -->
                                 <input type="radio" id="walkIn" name="appointmentType" value="walkIn" required>
                                 <label for="walkIn" class="radio-label">Walk-in</label><br>
                                 <input type="radio" id="houseCall" name="appointmentType" value="houseCall" required>
                                 <label for="houseCall" class="radio-label">House Call</label>
+                            
+                                <!-- House Call Warning -->
                                 <div id="houseCallWarning" style="color: red; font-size: 14px; display: none; margin-top: 5px;">
                                     ⚠️ Additional charges will apply for Uber transportation to your home.
-                                    <div class="house-call-info">
-                                        <h3>House Call Option</h3>
-                                        <p>If you'd like to request a house call, here is our address for Uber or any other transport services:</p>
-                                        <p><strong>Our Address:</strong> 147 rose street, Rosetenville</p>
+                                </div>
+                            
+                                <!-- Walk-in Alert -->
+                                <div id="walkInRadioAlert" style="color: green; font-size: 14px; display: none; margin-top: 5px;">
+                                    ✅ You’ve selected a Walk-in appointment.
+                                </div>
+                            
+                                <!-- Shared Address Section -->
+                                <div id="addressInfo" style="display: none; margin-top: 10px;">
+                                    <div id="walkInIntro" style="display: none;">
+                                        <h3>Visit Location</h3>
+                                        <p>If you're coming to us or using transport, here’s the address:</p>
+                                    </div>
+                            
+                                    <p><strong>Our Address:</strong> 147 Rose Street, Rosettenville</p>
+                            
+                                    <div id="uberLink" style="display: none;">
                                         <p>
-                                            <a href="https://m.uber.com/?pickup[latitude]=-26.2417&pickup[longitude]=28.0500&pickup[formatted_address]=147%20Rose%20Street,%20Rosettenville" target="_blank">
-                                                Click here to request an Uber from 147 Rose Street, Rosettenville.
-                                            </a>                                            
+                                            <a href="https://m.uber.com/?pickup[latitude]=-26.2417&pickup[longitude]=28.0500&pickup[formatted_address]=147%20Rose%20Street,%20Rosettenville&waypoints[0]=75%20Lang%20Street,%20Rosettenville" target="_blank">
+                                                Click here to request an Uber Jess and Angela.
+                                            </a>
+                                            
                                         </p>
                                     </div>
                                 </div>
                             </div>
+                            
                             
                             <div class="btn-container">
                                 <button type="submit" class="btn btn-primary" style="background-color: #ff69b4">Submit</button>
