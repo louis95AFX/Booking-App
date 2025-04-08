@@ -600,22 +600,34 @@ function hideLoaderAd() {
     })
     .catch(error => console.error('Error fetching admin credentials:', error));
 
-    document.addEventListener("DOMContentLoaded", function () {
+     document.addEventListener("DOMContentLoaded", function () {
         const houseCallRadio = document.getElementById("houseCall");
         const walkInRadio = document.getElementById("walkIn");
         const houseCallWarning = document.getElementById("houseCallWarning");
-
-        if (houseCallRadio && walkInRadio && houseCallWarning) { // Ensure elements exist
+        const walkInRadioAlert = document.getElementById("walkInRadioAlert");
+        const addressInfo = document.getElementById("addressInfo");
+        const uberLink = document.getElementById("uberLink");
+        const walkInIntro = document.getElementById("walkInIntro");
+    
+        if (houseCallRadio && walkInRadio && houseCallWarning && walkInRadioAlert && addressInfo && uberLink && walkInIntro) {
             houseCallRadio.addEventListener("change", function () {
                 houseCallWarning.style.display = "block";
-                // alert("Additional charges will apply for Uber transportation to your home.");
+                walkInRadioAlert.style.display = "none";
+                addressInfo.style.display = "block";
+                uberLink.style.display = "block";
+                walkInIntro.style.display = "none"; // hide intro for house call
             });
-
+    
             walkInRadio.addEventListener("change", function () {
                 houseCallWarning.style.display = "none";
+                walkInRadioAlert.style.display = "block";
+                addressInfo.style.display = "block";
+                uberLink.style.display = "none";
+                walkInIntro.style.display = "block"; // show intro for walk-in
             });
         }
     });
+    
 
     document.getElementById("accessoriesBtn").addEventListener("click", function () {
         document.getElementById("accessoriesModal").style.display = "flex";
