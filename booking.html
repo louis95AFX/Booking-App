@@ -316,41 +316,53 @@
                             </div>
                        
                             <div class="mb-3">
-                                <label class="form-label">Select Appointment Type</label><br>
+                                <label for="appointmentType" class="form-label">Select Appointment Type</label><br>
                                 <input type="radio" id="walkIn" name="appointmentType" value="walkIn" required>
                                 <label for="walkIn" class="radio-label">Walk-in</label><br>
                                 <input type="radio" id="houseCall" name="appointmentType" value="houseCall" required>
                                 <label for="houseCall" class="radio-label">House Call</label>
-                            
+                                
                                 <!-- House Call Warning -->
                                 <div id="houseCallWarning" style="color: red; font-size: 14px; display: none; margin-top: 5px;">
                                     ⚠️ Additional charges will apply for Uber transportation to your home.
                                 </div>
-                            
+                                
                                 <!-- Walk-in Alert -->
                                 <div id="walkInRadioAlert" style="color: green; font-size: 14px; display: none; margin-top: 5px;">
                                     ✅ You’ve selected a Walk-in appointment.
                                 </div>
-                            
+                                
                                 <!-- Shared Address Section -->
                                 <div id="addressInfo" style="display: none; margin-top: 10px;">
                                     <div id="walkInIntro" style="display: none;">
                                         <h3>Visit Location</h3>
                                         <p>If you're coming to us or using transport, here’s the address:</p>
                                     </div>
+                                    
+                                    <p><strong>Our Address:</strong> 147 Rose Street, Rosettenville, Johannesburg South, 2190</p>
+                                    
+                                   <!-- Google Maps Embed Without API Key -->
+                                    <div style="margin-top: 10px;">
+                                        <h4>📍 Find Us Here:</h4>
+                                        <iframe 
+                                            src="https://www.google.com/maps?q=147+Rose+Street,+Rosettenville,+Johannesburg,+South+Africa&output=embed" 
+                                            width="100%" 
+                                            height="200" 
+                                            style="border:0; border-radius: 10px;" 
+                                            allowfullscreen>
+                                        </iframe>
+                                    </div>
+
                             
-                                    <p><strong>Our Address:</strong> 147 Rose Street, Rosettenville</p>
-                            
-                                    <div id="uberLink" style="display: none;">
+                                    <!-- Uber Link -->
+                                    <div id="uberLink" style="display: none; margin-top: 10px;">
                                         <p>
-                                            <a href="https://m.uber.com/?pickup[latitude]=-26.2417&pickup[longitude]=28.0500&pickup[formatted_address]=147%20Rose%20Street,%20Rosettenville&waypoints[0]=75%20Lang%20Street,%20Rosettenville" target="_blank">
-                                                Click here to request an Uber Jess and Angela.
+                                            <a href="uber://?action=setPickup&pickup[latitude]=-26.2417&pickup[longitude]=28.0500&pickup[formatted_address]=147%20Rose%20Street,%20Rosettenville&dropoff[latitude]=-26.2395&dropoff[longitude]=28.0470&dropoff[formatted_address]=75%20Lang%20Street,%20Rosettenville" target="_blank">
+                                                🚗 Open Uber App to Request Pickup for Braiders
                                             </a>
-                                            
                                         </p>
                                     </div>
-                                </div>
-                            </div>
+
                             
                             
                             <div class="btn-container">
