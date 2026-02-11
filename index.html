@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Uber Lite Clone</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="bottom-sheet">
+      <div class="handle"></div>
+      
+      <header>
+        <h1>Where to?</h1>
+      </header>
+  
+      <div class="ride-form">
+        <div class="input-group">
+          <div class="input-wrapper">
+            <span class="dot pickup-dot"></span>
+            <input type="text" id="pickup" placeholder="Current Location" value="10 Downing St, London">
+          </div>
+          <div class="input-wrapper" style="position: relative;">
+            <span class="dot dest-dot"></span>
+            <input type="text" id="destination" placeholder="Enter destination" autocomplete="off">
+            <div id="suggestions" class="suggestions-list"></div>
+          </div>
+        </div>
+  
+        <div class="car-selection">
+          <div class="car active" data-type="vehicle" data-rate="1800">
+            <span class="emoji">🚗</span>
+            <div class="car-info">
+              <span class="name">Uber Car</span>
+              <span class="time">Vehicle • MWK 1,800/km</span>
+            </div>
+          </div>
+          
+          <div class="car" data-type="motorcycle" data-rate="100">
+            <span class="emoji">🏍️</span>
+            <div class="car-info">
+              <span class="name">Uber Moto</span>
+              <span class="time">Motorcycle • MWK 100/km</span>
+            </div>
+          </div>
+        </div>
+  
+        <button id="requestRide" class="btn-primary">Confirm UberX</button>
+      </div>
+     
+      <div class="status-pill" id="status">
+        Tap confirm to find a driver
+      </div>
+    </div>
+  
+    <div id="map"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+
+<!-- comment:
+
+MWK1800 per kilometer. -->
+

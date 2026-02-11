@@ -1,0 +1,191 @@
+/* --- Global Resets --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* --- Layout Container --- */
+.app-container {
+  display: flex;
+  flex-direction: row; /* Horizontal layout: Info Left, Map Right */
+  height: 100vh;
+  width: 100vw;
+}
+
+/* --- Left Side Panel --- */
+.bottom-sheet {
+  width: 380px; 
+  height: 100%;
+  background: white;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  overflow-y: auto;
+  flex-shrink: 0; /* Prevents the panel from squishing */
+}
+
+/* --- Right Side Map --- */
+#map {
+  flex-grow: 1; /* Takes up all remaining width */
+  height: 100%;
+  background: #e5e3df; /* Fallback color while map loads */
+}
+
+/* --- UI Elements --- */
+.handle {
+  display: none; /* Hide the mobile drag handle */
+}
+
+header h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+/* Inputs */
+.input-group {
+  margin-bottom: 24px;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #f3f3f3;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.input-wrapper input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  margin-left: 10px;
+  outline: none;
+  font-size: 16px;
+}
+
+.dot {
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.pickup-dot { background: #000; }
+.dest-dot { background: #555; border-radius: 2px; }
+
+/* Ride Options */
+.car-selection {
+  margin-bottom: 20px;
+}
+
+.car {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+}
+
+.car:hover {
+  background: #f8f8f8;
+}
+
+.car.active {
+  border-color: #000;
+  background: #f8f8f8;
+}
+
+.emoji {
+  font-size: 24px;
+  margin-right: 15px;
+}
+
+.car-info {
+  flex-grow: 1;
+}
+
+.car-info .name {
+  font-weight: bold;
+  display: block;
+}
+
+.car-info .time {
+  font-size: 12px;
+  color: #666;
+}
+
+.price {
+  font-weight: bold;
+}
+
+/* Confirm Button */
+.btn-primary {
+  width: 100%;
+  background: black;
+  color: white;
+  padding: 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.status-pill {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Blue dot for your current location on the map */
+.user-location-dot {
+  pointer-events: none !important;
+}
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 2000;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  padding: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.suggestion-item:hover {
+  background-color: #f8f8f8;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
